@@ -7,6 +7,7 @@ import { contactApp } from './applications/app-contact.js';
 import { parametersApp } from './applications/app-parameters.js';
 import { snakeApp } from './applications/game-snake.js';
 import { game2048App } from './applications/game-2048.js';
+import { gameFlappyBirdApp } from './applications/game-flappy-bird.js';
 
 // Initialisation du Système
 const system = new System();
@@ -18,6 +19,7 @@ system.registerApp(contactApp);
 system.registerApp(parametersApp);
 system.registerApp(snakeApp);
 system.registerApp(game2048App);
+system.registerApp(gameFlappyBirdApp);
 
 $(document).ready(function () {
     const $desktopWrapper = $('#desktop-wrapper');
