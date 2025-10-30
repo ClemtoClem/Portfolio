@@ -1,0 +1,963 @@
+/* --- Import de la police Android (Roboto) --- */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+/* --- Styles Généraux --- */
+:root {
+    --background-start: #1a237e;
+    --background-mid: #3f51b5;
+    --background-end: #00bcd4;
+    --app-bg: #f5f5f5;
+    --text-color: #212121;
+    --header-color: #ffffff;
+    --accent-color: #448aff;
+    --game-accent: #4caf50;
+    --icon-shadow: rgba(0, 0, 0, 0.2);
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    overflow: hidden;
+    background-color: #444;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* --- Conteneur principal (l'écran du téléphone) --- */
+#android-screen {
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    border-radius: 30px;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.5), inset 0 0 10px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border: 5px solid #111;
+}
+
+#android-screen.phone-mode {
+    max-width: 450px;
+    max-height: 850px;
+}
+
+#android-screen.tablet-mode {
+    width: 90vw;
+    height: 95vh;
+    max-width: none;
+    max-height: none;
+}
+
+@media (min-width: 500px) {
+    #android-screen {
+        height: 95vh;
+    }
+}
+
+/* --- Barre de statut Android --- */
+#status-bar {
+    background-color: rgba(0, 0, 0, 0.2);
+    color: white;
+    padding: 5px 15px;
+    text-align: right;
+    font-size: 14px;
+    z-index: 100;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    backdrop-filter: blur(2px);
+}
+
+#status-bar #time {
+    font-weight: 500;
+}
+
+/* --- Conteneur Principal --- */
+#main-container {
+    flex-grow: 1;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    /* Important */
+    padding-top: 28px;
+    /* Hauteur de la status bar */
+}
+
+
+/* --- Bureau "Swipeable" --- */
+#desktop-container {
+    flex-grow: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+#desktop-wrapper {
+    display: flex;
+    width: 200%;
+    /* 100% * 2 pages */
+    height: 100%;
+    transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.desktop-page {
+    width: 50%;
+    /* 1/2 de la largeur du wrapper */
+    height: 100%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+    /* Important */
+    position: relative;
+    /* Ancien fond d'écran supprimé d'ici */
+}
+
+/* --- NOUVEAU FOND D'ÉCRAN --- */
+.desktop-background {
+    --color-0: #fff;
+    /* light off */
+    --color-1: #111;
+    --color-2: #222;
+    --color-3: #333;
+    --color-4: #2e2e2e;
+    /* light on */
+    --color-5: #d2b48c;
+    --color-6: #b22222;
+    --color-7: #871a1a;
+    --color-8: #ff6347;
+    --color-9: #ff3814;
+    
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-1);
+    background-image: linear-gradient(to top,
+            var(--color-2) 5%,
+            var(--color-1) 6%,
+            var(--color-1) 7%,
+            transparent 7%),
+        linear-gradient(to bottom, var(--color-1) 30%, transparent 80%),
+        linear-gradient(to right, var(--color-2), var(--color-4) 5%, transparent 5%),
+        linear-gradient(to right,
+            transparent 6%,
+            var(--color-2) 6%,
+            var(--color-4) 9%,
+            transparent 9%),
+        linear-gradient(to right,
+            transparent 27%,
+            var(--color-2) 27%,
+            var(--color-4) 34%,
+            transparent 34%),
+        linear-gradient(to right,
+            transparent 51%,
+            var(--color-2) 51%,
+            var(--color-4) 57%,
+            transparent 57%),
+        linear-gradient(to bottom, var(--color-1) 35%, transparent 35%),
+        linear-gradient(to right,
+            transparent 42%,
+            var(--color-2) 42%,
+            var(--color-4) 44%,
+            transparent 44%),
+        linear-gradient(to right,
+            transparent 45%,
+            var(--color-2) 45%,
+            var(--color-4) 47%,
+            transparent 47%),
+        linear-gradient(to right,
+            transparent 48%,
+            var(--color-2) 48%,
+            var(--color-4) 50%,
+            transparent 50%),
+        linear-gradient(to right,
+            transparent 87%,
+            var(--color-2) 87%,
+            var(--color-4) 91%,
+            transparent 91%),
+        linear-gradient(to bottom, var(--color-1) 37.5%, transparent 37.5%),
+        linear-gradient(to right,
+            transparent 14%,
+            var(--color-2) 14%,
+            var(--color-4) 20%,
+            transparent 20%),
+        linear-gradient(to bottom, var(--color-1) 40%, transparent 40%),
+        linear-gradient(to right,
+            transparent 10%,
+            var(--color-2) 10%,
+            var(--color-4) 13%,
+            transparent 13%),
+        linear-gradient(to right,
+            transparent 21%,
+            var(--color-2) 21%,
+            #1a1a1a 25%,
+            transparent 25%),
+        linear-gradient(to right,
+            transparent 58%,
+            var(--color-2) 58%,
+            var(--color-4) 64%,
+            transparent 64%),
+        linear-gradient(to right,
+            transparent 92%,
+            var(--color-2) 92%,
+            var(--color-4) 95%,
+            transparent 95%),
+        linear-gradient(to bottom, var(--color-1) 48%, transparent 48%),
+        linear-gradient(to right,
+            transparent 96%,
+            var(--color-2) 96%,
+            #1a1a1a 99%,
+            transparent 99%),
+        linear-gradient(to bottom,
+            transparent 68.5%,
+            transparent 76%,
+            var(--color-1) 76%,
+            var(--color-1) 77.5%,
+            transparent 77.5%,
+            transparent 86%,
+            var(--color-1) 86%,
+            var(--color-1) 87.5%,
+            transparent 87.5%),
+        linear-gradient(to right,
+            transparent 35%,
+            var(--color-2) 35%,
+            var(--color-4) 41%,
+            transparent 41%),
+        linear-gradient(to bottom, var(--color-1) 68%, transparent 68%),
+        linear-gradient(to right,
+            transparent 78%,
+            var(--color-3) 78%,
+            var(--color-3) 80%,
+            transparent 80%,
+            transparent 82%,
+            var(--color-3) 82%,
+            var(--color-3) 83%,
+            transparent 83%),
+        linear-gradient(to right,
+            transparent 66%,
+            var(--color-2) 66%,
+            var(--color-4) 85%,
+            transparent 85%);
+    background-size: 300px 150px;
+    background-position: center bottom;
+}
+
+.desktop-background:before {
+    content: "";
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    inset: 0;
+    background-color: var(--color-1);
+    background-image: linear-gradient(to top,
+            var(--color-5) 5%,
+            var(--color-1) 6%,
+            var(--color-1) 7%,
+            transparent 7%),
+        linear-gradient(to bottom, var(--color-1) 30%, transparent 30%),
+        linear-gradient(to right, var(--color-6), var(--color-7) 5%, transparent 5%),
+        linear-gradient(to right,
+            transparent 6%,
+            var(--color-8) 6%,
+            var(--color-9) 9%,
+            transparent 9%),
+        linear-gradient(to right,
+            transparent 27%,
+            #556b2f 27%,
+            #39481f 34%,
+            transparent 34%),
+        linear-gradient(to right,
+            transparent 51%,
+            #fa8072 51%,
+            #f85441 57%,
+            transparent 57%),
+        linear-gradient(to bottom, var(--color-1) 35%, transparent 35%),
+        linear-gradient(to right,
+            transparent 42%,
+            #008080 42%,
+            #004d4d 44%,
+            transparent 44%),
+        linear-gradient(to right,
+            transparent 45%,
+            #008080 45%,
+            #004d4d 47%,
+            transparent 47%),
+        linear-gradient(to right,
+            transparent 48%,
+            #008080 48%,
+            #004d4d 50%,
+            transparent 50%),
+        linear-gradient(to right,
+            transparent 87%,
+            #789 87%,
+            #4f5d6a 91%,
+            transparent 91%),
+        linear-gradient(to bottom, var(--color-1) 37.5%, transparent 37.5%),
+        linear-gradient(to right,
+            transparent 14%,
+            #bdb76b 14%,
+            #989244 20%,
+            transparent 20%),
+        linear-gradient(to bottom, var(--color-1) 40%, transparent 40%),
+        linear-gradient(to right,
+            transparent 10%,
+            #808000 10%,
+            #4d4d00 13%,
+            transparent 13%),
+        linear-gradient(to right,
+            transparent 21%,
+            #8b4513 21%,
+            #5e2f0d 25%,
+            transparent 25%),
+        linear-gradient(to right,
+            transparent 58%,
+            #8b4513 58%,
+            #5e2f0d 64%,
+            transparent 64%),
+        linear-gradient(to right,
+            transparent 92%,
+            #2f4f4f 92%,
+            #1c2f2f 95%,
+            transparent 95%),
+        linear-gradient(to bottom, var(--color-1) 48%, transparent 48%),
+        linear-gradient(to right,
+            transparent 96%,
+            #2f4f4f 96%,
+            #1c2f2f 99%,
+            transparent 99%),
+        linear-gradient(to bottom,
+            transparent 68.5%,
+            transparent 76%,
+            var(--color-1) 76%,
+            var(--color-1) 77.5%,
+            transparent 77.5%,
+            transparent 86%,
+            var(--color-1) 86%,
+            var(--color-1) 87.5%,
+            transparent 87.5%),
+        linear-gradient(to right,
+            transparent 35%,
+            #cd5c5c 35%,
+            #bc3a3a 41%,
+            transparent 41%),
+        linear-gradient(to bottom, var(--color-1) 68%, transparent 68%),
+        linear-gradient(to right,
+            transparent 78%,
+            #bc8f8f 78%,
+            #bc8f8f 80%,
+            transparent 80%,
+            transparent 82%,
+            #bc8f8f 82%,
+            #bc8f8f 83%,
+            transparent 83%),
+        linear-gradient(to right,
+            transparent 66%,
+            #a52a2a 66%,
+            #7c2020 85%,
+            transparent 85%);
+    background-size: 300px 150px;
+    background-position: center bottom;
+    clip-path: circle(150px at var(--mouse-x, 0px) var(--mouse-y, 0px));
+}
+
+#desktop-dots {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    z-index: 5;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    margin: 0 4px;
+    transition: background 0.3s;
+}
+
+.dot.active {
+    background: rgba(255, 255, 255, 0.9);
+}
+
+
+.main-title {
+    color: white;
+    text-align: center;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+    z-index: 2;
+    /* S'assurer que le titre est au-dessus du fond */
+}
+
+.main-title h1 {
+    font-size: 3.5em;
+    margin: 0;
+    font-weight: 300;
+}
+
+.main-title h2 {
+    font-size: 2em;
+    margin: 15px 0 0;
+    font-weight: 400;
+}
+
+.app-drawer {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    width: 100%;
+    padding: 20px;
+    margin-top: auto;
+    box-sizing: border-box;
+    z-index: 2;
+    /* S'assurer que les icônes sont au-dessus du fond */
+}
+
+@media (max-width: 380px) {
+    .app-drawer {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.app-icon {
+    text-align: center;
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.app-icon:hover {
+    transform: scale(1.1);
+}
+
+.app-icon .icon-bg {
+    width: 60px;
+    height: 60px;
+    border-radius: 15px;
+    background-color: rgba(255, 255, 255, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 8px;
+    box-shadow: 0 2px 5px var(--icon-shadow);
+    backdrop-filter: blur(5px);
+}
+
+.app-icon .icon-bg svg {
+    width: 32px;
+    height: 32px;
+    fill: white;
+}
+
+.app-icon span {
+    font-size: 14px;
+    font-weight: 500;
+    text-shadow: 0 1px 3px var(--icon-shadow);
+}
+
+/* --- Conteneur de Fenêtres d'Application --- */
+#app-window-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 200;
+    pointer-events: none;
+    /* Laisse passer les clics vers le bureau en dessous */
+}
+
+.app-window {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--app-bg);
+    z-index: 1;
+    /* Chaque fenêtre est sur son propre z-index */
+    display: flex;
+    flex-direction: column;
+    pointer-events: all;
+    /* La fenêtre ouverte capture les clics */
+
+    /* Animation d'ouverture/fermeture */
+    transform: scale(1.2);
+    opacity: 0;
+    visibility: hidden;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, visibility 0.3s;
+}
+
+.app-window.open {
+    transform: scale(1);
+    opacity: 1;
+    visibility: visible;
+}
+
+.app-header {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: var(--accent-color);
+    color: var(--header-color);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    flex-shrink: 0;
+    z-index: 10;
+}
+
+.app-header .back-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 50%;
+}
+
+.app-header .back-btn:hover {
+    background: #FFF4;
+}
+
+.app-header .back-btn svg {
+    width: 24px;
+    height: 24px;
+    fill: var(--header-color);
+}
+
+.app-header h2 {
+    margin: 0;
+    font-size: 1.2em;
+    font-weight: 500;
+    margin-left: 15px;
+}
+
+.app-content {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.app-content h3 {
+    color: var(--accent-color);
+    border-bottom: 2px solid #eee;
+    padding-bottom: 5px;
+    margin-top: 0;
+}
+
+/* --- Styles CV (Frise) --- */
+.cv-section {
+    margin-bottom: 25px;
+}
+
+.timeline {
+    position: relative;
+    list-style: none;
+    padding: 10px 0;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 15px;
+    height: 100%;
+    width: 4px;
+    background: #e0e0e0;
+    border-radius: 2px;
+}
+
+.timeline-item {
+    margin-bottom: 20px;
+    padding-left: 40px;
+    position: relative;
+}
+
+.timeline-item:last-child {
+    margin-bottom: 0;
+}
+
+.timeline-dot {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 4px;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    border: 3px solid var(--app-bg);
+}
+
+.timeline-date {
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 5px;
+    font-size: 0.9em;
+}
+
+.timeline-content {
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.timeline-content h4 {
+    margin: 0 0 5px;
+    font-size: 1.05em;
+    color: var(--text-color);
+}
+
+.timeline-content p {
+    margin: 0;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.cv-section ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.cv-section li {
+    background: #fff;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* --- Styles Projets --- */
+#projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 15px;
+}
+
+.project-card {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.project-card img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    background-color: #eee;
+}
+
+.project-card-title {
+    padding: 10px;
+    font-weight: 500;
+    font-size: 1em;
+    color: var(--text-color);
+}
+
+.project-detail-view {
+    display: none;
+}
+
+.project-detail-view .back-to-grid {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    color: var(--accent-color);
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+.project-detail-view .back-to-grid svg {
+    width: 20px;
+    height: 20px;
+    fill: var(--accent-color);
+    margin-right: 5px;
+}
+
+.project-detail-view img {
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 15px;
+}
+
+.project-detail-view p {
+    text-align: justify;
+}
+
+.project-tags {
+    margin-bottom: 15px;
+}
+
+.project-tags .tag {
+    display: inline-block;
+    background-color: #e0e0e0;
+    color: #616161;
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 0.8em;
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+/* --- Styles Contact --- */
+#contact-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #616161;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1em;
+    box-sizing: border-box;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+#contact-form button {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+#contact-form button:hover {
+    background-color: #2962ff;
+}
+
+#submission-message {
+    display: none;
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #d1f3d1;
+    color: #114e11;
+    border: 1px solid #a8e0a8;
+    border-radius: 8px;
+}
+
+/* --- Styles des Jeux --- */
+.game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    /* Ajusté pour les nouveaux boutons */
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.game-canvas {
+    background: #111;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 400px;
+    aspect-ratio: 1 / 1;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.game-score {
+    font-size: 1.2em;
+    font-weight: 500;
+    color: var(--text-color);
+    margin-bottom: -5px;
+    /* Espacement resserré */
+}
+
+.game-extra-controls {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    max-width: 400px;
+    justify-content: center;
+    margin-top: -5px;
+    margin-bottom: 5px;
+}
+
+.game-extra-controls button {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.9em;
+    font-weight: 500;
+    padding: 8px 15px;
+    border-radius: 8px;
+    border: none;
+    background: #9e9e9e;
+    /* Gris neutre */
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.2s;
+}
+
+.game-extra-controls button:hover {
+    background: #757575;
+}
+
+/* Style spécifique pour le bouton pause */
+.game-extra-controls button.pause-btn.paused {
+    background: #f44336;
+    /* Rouge quand en pause */
+}
+
+.game-extra-controls button.pause-btn.paused:hover {
+    background: #d32f2f;
+}
+
+.game-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    width: 100%;
+    max-width: 240px;
+}
+
+.game-controls button {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.5em;
+    font-weight: 500;
+    padding: 15px;
+    border-radius: 12px;
+    border: none;
+    background: var(--game-accent);
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.game-controls .up {
+    grid-column: 2;
+}
+
+.game-controls .left {
+    grid-column: 1;
+}
+
+.game-controls .down {
+    grid-column: 2;
+}
+
+.game-controls .right {
+    grid-column: 3;
+}
+
+/* Styles 2048 */
+#game-2048-board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    gap: 10px;
+    background: #bbada0;
+    padding: 10px;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 400px;
+    aspect-ratio: 1 / 1;
+    box-sizing: border-box;
+    position: relative;
+    /* Pour le message Game Over */
+}
+
+.tile {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 4px;
+    font-size: 2em;
+    font-weight: bold;
+    color: #776e65;
+    background: #cdc1b4;
+}
+
+/* Tuiles 2048 avec couleurs */
+.tile[data-value="2"] {
+    background: #eee4da;
+}
+
+.tile[data-value="4"] {
+    background: #ede0c8;
+}
+
+.tile[data-value="8"] {
+    background: #f2b179;
+    color: #f9f6f2;
+}
+
+.tile[data-value="16"] {
+    background: #f59563;
+    color: #f9f6f2;
+}
+
+.tile[data-value="32"] {
+    background: #f67c5f;
+    color: #f9f6f2;
+}
+
+.tile[data-value="64"] {
+    background: #f65e3b;
+    color: #f9f6f2;
+}
+
+.tile[data-value="128"] {
+    background: #edcf72;
+    color: #f9f6f2;
+}
+
+.tile[data-value="256"] {
+    background: #edcc61;
+    color: #f9f6f2;
+}
+
+.tile[data-value="512"] {
+    background: #edc850;
+    color: #f9f6f2;
+}
+
+.tile[data-value="1024"] {
+    background: #edc53f;
+    color: #f9f6f2;
+}
+
+.tile[data-value="2048"] {
+    background: #edc22e;
+    color: #f9f6f2;
+}

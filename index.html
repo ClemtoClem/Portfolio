@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Clément Charrière - Portfolio OS</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div id="android-screen" class="phone-mode">
+        <!-- Barre de statut -->
+        <div id="status-bar">
+            <span id="time">12:00</span>
+        </div>
+
+        <!-- Conteneur pour le bureau et les fenêtres d'apps -->
+        <main id="main-container">
+            
+            <!-- Conteneur pour le bureau "swipeable" -->
+            <div id="desktop-container" class="desktop-background">
+                <div id="desktop-wrapper">
+                    <!-- Page 1: Applications Principales -->
+                    <div id="desktop-main" class="desktop-page">
+                        <div class="main-title">
+                            <h1>Clément Charrière</h1>
+                            <h2>Applications principales</h2>
+                        </div>
+                        <div id="app-drawer-main" class="app-drawer">
+                            <!-- Les icônes principales seront injectées ici par main.js -->
+                        </div>
+                    </div>
+                    
+                    <!-- Page 2: Jeux -->
+                    <div id="desktop-games" class="desktop-page">
+                        <div class="main-title">
+                            <h1>Clément Charrière</h1>
+                            <h2>Jeux & Modules</h2>
+                        </div>
+                        <div id="app-drawer-games" class="app-drawer">
+                            <!-- Les icônes de jeux seront injectées ici par main.js -->
+                        </div>
+                    </div>
+                </div>
+                <!-- Indicateurs de page -->
+                <div id="desktop-dots">
+                    <span class="dot active" data-page="0"></span>
+                    <span class="dot" data-page="1"></span>
+                </div>
+            </div>
+
+            <!-- Conteneur où les fenêtres d'application seront créées -->
+            <div id="app-window-container">
+                <!-- <section class="app-window open">...</section> -->
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Script principal de l'OS (type="module" est crucial) -->
+    <script type="module" src="main.js"></script>
+</body>
+
+</html>
+
