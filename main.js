@@ -131,9 +131,6 @@ $(document).ready(function () {
         if (!page) return;
         const background = $('.desktop-background');
 
-        // Ne pas activer le flashlight si on est en train de swiper
-        if (isDragging) return; 
-
         const rect = page.getBoundingClientRect();
         // Coordonnées de la souris relatives à l'élément 'page'
         const x = e.clientX - rect.left;
