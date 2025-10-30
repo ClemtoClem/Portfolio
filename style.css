@@ -60,17 +60,18 @@ body {
 
 /* --- Barre de statut Android --- */
 #status-bar {
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: #000;
     color: white;
     padding: 5px 15px;
     text-align: right;
     font-size: 14px;
     z-index: 100;
     position: absolute;
+    border: 0;
     top: 0;
     left: 0;
     right: 0;
-    backdrop-filter: blur(2px);
+    /*backdrop-filter: blur(2px);*/
 }
 
 #status-bar #time {
@@ -134,7 +135,7 @@ body {
     --color-7: #871a1a;
     --color-8: #ff6347;
     --color-9: #ff3814;
-    
+
     width: 100%;
     height: 100%;
     background-color: var(--color-1);
@@ -636,13 +637,15 @@ body {
 }
 
 /* --- Styles Projets --- */
+
 #projects-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
     gap: 15px;
 }
 
 .project-card {
+    min-width: 190px;
     background: #fff;
     border-radius: 12px;
     overflow: hidden;
@@ -690,16 +693,40 @@ body {
     margin-right: 5px;
 }
 
-.project-detail-view img {
+.project-detail-view .main-image {
     width: 100%;
     max-height: 200px;
     object-fit: cover;
     border-radius: 12px;
     margin-bottom: 15px;
+    background-color: #e4e1be;
 }
 
 .project-detail-view p {
     text-align: justify;
+}
+
+.project-detail-view .image-with-title {
+	width: 80%;         /* Largeur en fonction du div parent */
+	max-width: 500px;   /* Largeur maximale */
+	background-color: #00000000; /* Couleur de fond translucide */
+	padding-top: 5px;   /* Padding de 10px de chaque côté */
+	margin: 0 auto;     /* Centre horizontalement */
+	display: block;     /* Nécessaire pour l'effet de centrer avec margin auto */
+    img {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+.project-detail-view .image-title {
+	text-align: center;
+	font-size: 16px;
+	font-style: italic;
+	font-weight: bold;
+    padding: 0px;
+	margin: 0px;
+	color:#242424;
 }
 
 .project-tags {

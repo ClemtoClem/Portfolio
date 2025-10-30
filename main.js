@@ -139,7 +139,6 @@ $(document).ready(function () {
         // Mettre à jour les variables CSS
         background.css('--mouse-x', `${x}px`);
         background.css('--mouse-y', `${y}px`);
-        //console.log("mouse ", x, ", ", y);
     });
 
     $desktopContainer.on('mouseleave', function(e) {
