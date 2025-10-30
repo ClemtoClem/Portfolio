@@ -8,19 +8,19 @@ export const projectsApp = {
         <!-- Vue Grille des Projets -->
         <div id="projects-grid">
             <div class="project-card" data-project="1">
-                <img src="../img/polyadventure-capture.png" alt="PolyAdventure">
+                <img src="./img/polyadventure-capture.png" alt="PolyAdventure">
                 <div class="project-card-title">PolyAdventure</div>
             </div>
             <div class="project-card" data-project="2">
-                <img src="/img/red-pitaya.png" alt="Red Pitaya">
+                <img src="./img/red-pitaya.png" alt="Red Pitaya">
                 <div class="project-card-title">Red Pitaya</div>
             </div>
             <div class="project-card" data-project="3">
-                <img src="/img/holonome-robot-capture1.png" alt="Robot Holonome">
+                <img src="./img/holonome-robot-capture1.png" alt="Robot Holonome">
                 <div class="project-card-title">Robot Holonome</div>
             </div>
             <div class="project-card" data-project="4">
-                <img src="/img/batspy_logo.jpg" alt="Gite Chauves-souris">
+                <img src="./img/batspy_logo.jpg" alt="Gite Chauves-souris">
                 <div class="project-card-title">Gite Chauves-souris</div>
             </div>
         </div>
@@ -28,7 +28,7 @@ export const projectsApp = {
         <!-- Vues Détails des Projets (cachées) -->
         <div id="project-detail-1" class="project-detail-view">
             <a class="back-to-grid"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20,11H7.83l5.59-5.59L12,4l-8,8l8,8l1.41-1.41L7.83,13H20V11z" /></svg> Retour</a>
-            <img class="main-image" src="/img/polyadventure-capture.png" alt="PolyAdventure">
+            <img class="main-image" src="./img/polyadventure-capture.png" alt="PolyAdventure">
             <h3>PolyAdventure</h3>
             <div class="project-tags">
                 <span class="tag">C</span>
@@ -42,7 +42,7 @@ export const projectsApp = {
 
         <div id="project-detail-2" class="project-detail-view">
             <a class="back-to-grid"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20,11H7.83l5.59-5.59L12,4l-8,8l8,8l1.41-1.41L7.83,13H20V11z" /></svg> Retour</a>
-            <img class="main-image" src="/img/red-pitaya.png" alt="Red Pitaya">
+            <img class="main-image" src="./img/red-pitaya.png" alt="Red Pitaya">
             <h3>Red Pitaya</h3>
             <div class="project-tags">
                 <span class="tag">C/C++</span>
@@ -53,14 +53,14 @@ export const projectsApp = {
             <p>Programmation d'un système universel de mesures des figures de mérites d'un capteur MEMS sur Red Pitaya STEMlab 125-14.</p>
             <p>Le programme compilé à même la Red Pitaya permet de déterminer graphiquement la fréquence de résonance et d'anti-résonance du dispositif. L'application démodule le signal de sortie du dispositif et le signal de référence d’excitation généré par la Red Pitaya et compare les résultats pour en déduire l'amplitude et la phase. Cette étape est répétée pour différentes fréquences d’excitation sur une plage de fréquences paramétrable. Le programme est écrit en C et C++ et utilise la bibliothèque de la Red Pitaya pour gérer ses périphériques et principalement les deux entrées et les deux sorties analogiques hautes performances (125MHz et 14 bits de résolution sur une pleine échelle de ±1V).</p>
             <div class="image-with-title">
-                <img src="/img/red-pitaya.png" alt="Red Pitaya">
+                <img src="./img/red-pitaya.png" alt="Red Pitaya">
                 <p class="image-title">Red Pitaya</p>
             </div>
         </div>
 
         <div id="project-detail-3" class="project-detail-view">
             <a class="back-to-grid"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20,11H7.83l5.59-5.59L12,4l-8,8l8,8l1.41-1.41L7.83,13H20V11z" /></svg> Retour</a>
-            <img class="main-image" src="/img/holonome-robot-capture1.png" alt="Robot Holonome">
+            <img class="main-image" src="./img/holonome-robot-capture1.png" alt="Robot Holonome">
             <h3>Robot Holonome</h3>
             <div class="project-tags">
                 <span class="tag">C</span>
@@ -110,21 +110,21 @@ export const projectsApp = {
             <h4>Conception de la carte d'alimentaiton</h4>
             <p>La carte de contrôle est le cerveau du robot. Elle est chargée de gérer les mouvements du robot, de contrôler les moteurs et de communiquer avec les autres cartes électroniques. Elle est alimentée par une alimentation 5V fournie par la carte d'alimentation. Elle est conçue pour être pilotée par un microcontrôleur PIC18F4431 de Microchip.</p>
             <div class="image-with-title" style="max-width: 160px;">
-                <img src="/img/PIC18F4431-J5X-FlipFlop2.avif" alt="PIC18F4431">
+                <img src="./img/PIC18F4431-J5X-FlipFlop2.avif" alt="PIC18F4431">
                 <p class="image-title">PIC18F4431</p>
             </div>
 
             <h4>Conception de la carte de puissance</h4>
             <p>La carte de puissance est chargée de contrôler les moteurs du robot. Elle est alimentée par une alimentation 12V fournie par la carte d'alimentation. Un driver moteur câblé en pont en H (LD293D Dual H-Bridge) permet de gérer les tensions d'alimentation des moteurs à partir de signaux PWM. Le rapport cyclique du signal permet de modifier la vitesse de rotation du moteur ainsi que son sens de rotation. Le driver moteur est piloté le microcontrôleur génère les trois signaux PWM.<p>
             <div class="image-with-title">
-                <img src="/img/LD293D_circuit.gif" alt="LD293D">
+                <img src="./img/LD293D_circuit.gif" alt="LD293D">
                 <p class="image-title">Schéma électrique du driver moteur</p>
             </div>
         </div>
 
         <div id="project-detail-4" class="project-detail-view">
             <a class="back-to-grid"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20,11H7.83l5.59-5.59L12,4l-8,8l8,8l1.41-1.41L7.83,13H20V11z" /></svg> Retour</a>
-            <img class="main-image" src="/img/batspy_logo.jpg" alt="Gite Chauves-souris">
+            <img class="main-image" src="./img/batspy_logo.jpg" alt="Gite Chauves-souris">
             <h3>Gîte à Chauves-souris Connecté</h3>
             <div class="project-tags">
                 <span class="tag">C++</span>
