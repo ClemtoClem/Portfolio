@@ -23,7 +23,7 @@ $(document).ready(function () {
     const $desktopWrapper = $('#desktop-wrapper');
     const $desktopContainer = $('#desktop-container');
     const $dots = $('.dot');
-    
+
     let currentPage = 0;
     const totalPages = 2;
 
@@ -39,7 +39,7 @@ $(document).ready(function () {
                 </div>
                 <span>${app.title}</span>
             </a>`;
-        
+
         if (app.type === 'main') {
             mainDrawer.append(iconHTML);
         } else if (app.type === 'game') {
@@ -58,7 +58,7 @@ $(document).ready(function () {
     setInterval(updateTime, 10000);
 
     // --- Gestion de l'ouverture des applications (via délégation) ---
-    $desktopWrapper.on('click', '.app-icon', function() {
+    $desktopWrapper.on('click', '.app-icon', function () {
         const appId = $(this).data('app');
         system.openApp(appId);
     });
@@ -92,8 +92,8 @@ $(document).ready(function () {
         if (!isDragging) return;
         isDragging = false;
         $desktopWrapper.css('transition', 'transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)');
-        
-    const pageWidth = $desktopContainer.width();
+
+        const pageWidth = $desktopContainer.width();
         const dragThreshold = pageWidth / 4; // Seuil de 25%
         const diffX = currentTranslate - (-currentPage * pageWidth);
 
@@ -111,6 +111,56 @@ $(document).ready(function () {
         updateDots(currentPage);
     }
 
+    function adaptRequestURL() {
+        const isGithubPages = window.location.hostname.includes("github.io");
+        const repoName = "Portfolio";
+
+        if (!isGithubPages) return;
+
+        const prefix = "/" + repoName + "/";
+
+        // Balises à corriger et attributs associés
+        const targets = [
+            ["img", "src"],
+            ["script", "src"],
+            ["link", "href"],
+            ["video", "src"],
+            ["audio", "src"],
+            ["source", "src"]
+        ];
+
+        $.each(targets, function (_, pair) {
+            const tag = pair[0];
+            const attr = pair[1];
+
+            $(`${tag}[${attr}]`).each(function () {
+                const $el = $(this);
+                const val = $el.attr(attr);
+                if (val && !val.startsWith("http") && !val.startsWith(prefix)) {
+                    $el.attr(attr, prefix + val.replace(/^\.?\//, ""));
+                }
+            });
+        });
+
+        // Interception de fetch()
+        const originalFetch = window.fetch;
+        window.fetch = function (resource, ...args) {
+            if (typeof resource === "string" && !resource.startsWith("http") && !resource.startsWith(prefix)) {
+                resource = prefix + resource.replace(/^\.?\//, "");
+            }
+            return originalFetch(resource, ...args);
+        };
+
+        // Interception de XMLHttpRequest
+        const originalOpen = XMLHttpRequest.prototype.open;
+        XMLHttpRequest.prototype.open = function (method, url, ...args) {
+            if (url && !url.startsWith("http") && !url.startsWith(prefix)) {
+                url = prefix + url.replace(/^\.?\//, "");
+            }
+            return originalOpen.call(this, method, url, ...args);
+        };
+    }
+
     // Écouteurs pour la souris
     $desktopContainer.on('mousedown', startDrag);
     //$desktopContainer.on('mousemove', moveDrag);
@@ -123,7 +173,7 @@ $(document).ready(function () {
     $desktopContainer.on('touchend', (e) => endDrag(e.originalEvent));
 
     // Logique du Flashlight et du drag
-    $desktopContainer.on('mousemove', function(e) {
+    $desktopContainer.on('mousemove', function (e) {
         moveDrag(e);
 
         // Seuls les 'desktop-page' sont affectés
@@ -141,7 +191,7 @@ $(document).ready(function () {
         background.css('--mouse-y', `${y}px`);
     });
 
-    $desktopContainer.on('mouseleave', function(e) {
+    $desktopContainer.on('mouseleave', function (e) {
         endDrag(e);
 
         // Cacher le flashlight quand la souris quitte la zone du bureau
@@ -150,4 +200,7 @@ $(document).ready(function () {
         background.css('--mouse-x', '-150px');
         background.css('--mouse-y', '-150px');
     });
+
+    // code portable (dev local + GitHub Pages)
+    adaptRequestURL();
 });
