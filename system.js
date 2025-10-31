@@ -67,9 +67,12 @@ export class System {
 		}
 
 		// Ajouter l'écouteur pour le bouton retour
-		appWindow.querySelector('.back-btn').addEventListener('click', () => {
-			this.closeApp(windowId);
-		});
+		const backBtn = appWindow.querySelector('.back-btn')
+		if (backBtn) {
+			backBtn.addEventListener('click', () => {
+				this.closeApp(windowId);
+			});
+		}
 	}
 
 	/**

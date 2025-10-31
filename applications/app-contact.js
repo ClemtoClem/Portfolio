@@ -5,8 +5,73 @@ export const contactApp = {
 	iconColor: '#f44336',
 	type: 'main',
 	content: `
-		<h3>Envoyez-moi un message</h3>
-		<p style="text-align: center; margin-top: -10px; margin-bottom: 20px;">Ou par email à <a href="mailto:clement.charriere@free.fr">clement.charriere@free.fr</a></p>
+		<style>
+			/* --- Styles Contact --- */
+			#contact-form {
+				display: flex;
+				flex-direction: column;
+			}
+
+			#mail-info {
+				padding-top: 8px;
+			}
+
+			.form-group {
+				margin-bottom: 15px;
+			}
+
+			.form-group label {
+				display: block;
+				margin-bottom: 5px;
+				color: #616161;
+				font-weight: 500;
+			}
+
+			.form-group input,
+			.form-group textarea {
+				width: 100%;
+				padding: 12px;
+				border: 1px solid #ddd;
+				border-radius: 8px;
+				font-family: 'Roboto', sans-serif;
+				font-size: 1em;
+				box-sizing: border-box;
+			}
+
+			.form-group textarea {
+				resize: vertical;
+				min-height: 100px;
+			}
+
+			#contact-form button {
+				font-family: 'Undertale', 'Roboto', sans-serif;
+				background-color: var(--accent-color);
+				color: white;
+				border: none;
+				padding: 15px;
+				border-radius: 8px;
+				font-size: 1.1em;
+				font-weight: 500;
+				cursor: pointer;
+				transition: background-color 0.2s ease;
+			}
+
+			#contact-form button:hover {
+				background-color: #2962ff;
+			}
+
+			#submission-message {
+				display: none;
+				margin-top: 15px;
+				padding: 10px;
+				background-color: #d1f3d1;
+				color: #114e11;
+				border: 1px solid #a8e0a8;
+				border-radius: 8px;
+			}
+		</style>
+		<h1>Envoyez-moi un message</h1>
+		<p id="mail-info" style="text-align: center; margin-top: -10px; margin-bottom: 20px;">Ou par email à <a href="mailto:clement.charriere@free.fr">clement.charriere@free.fr</a></p>
 		<form id="contact-form">
 			<div class="form-group">
 				<label for="name">Nom</label>
@@ -42,5 +107,8 @@ export const contactApp = {
 				$form[0].reset();
 			}, 4000);
 		});
+		
+		// expose API
+		return { pause: () => { }, resume: () => { }, restart: () => { } };
 	}
 };

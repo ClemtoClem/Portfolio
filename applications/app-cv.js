@@ -5,8 +5,92 @@ export const cvApp = {
 	iconColor: '#4caf50',
 	type: 'main',
 	content: `
+		<style>
+			/* --- Styles CV (Frise) --- */
+			.cv-section {
+				margin-bottom: 25px;
+			}
+
+			.timeline {
+				position: relative;
+				list-style: none;
+				padding: 10px 0;
+			}
+
+			.timeline::before {
+				content: '';
+				position: absolute;
+				top: 0;
+				left: 15px;
+				height: 100%;
+				width: 4px;
+				background: #e0e0e0;
+				border-radius: 2px;
+			}
+
+			.timeline-item {
+				margin-bottom: 20px;
+				padding-left: 40px;
+				position: relative;
+			}
+
+			.timeline-item:last-child {
+				margin-bottom: 0;
+			}
+
+			.timeline-dot {
+				content: '';
+				position: absolute;
+				left: 8px;
+				top: 4px;
+				width: 15px;
+				height: 15px;
+				border-radius: 50%;
+				background: var(--accent-color);
+				border: 3px solid var(--app-bg);
+			}
+
+			.timeline-date {
+				font-weight: 500;
+				color: #333;
+				margin-bottom: 5px;
+				font-size: 0.9em;
+			}
+
+			.timeline-content {
+				background: #fff;
+				padding: 15px;
+				border-radius: 8px;
+				box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+			}
+
+			.timeline-content h4 {
+				margin: 0 0 5px;
+				font-size: 1.05em;
+				color: var(--text-color);
+			}
+
+			.timeline-content p {
+				margin: 0;
+				font-size: 0.9em;
+				color: #666;
+			}
+
+			.cv-section ul {
+				list-style: none;
+				padding-left: 0;
+			}
+
+			.cv-section li {
+				background: #fff;
+				padding: 10px;
+				border-radius: 8px;
+				margin-bottom: 8px;
+				box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+			}
+		</style>
 		<div class="cv-section">
-			<h3>Mon Parcours</h3>
+			<h1>Mon Parcours</h1>
 			<div class="timeline">
 				<div class="timeline-item">
 					<div class="timeline-dot"></div>
@@ -91,7 +175,7 @@ export const cvApp = {
 			</div>
 		</div>
 		<div class="cv-section">
-			<h3>Mes Diplômes</h3>
+			<h1>Mes Diplômes</h1>
 			<div class="timeline">
 				<div class="timeline-item">
 					<div class="timeline-dot"></div>
@@ -120,7 +204,7 @@ export const cvApp = {
 			</div>
 		</div>
 		<div class="cv-section">
-			<h3>Compétences</h3>
+			<h1>Compétences</h1>
 			<ul>
 				<li><h4>Électronique (Hardware)</h4><p>Kicad, Conception de circuit logique, Architecture RISCV.</p></li>
 				<li><h4>Informatique Embarqué (Firmware)</h4><p>Assembleur RISCV, C, C++, Shell Linux, VHDL, SystemC, Gestion de l'énergie et des ressources, Système temps réel</p></li>
@@ -129,7 +213,7 @@ export const cvApp = {
 			</ul>
 		</div>
 		<div class="cv-section">
-			<h3>Langues</h3>
+			<h1>Langues</h1>
 			<ul>
 				<li>Français (Maternelle)</li>
 				<li>Anglais (B1)</li>
@@ -137,7 +221,7 @@ export const cvApp = {
 			</ul>
 		</div>
 		<div class="cv-section">
-			<h3>Centres d'intérêt</h3>
+			<h1>Centres d'intérêt</h1>
 			<ul>
 				<li>Programmation web (NodeJs, Jquery, HTML, JavaScript, CSS)</li>
 				<li>Programmation de jeux vidéo (C/C++, GL, glm, SDL3)</li>
@@ -149,5 +233,8 @@ export const cvApp = {
 	`,
 	init: function(windowId) {
 		// Pas d'init nécessaire pour cette page statique
+
+		// expose API
+		return { pause: () => { }, resume: () => { }, restart: () => { } };
 	}
 };

@@ -5,23 +5,151 @@ export const projectsApp = {
 	iconColor: '#ff9800',
 	type: 'main',
 	content: `
+		<style>
+			/* --- Styles Projets --- */
+
+			#projects-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+				gap: 15px;
+			}
+
+			.project-card {
+				min-width: 190px;
+				background: #fff;
+				border-radius: 12px;
+				overflow: hidden;
+				box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+				cursor: pointer;
+				transition: transform 0.2s ease, box-shadow 0.2s ease;
+			}
+
+			.project-card:hover {
+				transform: translateY(-5px);
+				box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+			}
+
+			.project-card img {
+				width: 100%;
+				height: 100px;
+				object-fit: cover;
+				background-color: #eee;
+			}
+
+			.project-card-title {
+				font-family: 'Undertale', 'Roboto', sans-serif;
+				padding: 10px;
+				font-weight: 500;
+				font-size: 0.8em;
+				color: var(--text-color);
+			}
+
+			.project-detail-view {
+				display: none;
+			}
+
+			.project-detail-view .back-to-grid {
+				font-family: 'Undertale', 'Roboto', sans-serif;
+				display: inline-flex;
+				align-items: center;
+				cursor: pointer;
+				color: var(--accent-color);
+				margin-bottom: 20px;
+				font-weight: 500;
+			}
+
+			.project-detail-view .back-to-grid svg {
+				width: 20px;
+				height: 20px;
+				fill: var(--accent-color);
+				margin-right: 5px;
+			}
+
+			.project-detail-view .main-image {
+				width: 100%;
+				max-height: 200px;
+				object-fit: cover;
+				border-radius: 12px;
+				margin-bottom: 15px;
+				background-color: #e4e1be;
+			}
+
+			.project-detail-view h1 {
+				margin: 0;
+				font-family: 'Undertale', 'Roboto', sans-serif;
+				font-size: 1.2em;
+			}
+
+			.project-detail-view p {
+				font-weight: normal;
+				text-align: justify;
+			}
+
+			.project-detail-view .image-with-title {
+				width: 80%;
+				/* Largeur en fonction du div parent */
+				max-width: 500px;
+				/* Largeur maximale */
+				background-color: #00000000;
+				/* Couleur de fond translucide */
+				padding-top: 5px;
+				/* Padding de 10px de chaque côté */
+				margin: 0 auto;
+				/* Centre horizontalement */
+				display: block;
+
+				/* Nécessaire pour l'effet de centrer avec margin auto */
+				img {
+					width: 100%;
+					height: 100%;
+				}
+			}
+
+			.project-detail-view .image-title {
+				text-align: center;
+				font-size: 16px;
+				font-style: italic;
+				font-weight: bold;
+				padding: 0px;
+				margin: 0px;
+				color: #242424;
+			}
+
+			.project-tags {
+				margin-bottom: 15px;
+			}
+
+			.project-tags .tag {
+				display: inline-block;
+				background-color: #e0e0e0;
+				color: #616161;
+				padding: 4px 10px;
+				border-radius: 15px;
+				font-size: 0.8em;
+				margin-right: 5px;
+				margin-bottom: 5px;
+			}
+		</style>
 		<!-- Vue Grille des Projets -->
-		<div id="projects-grid">
-			<div class="project-card" data-project="1">
-				<img src="./img/polyadventure-capture.png" alt="PolyAdventure">
-				<div class="project-card-title">PolyAdventure</div>
-			</div>
-			<div class="project-card" data-project="2">
-				<img src="./img/red-pitaya.png" alt="Red Pitaya">
-				<div class="project-card-title">Red Pitaya</div>
-			</div>
-			<div class="project-card" data-project="3">
-				<img src="./img/holonome-robot-capture1.png" alt="Robot Holonome">
-				<div class="project-card-title">Robot Holonome</div>
-			</div>
-			<div class="project-card" data-project="4">
-				<img src="./img/batspy_logo.jpg" alt="Gite Chauves-souris">
-				<div class="project-card-title">Gite Chauves-souris</div>
+		<div id="projects-page">
+			<h1>Mes projets</h1>
+			<div id="projects-grid">
+				<div class="project-card" data-project="1">
+					<img src="./img/polyadventure-capture.png" alt="PolyAdventure">
+					<div class="project-card-title">PolyAdventure</div>
+				</div>
+				<div class="project-card" data-project="2">
+					<img src="./img/red-pitaya.png" alt="Red Pitaya">
+					<div class="project-card-title">Red Pitaya</div>
+				</div>
+				<div class="project-card" data-project="3">
+					<img src="./img/holonome-robot-capture1.png" alt="Robot Holonome">
+					<div class="project-card-title">Robot Holonome</div>
+				</div>
+				<div class="project-card" data-project="4">
+					<img src="./img/batspy_logo.jpg" alt="Gite Chauves-souris">
+					<div class="project-card-title">Gite Chauves-souris</div>
+				</div>
 			</div>
 		</div>
 
@@ -29,7 +157,7 @@ export const projectsApp = {
 		<div id="project-detail-1" class="project-detail-view">
 			<a class="back-to-grid"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20,11H7.83l5.59-5.59L12,4l-8,8l8,8l1.41-1.41L7.83,13H20V11z" /></svg> Retour</a>
 			<img class="main-image" src="./img/polyadventure-capture.png" alt="PolyAdventure">
-			<h3>PolyAdventure</h3>
+			<h1>PolyAdventure</h1>
 			<div class="project-tags">
 				<span class="tag">C</span>
 				<span class="tag">SDL3</span>
@@ -43,7 +171,7 @@ export const projectsApp = {
 		<div id="project-detail-2" class="project-detail-view">
 			<a class="back-to-grid"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20,11H7.83l5.59-5.59L12,4l-8,8l8,8l1.41-1.41L7.83,13H20V11z" /></svg> Retour</a>
 			<img class="main-image" src="./img/red-pitaya.png" alt="Red Pitaya">
-			<h3>Red Pitaya</h3>
+			<h1>Red Pitaya</h1>
 			<div class="project-tags">
 				<span class="tag">C/C++</span>
 				<span class="tag">Traitement du Signal</span>
@@ -61,7 +189,7 @@ export const projectsApp = {
 		<div id="project-detail-3" class="project-detail-view">
 			<a class="back-to-grid"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20,11H7.83l5.59-5.59L12,4l-8,8l8,8l1.41-1.41L7.83,13H20V11z" /></svg> Retour</a>
 			<img class="main-image" src="./img/holonome-robot-capture1.png" alt="Robot Holonome">
-			<h3>Robot Holonome</h3>
+			<h1>Robot Holonome</h1>
 			<div class="project-tags">
 				<span class="tag">C</span>
 				<span class="tag">KiCad</span>
@@ -125,7 +253,7 @@ export const projectsApp = {
 		<div id="project-detail-4" class="project-detail-view">
 			<a class="back-to-grid"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20,11H7.83l5.59-5.59L12,4l-8,8l8,8l1.41-1.41L7.83,13H20V11z" /></svg> Retour</a>
 			<img class="main-image" src="./img/batspy_logo.jpg" alt="Gite Chauves-souris">
-			<h3>Gîte à Chauves-souris Connecté</h3>
+			<h1>Gîte à Chauves-souris Connecté</h1>
 			<div class="project-tags">
 				<span class="tag">C++</span>
 				<span class="tag">Arduino</span>
@@ -137,16 +265,21 @@ export const projectsApp = {
 		</div>
 	`,
 	init: function (windowId) {
-		// La portée est limitée à la fenêtre actuelle
 		const $window = $(`#${windowId}`);
-		const $grid = $window.find('#projects-grid');
-		const $details = $window.find('.project-detail-view');
+		const $projectsPage = $window.find('#projects-page');
 
 		// Ouvrir les détails
 		$window.on('click', '.project-card', function () {
 			const projectId = $(this).data('project');
-			$grid.fadeOut(200, function () {
-				$window.find('#project-detail-' + projectId).fadeIn(200);
+			const $detailView = $window.find('#project-detail-' + projectId);
+
+			if ($detailView.length === 0) return; // Sécurité si aucun détail trouvé
+
+			console.log(projectId);
+			$projectsPage.fadeOut(200, function () {
+				// Cacher toutes les autres vues de détail avant d’afficher celle-ci
+				$window.find('.project-detail-view').hide();
+				$detailView.fadeIn(200);
 			});
 		});
 
@@ -154,8 +287,12 @@ export const projectsApp = {
 		$window.on('click', '.back-to-grid', function () {
 			const $detailView = $(this).closest('.project-detail-view');
 			$detailView.fadeOut(200, function () {
-				$grid.fadeIn(200);
+				$projectsPage.fadeIn(200);
 			});
 		});
+
+		// expose API
+		return { pause: () => { }, resume: () => { }, restart: () => { } };
 	}
+
 };
