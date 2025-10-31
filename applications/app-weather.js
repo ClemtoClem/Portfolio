@@ -39,7 +39,7 @@ export const weatherApp = {
 			.weather-day-card .day-temp-min { color: #757575; }
 		</style>
 		<div class="app-content weather-app-container">
-			<h3>Prévisions Météo</h3>
+			<h1>Prévisions Météo</h1>
 			
 			<div class="weather-search-bar">
 				<input type="text" id="weather-city-input" placeholder="Entrez une ville (ex: Paris, FR)">
