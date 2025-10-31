@@ -6,14 +6,144 @@ export const game2048App = {
 	headerColor: '#ffc107',
 	type: 'game',
 	content: `
+		<style>
+			/* Styles 2048 */
+			#game-2048-board {
+				display: grid;
+				grid-template-columns: repeat(4, 1fr);
+				grid-template-rows: repeat(4, 1fr);
+				gap: 10px;
+				background: #bbada0;
+				padding: 10px;
+				border-radius: 8px;
+				width: 100%;
+				max-width: 400px;
+				aspect-ratio: 1 / 1;
+				box-sizing: border-box;
+				position: relative;
+				
+				font-size: 2em;
+				font-weight: bold;
+			}
+
+			.tile {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				border-radius: 4px;
+				color: #776e65;
+				background: #cdc1b4;
+			}
+
+			/* Tuiles 2048 avec couleurs */
+			.tile[data-value="2"] {
+				background: #eee4da;
+			}
+
+			.tile[data-value="4"] {
+				background: #ede0c8;
+			}
+
+			.tile[data-value="8"] {
+				background: #f2b179;
+				color: #f9f6f2;
+			}
+
+			.tile[data-value="16"] {
+				background: #f59563;
+				color: #f9f6f2;
+			}
+
+			.tile[data-value="32"] {
+				background: #f67c5f;
+				color: #f9f6f2;
+			}
+
+			.tile[data-value="64"] {
+				background: #f65e3b;
+				color: #f9f6f2;
+			}
+
+			.tile[data-value="128"] {
+				background: #edcf72;
+				color: #f9f6f2;
+			}
+
+			.tile[data-value="256"] {
+				background: #edcc61;
+				color: #f9f6f2;
+			}
+
+			.tile[data-value="512"] {
+				background: #edc850;
+				color: #f9f6f2;
+			}
+
+			.tile[data-value="1024"] {
+				background: #edc53f;
+				color: #f9f6f2;
+			}
+
+			.tile[data-value="2048"] {
+				background: #edc22e;
+				color: #f9f6f2;
+			}
+
+			.tile[data-value="4096"] {
+				background: #9e70c9ff;
+				color: #f9f6f2;
+			}
+
+			.tile[data-value="8192"] {
+				background: #9e70c9ff;
+				color: #f9f6f2;
+			}
+
+			.tile[data-value="16384"] {
+				background: #9e70c9ff;
+				color: #f9f6f2;
+			}
+
+			.tile[data-value="32768"] {
+				background: #781fcaff;
+				color: #f9f6f2;
+			}
+
+			.tile[data-value="65536"] {
+				background: #781fcaff;
+				color: #f9f6f2;
+			}
+
+			.tile[data-value="32768"] {
+				background: #781fcaff;
+				color: #f9f6f2;
+			}
+
+			.slider-container {
+				margin: 10px 0;
+				display: flex;
+				align-items: center;
+				gap: 8px;
+				color: #000;
+			}
+			.slider-container input[type="range"] {
+				width: 100%;
+			}
+		</style>
 		<div class="game-container">
 			<div class="game-score">Score: <span id="2048-score">0</span></div>
 			<div class="game-extra-controls">
 				<button id="2048-restart-btn">Restart</button>
 			</div>
-			<div id="game-2048-board">
-				<!-- Les tuiles seront générées ici -->
+
+			<div class="slider-container">
+				<label for="grid-size-slider">Taille de la grille :</label>
+				<input type="range" id="grid-size-slider" min="4" max="8" value="4" step="1">
+				<span id="grid-size-value">4×4</span>
 			</div>
+
+			<div id="game-2048-board"></div>
+
 			<div id="2048-controls" class="game-controls">
 				<button class="up" data-dir="up">▲</button>
 				<button class="left" data-dir="left">◄</button>
@@ -27,13 +157,21 @@ export const game2048App = {
 		const boardEl = $window.find('#game-2048-board')[0];
 		const scoreEl = $window.find('#2048-score')[0];
 		const restartBtn = $window.find('#2048-restart-btn')[0];
+		const gridSlider = $window.find('#grid-size-slider');
+		const gridLabel = $window.find('#grid-size-value');
 		
-		let board = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];
+		let gridSize = 4;
+		let board = [];
 		let score = 0;
 		let isGameOver = false;
 
+		function createEmptyBoard() {
+			return Array.from({ length: gridSize }, () => Array(gridSize).fill(0));
+		}
+
 		function restartGame() {
-			board = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];
+			updateGridCSS();
+			board = createEmptyBoard();
 			score = 0;
 			isGameOver = false;
 			addRandomTile();
@@ -41,11 +179,22 @@ export const game2048App = {
 			drawBoard();
 		}
 
+		function updateGridCSS() {
+			boardEl.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
+			boardEl.style.gridTemplateRows = `repeat(${gridSize}, 1fr)`;
+			gridLabel.text(`${gridSize}×${gridSize}`);
+
+			// Ajuste la taille du texte des tuiles (plus petite pour grandes grilles)
+			const fontSize = `${Math.max(0.5, 3 - gridSize * 0.25)}em`;
+			console.log(fontSize);
+			$window.find('#game-2048-board').css('font-size', fontSize);
+		}
+
 		function drawBoard() {
-			boardEl.innerHTML = ''; // Efface le plateau (y compris le message de game over)
+			boardEl.innerHTML = '';
 			scoreEl.textContent = score;
-			for (let r = 0; r < 4; r++) {
-				for (let c = 0; c < 4; c++) {
+			for (let r = 0; r < gridSize; r++) {
+				for (let c = 0; c < gridSize; c++) {
 					const value = board[r][c];
 					const tile = document.createElement('div');
 					tile.className = 'tile';
@@ -60,29 +209,28 @@ export const game2048App = {
 
 		function addRandomTile() {
 			let emptyTiles = [];
-			for (let r = 0; r < 4; r++) {
-				for (let c = 0; c < 4; c++) {
-					if (board[r][c] === 0) emptyTiles.push({r, c});
+			for (let r = 0; r < gridSize; r++) {
+				for (let c = 0; c < gridSize; c++) {
+					if (board[r][c] === 0) emptyTiles.push({ r, c });
 				}
 			}
 			if (emptyTiles.length > 0) {
-				const {r, c} = emptyTiles[Math.floor(Math.random() * emptyTiles.length)];
+				const { r, c } = emptyTiles[Math.floor(Math.random() * emptyTiles.length)];
 				board[r][c] = Math.random() < 0.9 ? 2 : 4;
 			}
 		}
 
 		function slide(row) {
-			let arr = row.filter(val => val);
-			let missing = 4 - arr.length;
-			let zeros = Array(missing).fill(0);
+			let arr = row.filter(v => v);
+			let zeros = Array(gridSize - arr.length).fill(0);
 			return arr.concat(zeros);
 		}
 
 		function combine(row) {
-			for (let i = 0; i < 3; i++) {
-				if (row[i] !== 0 && row[i] === row[i+1]) {
+			for (let i = 0; i < gridSize - 1; i++) {
+				if (row[i] !== 0 && row[i] === row[i + 1]) {
 					row[i] *= 2;
-					row[i+1] = 0;
+					row[i + 1] = 0;
 					score += row[i];
 				}
 			}
@@ -98,27 +246,28 @@ export const game2048App = {
 
 		function move(dir) {
 			if (isGameOver) return;
-			
+
 			const oldBoard = JSON.stringify(board);
 
-			for (let i = 0; i < 4; i++) {
-				if (dir === 'left' || dir === 'right') {
-					let row = board[i];
+			if (dir === 'left' || dir === 'right') {
+				for (let r = 0; r < gridSize; r++) {
+					let row = board[r].slice();
 					if (dir === 'right') row.reverse();
 					row = operate(row);
 					if (dir === 'right') row.reverse();
-					board[i] = row;
+					board[r] = row;
 				}
-				if (dir === 'up' || dir === 'down') {
-					let col = [board[0][i], board[1][i], board[2][i], board[3][i]];
+			} else {
+				for (let c = 0; c < gridSize; c++) {
+					let col = board.map(row => row[c]);
 					if (dir === 'down') col.reverse();
 					col = operate(col);
 					if (dir === 'down') col.reverse();
-					for (let r = 0; r < 4; r++) board[r][i] = col[r];
+					for (let r = 0; r < gridSize; r++) board[r][c] = col[r];
 				}
 			}
-			
-			if(JSON.stringify(board) !== oldBoard) {
+
+			if (JSON.stringify(board) !== oldBoard) {
 				addRandomTile();
 			}
 			drawBoard();
@@ -126,28 +275,33 @@ export const game2048App = {
 		}
 
 		function checkGameOver() {
-			for (let r = 0; r < 4; r++) {
-				for (let c = 0; c < 4; c++) {
-					if (board[r][c] === 0) return; // Peut toujours jouer
-					if (r < 3 && board[r][c] === board[r+1][c]) return; // Peut fusionner
-					if (c < 3 && board[r][c] === board[r][c+1]) return; // Peut fusionner
+			for (let r = 0; r < gridSize; r++) {
+				for (let c = 0; c < gridSize; c++) {
+					if (board[r][c] === 0) return;
+					if (r < gridSize - 1 && board[r][c] === board[r + 1][c]) return;
+					if (c < gridSize - 1 && board[r][c] === board[r][c + 1]) return;
 				}
 			}
 			isGameOver = true;
-			// Afficher le message de Game Over dans l'interface
-			const gameOverMsg = document.createElement('div');
-			gameOverMsg.textContent = 'Game Over! Score: ' + score;
-			gameOverMsg.style = "position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(255,255,255,0.9);padding:20px;border-radius:8px;z-index:1000;text-align:center;color:#776e65;font-weight:bold;";
-			boardEl.appendChild(gameOverMsg);
+			const msg = document.createElement('div');
+			msg.textContent = `Game Over! Score: ${score}`;
+			msg.style = "position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(255,255,255,0.9);padding:20px;border-radius:8px;z-index:1000;text-align:center;color:#776e65;font-weight:bold;";
+			boardEl.appendChild(msg);
 		}
 
-		// Contrôles
-		$window.find('#2048-controls button').on('click', function() {
+		// Événements
+		$window.find('#2048-controls button').on('click', function () {
 			move($(this).data('dir'));
 		});
+
 		restartBtn.addEventListener('click', restartGame);
 
-		// Support Clavier
+		gridSlider.on('input', function () {
+			gridSize = parseInt(this.value);
+			restartGame();
+		});
+
+		// Clavier
 		const keyHandler = (e) => {
 			if (e.key === 'ArrowUp') move('up');
 			if (e.key === 'ArrowDown') move('down');
@@ -156,7 +310,6 @@ export const game2048App = {
 		};
 		document.addEventListener('keydown', keyHandler);
 
-		// Nettoyage
 		const observer = new MutationObserver(() => {
 			if (!document.body.contains(boardEl)) {
 				document.removeEventListener('keydown', keyHandler);
@@ -165,7 +318,6 @@ export const game2048App = {
 		});
 		observer.observe(document.body, { childList: true, subtree: true });
 
-		// Démarrer le jeu
 		restartGame();
 	}
 };

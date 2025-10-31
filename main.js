@@ -107,7 +107,6 @@ $(document).ready(function () {
 		const diffX = currentX - dragStartX;
 		currentTranslate = -currentPage * pageWidth + diffX;
 		$desktopWrapper.css('transform', `translateX(${currentTranslate}px)`);
-		//console.log(pageWidth);
 	}
 
 	function endDrag(e) {

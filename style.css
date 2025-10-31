@@ -362,7 +362,7 @@
 
 @font-face {
 	font-family: 'Undertale';
-	src: url('/fonts/undertale-deltarune-text-font-extended.ttf');
+	src: url('./assets/fonts/undertale-deltarune-text-font-extended.ttf');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -1159,86 +1159,4 @@ body {
 
 .game-controls .right {
 	grid-column: 3;
-}
-
-/* Styles 2048 */
-#game-2048-board {
-	display: grid;
-	grid-template-columns: repeat(4, 1fr);
-	grid-template-rows: repeat(4, 1fr);
-	gap: 10px;
-	background: #bbada0;
-	padding: 10px;
-	border-radius: 8px;
-	width: 100%;
-	max-width: 400px;
-	aspect-ratio: 1 / 1;
-	box-sizing: border-box;
-	position: relative;
-	/* Pour le message Game Over */
-}
-
-.tile {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	border-radius: 4px;
-	font-size: 2em;
-	font-weight: bold;
-	color: #776e65;
-	background: #cdc1b4;
-}
-
-/* Tuiles 2048 avec couleurs */
-.tile[data-value="2"] {
-	background: #eee4da;
-}
-
-.tile[data-value="4"] {
-	background: #ede0c8;
-}
-
-.tile[data-value="8"] {
-	background: #f2b179;
-	color: #f9f6f2;
-}
-
-.tile[data-value="16"] {
-	background: #f59563;
-	color: #f9f6f2;
-}
-
-.tile[data-value="32"] {
-	background: #f67c5f;
-	color: #f9f6f2;
-}
-
-.tile[data-value="64"] {
-	background: #f65e3b;
-	color: #f9f6f2;
-}
-
-.tile[data-value="128"] {
-	background: #edcf72;
-	color: #f9f6f2;
-}
-
-.tile[data-value="256"] {
-	background: #edcc61;
-	color: #f9f6f2;
-}
-
-.tile[data-value="512"] {
-	background: #edc850;
-	color: #f9f6f2;
-}
-
-.tile[data-value="1024"] {
-	background: #edc53f;
-	color: #f9f6f2;
-}
-
-.tile[data-value="2048"] {
-	background: #edc22e;
-	color: #f9f6f2;
 }
