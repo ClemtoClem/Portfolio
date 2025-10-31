@@ -186,7 +186,6 @@ export const game2048App = {
 
 			// Ajuste la taille du texte des tuiles (plus petite pour grandes grilles)
 			const fontSize = `${Math.max(0.5, 3 - gridSize * 0.25)}em`;
-			console.log(fontSize);
 			$window.find('#game-2048-board').css('font-size', fontSize);
 		}
 
