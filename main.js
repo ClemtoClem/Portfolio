@@ -201,7 +201,7 @@ $(document).ready(function () {
 		background.css('--mouse-y', '-150px');
 	});
 
-	$androidScreen.on("change", "input[name='screen-mode']", function() {
+	function updateTransform() {
 		console.log("resize androidScreen");
 		$('#desktop-wrapper').css('width', `${100 * totalPages}%`);
 		
@@ -209,7 +209,10 @@ $(document).ready(function () {
 		currentTranslate = -currentPage * pageWidth;
 
 		$desktopWrapper.css('transform', `translateX(${currentTranslate}px)`);
-	});
+	}
+
+	$androidScreen.on("change", "input[name='screen-mode']", updateTransform);
+	$(window).on("resize", updateTransform);
 
 	githubPageFix();
 
