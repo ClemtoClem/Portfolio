@@ -145,10 +145,12 @@ export const game2048App = {
 			<div id="game-2048-board"></div>
 
 			<div id="2048-controls" class="game-controls">
-				<button class="up" data-dir="up">▲</button>
-				<button class="left" data-dir="left">◄</button>
-				<button class="down" data-dir="down">▼</button>
-				<button class="right" data-dir="right">►</button>
+				<button class="left" data-dir="counterclockwise" title="rotate counterclockwise"><svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12.5 20.5C17.1944 20.5 21 16.6944 21 12C21 7.30558 17.1944 3.5 12.5 3.5C7.80558 3.5 4 7.30558 4 12C4 13.5433 4.41128 14.9905 5.13022 16.238M1.5 15L5.13022 16.238M6.82531 12.3832L5.47107 16.3542L5.13022 16.238" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg></button>
+				<button class="up" data-dir="up", title="up">▲</button>
+				<button class="right" data-dir="clockwise" title="rotate clockwise"><svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M11.5 20.5C6.80558 20.5 3 16.6944 3 12C3 7.30558 6.80558 3.5 11.5 3.5C16.1944 3.5 20 7.30558 20 12C20 13.5433 19.5887 14.9905 18.8698 16.238M22.5 15L18.8698 16.238M17.1747 12.3832L18.5289 16.3542L18.8698 16.238" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg></button>
+				<button class="left" data-dir="left" title="left">◄</button>
+				<button class="down" data-dir="down" title="down">▼</button>
+				<button class="right" data-dir="right" title="right">►</button>
 			</div>
 		</div>
 	`,
@@ -185,7 +187,7 @@ export const game2048App = {
 			gridLabel.text(`${gridSize}×${gridSize}`);
 
 			// Ajuste la taille du texte des tuiles (plus petite pour grandes grilles)
-			const fontSize = `${Math.max(0.5, 3 - gridSize * 0.25)}em`;
+			const fontSize = `${Math.max(0.5, Math.max(2.5 - gridSize * 0.2, 0.5))}em`;
 			$window.find('#game-2048-board').css('font-size', fontSize);
 		}
 
@@ -256,7 +258,7 @@ export const game2048App = {
 					if (dir === 'right') row.reverse();
 					board[r] = row;
 				}
-			} else {
+			} else if (dir === 'down' || dir === 'up') {
 				for (let c = 0; c < gridSize; c++) {
 					let col = board.map(row => row[c]);
 					if (dir === 'down') col.reverse();
@@ -264,6 +266,16 @@ export const game2048App = {
 					if (dir === 'down') col.reverse();
 					for (let r = 0; r < gridSize; r++) board[r][c] = col[r];
 				}
+			} else if (dir === 'counterclockwise') {
+				move('left');
+				move('down');
+				move('right');
+				move('up');
+			} else if (dir === 'clockwise') {
+				move('right');
+				move('down');
+				move('left');
+				move('up');
 			}
 
 			if (JSON.stringify(board) !== oldBoard) {

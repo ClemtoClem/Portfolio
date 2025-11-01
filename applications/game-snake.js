@@ -16,12 +16,12 @@ export const snakeApp = {
 			<canvas id="snake-canvas" class="game-canvas square-canvas"></canvas>
 
 			<div id="snake-controls" class="game-controls">
-				<button class="up" data-dir="up">▲</button>
-				<button class="left" data-dir="left">◄</button>
-				<button class="down" data-dir="down">▼</button>
-				<button class="right" data-dir="right">►</button>
+				<button class="up" data-dir="up", title="up">▲</button>
+				<button class="left" data-dir="left" title="left">◄</button>
+				<button class="down" data-dir="down" title="down">▼</button>
+				<button class="right" data-dir="right" title="right">►</button>
 			</div>
-			
+
 			<div class="status-panel">
 				<h4>Effets actifs</h4>
 				<ul id="snake-effects"></ul>
@@ -40,12 +40,11 @@ export const snakeApp = {
 		// Ajuster la taille du canvas
 		const canvasSize = Math.max(200, $window.find('.game-canvas').width() || 400);
 		canvas.width = canvasSize;
-		canvas.height = canvasSize;
 
 		const gridSize = 20;
-		let snake, food, direction, score, gameLoopId, isGameOver, isPaused;
+		let snake, food, direction, score, gameLoopId, isGameOver, running;
 		let cellSize, growBy = 0;
-		let baseSpeed = 100;
+		let baseSpeed = 120;
 		let speed = baseSpeed;
 		let walls = [];
 		let level = 1;
@@ -122,7 +121,7 @@ export const snakeApp = {
 			score = 0;
 			growBy = 0;
 			isGameOver = false;
-			isPaused = true; // Commencer en pause (état "Ready")
+			running = false; // Commencer en pause (état "Ready")
 			speed = baseSpeed;
 			level = 1;
 			walls = [];
@@ -135,9 +134,9 @@ export const snakeApp = {
 			pauseBtn.classList.add('paused');
 
 			cellSize = canvas.width / gridSize;
+			canvas.height = canvasSize + Math.floor(cellSize * 1.2);
+			
 			placeFood();
-
-			// Ne PAS appeler setGameInterval() ici
 
 			draw(); // Dessiner la frame initiale
 
@@ -186,16 +185,16 @@ export const snakeApp = {
 		// --- NOUVELLES FONCTIONS PAUSE / RESUME ---
 
 		function resumeGame() {
-			if (isGameOver || !isPaused) return; // Ne reprendre que si en pause
-			isPaused = false;
+			if (isGameOver || running) return; // Ne reprendre que si en pause
+			running = true;
 			pauseBtn.textContent = 'Pause';
 			pauseBtn.classList.remove('paused');
 			setGameInterval(); // Démarrer la boucle de jeu
 		}
 
 		function pauseGame() {
-			if (isGameOver || isPaused) return; // Ne pauser que si en cours
-			isPaused = true;
+			if (isGameOver || !running) return; // Ne pauser que si en cours
+			running = false;
 			pauseBtn.textContent = 'Resume';
 			pauseBtn.classList.add('paused');
 			clearInterval(gameLoopId); // Arrêter la boucle de jeu
@@ -212,7 +211,7 @@ export const snakeApp = {
 
 		function togglePause() {
 			if (isGameOver) return;
-			if (isPaused) {
+			if (!running) {
 				resumeGame();
 			} else {
 				pauseGame();
@@ -244,14 +243,14 @@ export const snakeApp = {
 				speed = Math.max(30, Math.floor(baseSpeed));
 				// Pas besoin de setGameInterval ici si togglePause/resume s'en chargent
 				// Mais si on change la vitesse, il faut redémarrer l'intervalle
-				if (!isPaused) {
+				if (running) {
 					setGameInterval();
 				}
 			}
 		}
 
 		function update() {
-			if (isGameOver || isPaused) return; // La boucle ne fait rien si en pause
+			if (isGameOver || !running) return; // La boucle ne fait rien si en pause
 
 			const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
 
@@ -325,7 +324,7 @@ export const snakeApp = {
 
 			// HUD / niveau
 			ctx.fillStyle = 'rgba(255,255,255,0.06)';
-			ctx.fillRect(0, canvas.height - Math.floor(cellSize * 1.2), canvas.width, Math.floor(cellSize * 1.2));
+			ctx.fillRect(0, canvas.height, canvas.width, Math.floor(cellSize * 1.2));
 			ctx.fillStyle = '#fff';
 			ctx.font = `${Math.floor(cellSize * 0.8)}px Roboto`;
 			ctx.textAlign = 'left';
@@ -335,7 +334,14 @@ export const snakeApp = {
 		}
 
 		function changeDirection(newDir) {
-			if (isGameOver) return;
+			if (isGameOver) {
+				resetGame();
+				return;
+			}
+
+			if (!running) {
+				resumeGame();
+			}
 
 			// Si le jeu est en pause (au début) et qu'on n'a pas encore de direction,
 			// on peut accepter n'importe quelle direction
@@ -353,12 +359,6 @@ export const snakeApp = {
 			if (newDir === 'down') direction = { x: 0, y: 1 };
 			if (newDir === 'left') direction = { x: -1, y: 0 };
 			if (newDir === 'right') direction = { x: 1, y: 0 };
-
-			// Si le jeu était en pause (état "Ready" ou pause manuelle),
-			// le premier mouvement le démarre/reprend.
-			if (isPaused && !isGameOver) {
-				resumeGame();
-			}
 		}
 
 		// --- Écouteurs d'événements ---
@@ -404,18 +404,19 @@ export const snakeApp = {
 		};
 		document.addEventListener('keydown', keyHandler);
 
-		// nettoyage si canvas retiré du DOM
+		// --- Start ---
+		resetGame(); // Prépare le jeu et affiche l'écran "Ready"
+
+		// Nettoyage lors de la fermeture
 		const observer = new MutationObserver(() => {
 			if (!document.body.contains(canvas)) {
+				running = false; // Arrêter la boucle
 				clearInterval(gameLoopId);
 				document.removeEventListener('keydown', keyHandler);
 				observer.disconnect();
 			}
 		});
 		observer.observe(document.body, { childList: true, subtree: true });
-
-		// commencer
-		resetGame(); // Prépare le jeu en état "Ready"
 
 		// API exposée
 		return {

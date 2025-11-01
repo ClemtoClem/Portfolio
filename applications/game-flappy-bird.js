@@ -6,35 +6,25 @@ export const gameFlappyBirdApp = {
 	headerColor: '#ff6b6b',
 	type: 'game',
 	content: `
-	  <div class="game-container" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:8px;">
-		<div style="display:flex;align-items:center;gap:12px;width:100%;justify-content:space-between;">
-		  <div>
-			<strong>Flappy Bird</strong>
-		  </div>
-		  <div style="display:flex;align-items:center;gap:8px;">
-			<span id="flappy-bird-score" style="font-weight:bold">Score: 0</span>
-		  </div>
-		</div>
+		<div class="game-container">
+			<div class="game-score">Score: <span id="flappy-bird-score">0</span></div>
+			<div class="game-extra-controls">
+				<button id="flappy-bird-pause-btn" class="pause-btn">Pause</button>
+				<button id="flappy-bird-restart-btn">Restart</button>
+			</div>
 
-		<div style="position:relative;width:100%;max-width:600px;">
-		  <!-- Hauteur fixe retirée, remplacée par une hauteur adaptative et max -->
-		  <canvas id="flappy-canvas" class="game-canvas" style="width:100%; height: 70vh; max-height: 450px; background:#70c5ce;border-radius:8px;display:block;"></canvas>
+			<canvas id="flappy-canvas" class="game-canvas"></canvas>
 
-		  <div style="position:absolute;left:8px;top:8px;display:flex;flex-direction:column;gap:6px;">
-			<button id="flappy-bird-pause-btn" class="pause-btn" style="padding:6px 10px;border-radius:6px;">Pause</button>
-			<button id="flappy-bird-restart-btn" style="padding:6px 10px;border-radius:6px;">Restart</button>
-		  </div>
+			<div id="flappy-controls" class="game-controls">
+				<button class="up" id="flappy-flap-btn">Flap</button>
+			</div>
+			<small>Appuie sur <strong>ESPACE</strong> ou clique / tape pour battre des ailes</small>
 		</div>
-
-		<div id="flappy-controls" class="game-controls" style="display:flex;flex-direction:column;gap:8px;align-items:center;">
-		  <button id="flappy-flap-btn" style="padding:8px 12px;border-radius:6px;">Flap (Space / Click)</button>
-		  <small>Appuie sur <strong>ESPACE</strong> ou clique / tape pour battre des ailes</small>
-		</div>
-	  </div>
 	`,
 	init: function (windowId) {
 		const $window = $(`#${windowId}`);
 		const canvas = $window.find('#flappy-canvas')[0];
+		// CORRECTION 1a: Utiliser l'ID correct pour le score
 		const scoreEl = $window.find('#flappy-bird-score')[0];
 		const pauseBtn = $window.find('#flappy-bird-pause-btn')[0];
 		const restartBtn = $window.find('#flappy-bird-restart-btn')[0];
@@ -51,7 +41,9 @@ export const gameFlappyBirdApp = {
 			canvas.height = Math.max(200, Math.floor(rect.height * dpr));
 			ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 		}
+
 		resizeCanvas();
+
 		// Recalculer la taille si la fenêtre du navigateur change
 		const resizeObserver = new ResizeObserver(() => {
 			resizeCanvas();
@@ -73,6 +65,8 @@ export const gameFlappyBirdApp = {
 		let running = false; // <-- NE PAS DÉMARRER AUTOMATIQUEMENT
 		let isGameOver = false;
 		let score = 0;
+		let gameDirection = 1;
+		const powerUpChance = 0.05; // 5% de chance qu'un tuyau soit un inverseur
 
 		// Bird physics
 		const bird = {
@@ -104,45 +98,39 @@ export const gameFlappyBirdApp = {
 
 		// --- MESSAGES OVERLAY ---
 		function drawReadyMessage() {
-			const w = canvas.width / dpr;
-			const h = canvas.height / dpr;
 			ctx.save();
 			ctx.fillStyle = 'rgba(0,0,0,0.25)';
-			ctx.fillRect(0, 0, w, h);
+			ctx.fillRect(0, 0, canvas.width, canvas.height);
 			ctx.fillStyle = '#fff';
 			ctx.font = 'bold 30px sans-serif';
 			ctx.textAlign = 'center';
-			ctx.fillText('Ready?', w / 2, h / 2 - 10);
+			ctx.fillText('Ready?', canvas.width / 2, canvas.height / 2 - 10);
 			ctx.font = '16px sans-serif';
-			ctx.fillText('Flap to Start', w / 2, h / 2 + 24);
+			ctx.fillText('Flap to Start', canvas.width / 2, canvas.height / 2 + 24);
 			ctx.restore();
 		}
 
 		function drawGameOverMessage() {
-			const w = canvas.width / dpr;
-			const h = canvas.height / dpr;
 			ctx.save();
-			ctx.fillStyle = 'rgba(0,0,0,0.45)';
-			ctx.fillRect(0, 0, w, h);
-			ctx.fillStyle = '#fff';
-			ctx.font = 'bold 30px sans-serif';
+			ctx.fillStyle = 'rgba(0,0,0,0.65)';
+			ctx.fillRect(0, 0, canvas.width, canvas.height);
+			ctx.fillStyle = 'white';
+			ctx.font = `${Math.floor(canvas.width / 12)}px Roboto`;
 			ctx.textAlign = 'center';
-			ctx.fillText('Game Over', w / 2, h / 2 - 10);
-			ctx.font = '16px sans-serif';
-			ctx.fillText(`Score: ${score} — Press Restart or flap to play`, w / 2, h / 2 + 24);
+			ctx.fillText('Game Over', canvas.width / 2, canvas.height / 2 - 10);
+			ctx.font = `${Math.floor(canvas.width / 20)}px Roboto`;
+			ctx.fillText(`Score: ${score} — Press Restart or flap to play`, canvas.width / 2, canvas.height / 2 + 30);
 			ctx.restore();
 		}
 
 		function drawPausedMessage() {
-			const w = canvas.width / dpr;
-			const h = canvas.height / dpr;
 			ctx.save();
-			ctx.fillStyle = 'rgba(0,0,0,0.25)';
-			ctx.fillRect(0, 0, w, h);
-			ctx.fillStyle = '#fff';
-			ctx.font = 'bold 40px sans-serif';
+			ctx.fillStyle = 'rgba(0,0,0,0.45)';
+			ctx.fillRect(0, 0, canvas.width, canvas.height);
+			ctx.fillStyle = 'white';
+			ctx.font = `${Math.floor(canvas.width / 15)}px Roboto`;
 			ctx.textAlign = 'center';
-			ctx.fillText('Paused', w / 2, h / 2);
+			ctx.fillText('Paused', canvas.width / 2, canvas.height / 2);
 			ctx.restore();
 		}
 
@@ -150,7 +138,8 @@ export const gameFlappyBirdApp = {
 		function resetGame() {
 			score = 0;
 			isGameOver = false;
-			running = false; // <-- NE PAS DÉMARRER
+			running = false;
+			gameDirection = 1;
 			bird.x = 80;
 			bird.y = (canvas.height / dpr) / 2;
 			bird.vel = 0;
@@ -159,64 +148,58 @@ export const gameFlappyBirdApp = {
 			lastPipeTime = 0;
 			lastTime = performance.now();
 			updateScoreEl();
-			pauseBtn.textContent = 'Pause';
 
-			spawnPipe(); // Spawner le premier tuyau pour l'écran "Ready"
+			// Mettre à jour le bouton pause pour refléter l'état "prêt"
+			pauseBtn.textContent = 'Resume';
+			pauseBtn.classList.add('paused');
+
+			spawnPipe(true); // Spawner le premier tuyau pour l'écran "Ready", non-inverseur
 			draw(); // Dessiner la frame initiale
 			drawReadyMessage(); // Afficher "Ready"
 		}
 
 		function updateScoreEl() {
-			if (scoreEl) scoreEl.textContent = `Score: ${score}`;
+			if (scoreEl) scoreEl.textContent = `${score}`;
 		}
 
-		function spawnPipe() {
+		function spawnPipe(forceNormal = false) {
+			const canvasW = canvas.width / dpr;
 			const canvasH = canvas.height / dpr;
 			const margin = 40;
 			const gapCenter = margin + Math.random() * (canvasH - ground.height - margin * 2 - pipeGap) + pipeGap / 2;
 			const top = gapCenter - pipeGap / 2;
 			const bottom = gapCenter + pipeGap / 2;
+
+			// Déterminer si ce tuyau est un inverseur
+			const isReverser = !forceNormal && Math.random() < powerUpChance;
+
 			pipes.push({
-				x: (canvas.width / dpr) + 20,
+				x: gameDirection === 1 ? canvasW + 20 : -pipeWidth - 20, // Position de départ selon la direction
 				top: top,
 				bottom: bottom,
-				passed: false
+				passed: false,
+				isReverser: isReverser
 			});
 		}
 
+		// Logique de démarrage/reprise simplifiée dans `flap()`
 		function flap() {
 			if (isGameOver) {
-				resetGame(); // Revenir à l'écran "Ready"
+				resetGame();
 				return;
 			}
+
 			if (!running) {
-				// C'est le premier flap, démarrer le jeu
-				running = true;
-				lastTime = performance.now();
-				lastPipeTime = lastTime; // Commencer à spawner les tuyaux maintenant
-				requestAnimationFrame(loop); // DÉMARRER LA BOUCLE
+				resumeGame();
 			}
-			bird.vel = bird.flapStrength;
+
+			if (running) {
+				bird.vel = bird.flapStrength;
+			}
 		}
 
-		// --- Input handlers ---
-		const keyHandler = (e) => {
-			if (!document.body.contains(canvas)) return; // Ne pas écouter si l'app est fermée
-			if (e.code === 'Space') {
-				e.preventDefault();
-				flap();
-			} else if (e.code === 'KeyP') {
-				togglePause();
-			}
-		};
-		document.addEventListener('keydown', keyHandler);
-
-		canvas.addEventListener('mousedown', () => flap());
-		canvas.addEventListener('touchstart', (e) => { e.preventDefault(); flap(); }, { passive: false });
-		if (flapBtn) flapBtn.addEventListener('click', () => flap());
-
 		// --- Pause / restart buttons ---
-		function togglePause() {
+		function pauseGame() {
 			// Ne pas pauser si le jeu n'a pas démarré ou est terminé
 			if (isGameOver || !running) {
 				return;
@@ -225,6 +208,7 @@ export const gameFlappyBirdApp = {
 			// Le jeu est en cours, on le met en pause
 			running = false;
 			pauseBtn.textContent = 'Resume';
+			pauseBtn.classList.add('paused');
 			drawPausedMessage(); // Afficher le message de pause
 		}
 
@@ -232,20 +216,24 @@ export const gameFlappyBirdApp = {
 			// On ne peut reprendre que si le jeu est en pause (running=false) ET non game-over
 			if (!running && !isGameOver) {
 				running = true;
+
 				pauseBtn.textContent = 'Pause';
+				pauseBtn.classList.remove('paused');
+
 				lastTime = performance.now(); // Réinitialiser le timer
+				lastPipeTime = lastTime; // Assurer que le spawn de tuyaux commence maintenant
 				requestAnimationFrame(loop); // Relancer la boucle
 			}
 		}
 
-		if (pauseBtn) pauseBtn.addEventListener('click', () => {
-			if (running) {
-				togglePause(); // Met en pause
+		function togglePause() {
+			if (isGameOver) return;
+			if (!running) {
+				resumeGame();
 			} else {
-				resumeGame(); // Tente de reprendre
+				pauseGame();
 			}
-		});
-		if (restartBtn) restartBtn.addEventListener('click', () => resetGame());
+		}
 
 		// Collision detection (circle vs rect)
 		function circleRectCollision(cx, cy, r, rx, ry, rw, rh) {
@@ -276,17 +264,33 @@ export const gameFlappyBirdApp = {
 			const movePx = pipeSpeed * (dt / 1000);
 			for (let i = pipes.length - 1; i >= 0; i--) {
 				const p = pipes[i];
-				p.x -= movePx;
+				p.x -= movePx * gameDirection; // Mouvement selon la direction du jeu
 
-				// Check pass for scoring
-				if (!p.passed && p.x + pipeWidth < bird.x - bird.radius) {
-					p.passed = true;
-					score += 1;
-					updateScoreEl();
+				// Vérifier le passage pour le score
+				// La logique de score doit aussi s'adapter à la direction
+				const birdFront = bird.x + bird.radius;
+				const birdBack = bird.x - bird.radius;
+
+				if (!p.passed) {
+					if (gameDirection === 1) { // Direction normale (gauche)
+						if (p.x + pipeWidth < birdBack) { // Tuyau passé à gauche de l'oiseau
+							p.passed = true;
+							score += 1;
+							updateScoreEl();
+						}
+					} else { // Direction inversée (droite)
+						if (p.x > birdFront) { // Tuyau passé à droite de l'oiseau
+							p.passed = true;
+							score += 1;
+							updateScoreEl();
+						}
+					}
 				}
 
-				// Remove off-screen
-				if (p.x + pipeWidth < -50) pipes.splice(i, 1);
+				// Supprimer les tuyaux hors écran
+				const canvasW = canvas.width / dpr;
+				if (gameDirection === 1 && p.x + pipeWidth < -50) pipes.splice(i, 1);
+				if (gameDirection === -1 && p.x > canvasW + 50) pipes.splice(i, 1);
 			}
 
 			// Collisions with pipes
@@ -294,10 +298,24 @@ export const gameFlappyBirdApp = {
 			const birdY = bird.y;
 			for (const p of pipes) {
 				const canvasH = canvas.height / dpr;
-				if (circleRectCollision(birdX, birdY, bird.radius, p.x, 0, pipeWidth, p.top) ||
-					circleRectCollision(birdX, birdY, bird.radius, p.x, p.bottom, pipeWidth, canvasH - p.bottom - ground.height)) {
+				// Collision avec la partie supérieure du tuyau
+				const hitTop = circleRectCollision(birdX, birdY, bird.radius, p.x, 0, pipeWidth, p.top);
+				// Collision avec la partie inférieure du tuyau
+				const hitBottom = circleRectCollision(birdX, birdY, bird.radius, p.x, p.bottom, pipeWidth, canvasH - p.bottom - ground.height);
+
+				if (hitTop || hitBottom) {
 					gameOver();
 					return;
+				}
+
+				// Détection de passage à travers le tube inverseur
+				// L'oiseau doit être DANS la zone X du tuyau ET entre le top et le bottom
+				if (p.isReverser && !p.activated &&
+					birdX > p.x && birdX < p.x + pipeWidth &&
+					birdY > p.top && birdY < p.bottom) {
+
+					p.activated = true; // Empêcher l'activation multiple par le même tuyau
+					gameDirection *= -1; // Inverse la direction
 				}
 			}
 
@@ -316,7 +334,10 @@ export const gameFlappyBirdApp = {
 		function gameOver() {
 			isGameOver = true;
 			running = false;
-			pauseBtn.textContent = 'Pause';
+			// Mettre à jour le bouton pause pour refléter l'état "Game Over"
+			pauseBtn.textContent = 'Resume';
+			pauseBtn.classList.add('paused');
+
 			drawGameOverMessage(); // Dessiner le message Game Over une fois
 		}
 
@@ -327,17 +348,26 @@ export const gameFlappyBirdApp = {
 			// sky
 			ctx.clearRect(0, 0, w, h);
 			const g = ctx.createLinearGradient(0, 0, 0, h);
-			g.addColorStop(0, '#70c5ce');
-			g.addColorStop(1, '#9be7ff');
+
+			// Changer la couleur du ciel si l'effet inverseur est actif
+			if (gameDirection === -1) {
+				g.addColorStop(0, '#5da5adff');
+				g.addColorStop(1, '#80c2d6ff');
+			} else {
+				g.addColorStop(0, '#70c5ce');
+				g.addColorStop(1, '#9be7ff');
+			}
 			ctx.fillStyle = g;
 			ctx.fillRect(0, 0, w, h);
 
 			// Pipes
 			for (const p of pipes) {
-				ctx.fillStyle = '#2ecc71'; // pipe body
+				// Utiliser une couleur différente pour le tuyau inverseur
+				ctx.fillStyle = p.isReverser ? '#3498db' : '#2ecc71'; // Bleu pour inverseur, vert pour normal
 				ctx.fillRect(p.x, 0, pipeWidth, p.top);
 				ctx.fillRect(p.x, p.bottom, pipeWidth, h - ground.height - p.bottom);
-				ctx.fillStyle = '#27ae60'; // pipe cap
+
+				ctx.fillStyle = p.isReverser ? '#2980b9' : '#27ae60'; // Couleur plus foncée pour le chapeau
 				ctx.fillRect(p.x - 6, p.top - 12, pipeWidth + 12, 12);
 				ctx.fillRect(p.x - 6, p.bottom, pipeWidth + 12, 12);
 			}
@@ -350,31 +380,50 @@ export const gameFlappyBirdApp = {
 			ctx.save();
 			ctx.translate(bird.x, bird.y);
 			ctx.rotate(bird.rotation);
-			ctx.fillStyle = '#ffdf4a'; // body
-			ctx.beginPath();
-			ctx.arc(0, 0, bird.radius, 0, Math.PI * 2);
-			ctx.fill();
-			ctx.fillStyle = '#f6c85f'; // wing
-			ctx.beginPath();
-			ctx.ellipse(-4, 4, 6, 3.5, -0.6, 0, Math.PI * 2);
-			ctx.fill();
-			ctx.fillStyle = '#000'; // eye
-			ctx.beginPath();
-			ctx.arc(6, -4, 3.2, 0, Math.PI * 2);
-			ctx.fill();
+
+			if (gameDirection === 1) {
+				// === sens normal ===
+				ctx.fillStyle = '#ffdf4a'; // body
+				ctx.beginPath();
+				ctx.arc(0, 0, bird.radius, 0, Math.PI * 2);
+				ctx.fill();
+
+				ctx.fillStyle = '#f6c85f'; // wing
+				ctx.beginPath();
+				ctx.ellipse(-4, 4, 6, 3.5, -0.6, 0, Math.PI * 2);
+				ctx.fill();
+
+				ctx.fillStyle = '#000'; // eye
+				ctx.beginPath();
+				ctx.arc(6, -4, 3.2, 0, Math.PI * 2);
+				ctx.fill();
+			} else {
+				// === sens inversé ===
+				ctx.scale(-1, 1); // symétrie horizontale
+
+				ctx.fillStyle = '#ffdf4a'; // body
+				ctx.beginPath();
+				ctx.arc(0, 0, bird.radius, 0, Math.PI * 2);
+				ctx.fill();
+
+				ctx.fillStyle = '#f6c85f'; // wing
+				ctx.beginPath();
+				ctx.ellipse(-4, 4, 6, 3.5, -0.6, 0, Math.PI * 2);
+				ctx.fill();
+
+				ctx.fillStyle = '#000'; // eye (placé à gauche maintenant)
+				ctx.beginPath();
+				ctx.arc(6, -4, 3.2, 0, Math.PI * 2);
+				ctx.fill();
+			}
+
 			ctx.restore();
 
-			// Les messages (Pause, Game Over) sont dessinés par-dessus
-			// par les fonctions qui changent l'état (togglePause, gameOver)
-			// ou par resetGame (pour "Ready")
 		}
 
 		// --- Main loop ---
 		function loop(now) {
 			if (!running) {
-				// Si on n'est pas "running", on ne fait rien.
-				// Les états 'paused', 'gameover', 'ready' sont dessinés une fois
-				// par la fonction qui les active.
 				return;
 			}
 
@@ -389,6 +438,36 @@ export const gameFlappyBirdApp = {
 				requestAnimationFrame(loop);
 			}
 		}
+
+		// --- Écouteurs d'événements ---
+
+		// Mise à jour des IDs des boutons
+		pauseBtn.addEventListener('click', togglePause);
+		restartBtn.addEventListener('click', resetGame);
+
+		canvas.addEventListener('mousedown', () => flap());
+		canvas.addEventListener('touchstart', (e) => { e.preventDefault(); flap(); }, { passive: false });
+		flapBtn.addEventListener('click', () => flap());
+
+		const keyHandler = (e) => {
+			// S'assurer que l'app est active
+			if (!document.body.contains(canvas)) return;
+
+			if (e.key === 'p' || e.key === 'P') {
+				e.preventDefault();
+				togglePause();
+				return;
+			}
+			if (e.key === ' ') { // space
+				e.preventDefault();
+				flap();
+			}
+			if (e.key === 'r' || e.key === 'R') {
+				e.preventDefault();
+				resetGame();
+			}
+		};
+		document.addEventListener('keydown', keyHandler);
 
 		// --- Start ---
 		resetGame(); // Prépare le jeu et affiche l'écran "Ready"
@@ -406,7 +485,7 @@ export const gameFlappyBirdApp = {
 
 		// Exposer l'API
 		return {
-			pause: () => { if (running) togglePause(); },
+			pause: () => { pauseGame(); },
 			resume: () => { resumeGame(); },
 			restart: resetGame
 		};
