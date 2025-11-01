@@ -201,6 +201,16 @@ $(document).ready(function () {
 		background.css('--mouse-y', '-150px');
 	});
 
+	$androidScreen.on("change", "input[name='screen-mode']", function() {
+		console.log("resize androidScreen");
+		$('#desktop-wrapper').css('width', `${100 * totalPages}%`);
+		
+		const pageWidth = $androidScreen.width();
+		currentTranslate = -currentPage * pageWidth;
+
+		$desktopWrapper.css('transform', `translateX(${currentTranslate}px)`);
+	});
+
 	githubPageFix();
 
 	// Initialiser l’état visuel
