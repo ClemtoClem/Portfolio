@@ -90,13 +90,13 @@ export const cvApp = {
 			}
 		</style>
 		<div class="cv-section">
-			<h1>Mon Parcours</h1>
+			<h1>Mon parcours</h1>
 			<div class="timeline">
 				<div class="timeline-item">
 					<div class="timeline-dot"></div>
 					<div class="timeline-date">Avril à Août 2025</div>
 					<div class="timeline-content">
-						<h4>Stage fin d'étude Ingénieur (Bac+5)</h4>
+						<h4>Stage fin d'étude Ingénieur</h4>
 						<p>Multitel, Mons, Belgique</p>
 					</div>
 				</div>
@@ -112,7 +112,7 @@ export const cvApp = {
 					<div class="timeline-dot"></div>
 					<div class="timeline-date">Avril à Août 2024</div>
 					<div class="timeline-content">
-						<h4>Stage d'assistant ingénieur (Bac+4)</h4>
+						<h4>Stage d'assistant ingénieur</h4>
 						<p>Laboratoire TIMA</p>
 					</div>
 				</div>
@@ -128,7 +128,7 @@ export const cvApp = {
 					<div class="timeline-dot"></div>
 					<div class="timeline-date">Mai à Juillet 2023</div>
 					<div class="timeline-content">
-						<h4>Stage de technicien (Bac+2)</h4>
+						<h4>Stage de technicien</h4>
 						<p>Itancia Eybens, Isère</p>
 					</div>
 				</div>
@@ -152,7 +152,7 @@ export const cvApp = {
 					<div class="timeline-dot"></div>
 					<div class="timeline-date">Mars à Mai 2022</div>
 					<div class="timeline-content">
-						<h4>Stage de technicien (Bac+2)</h4>
+						<h4>Stage de technicien</h4>
 						<p>Itancia Eybens, Isère</p>
 					</div>
 				</div>
@@ -175,13 +175,23 @@ export const cvApp = {
 			</div>
 		</div>
 		<div class="cv-section">
-			<h1>Mes Diplômes</h1>
+			<h1>Mes diplômes</h1>
 			<div class="timeline">
+				<div class="timeline-item">
+					<div class="timeline-dot"></div>
+					<div class="timeline-date">2025</div>
+					<div class="timeline-content">
+						<h4 style="font-style: italic;">Bac+5</h4>
+						<h4>Informatique et électronique des systèmes embarqué</h4>
+						<p>PolyTech, Université Grenoble Alpes (UGA)</p>
+					</div>
+				</div>
 				<div class="timeline-item">
 					<div class="timeline-dot"></div>
 					<div class="timeline-date">2023</div>
 					<div class="timeline-content">
-						<h4>Bac+3 - Informatique et électronique des systèmes embarqué</h4>
+						<h4 style="font-style: italic;">Bac+3</h4>
+						<h4>Informatique et électronique des systèmes embarqué</h4>
 						<p>PolyTech, Université Grenoble Alpes (UGA)</p>
 					</div>
 				</div>
@@ -189,7 +199,8 @@ export const cvApp = {
 					<div class="timeline-dot"></div>
 					<div class="timeline-date">2022</div>
 					<div class="timeline-content">
-						<h4>Bac+2 - Génie Electrique et Informatique industrielle (DUT)</h4>
+						<h4 style="font-style: italic;">Bac+2</h4>
+						<h4>Génie Electrique et Informatique industrielle (DUT)</h4>
 						<p>Institue Universitaire Technologique 1 (IUT1), Université Grenoble Alpes (UGA)</p>
 					</div>
 				</div>
@@ -204,7 +215,7 @@ export const cvApp = {
 			</div>
 		</div>
 		<div class="cv-section">
-			<h1>Compétences</h1>
+			<h1>Mes Compétences</h1>
 			<ul>
 				<li><h4>Électronique (Hardware)</h4><p>Kicad, Conception de circuit logique, Architecture RISCV.</p></li>
 				<li><h4>Informatique Embarqué (Firmware)</h4><p>Assembleur RISCV, C, C++, Shell Linux, VHDL, SystemC, Gestion de l'énergie et des ressources, Système temps réel</p></li>
@@ -221,7 +232,7 @@ export const cvApp = {
 			</ul>
 		</div>
 		<div class="cv-section">
-			<h1>Centres d'intérêt</h1>
+			<h1>Mes centres d'intérêt</h1>
 			<ul>
 				<li>Programmation web (NodeJs, Jquery, HTML, JavaScript, CSS)</li>
 				<li>Programmation de jeux vidéo (C/C++, GL, glm, SDL3)</li>

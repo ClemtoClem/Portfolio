@@ -7,25 +7,27 @@ import { contactApp 		} from './applications/app-contact.js';
 import { weatherApp 		} from './applications/app-weather.js';
 import { calculatriceApp    } from './applications/app-calculatrice.js';
 import { parametersApp 		} from './applications/app-parameters.js';
-import { snakeApp 			} from './applications/game-snake.js';
 import { game2048App 		} from './applications/game-2048.js';
+import { gameChargebotApp   } from './applications/game-chargebot.js';
 import { gameFlappyBirdApp 	} from './applications/game-flappy-bird.js';
+import { gameSnakeApp		} from './applications/game-snake.js';
 
 // Initialisation du Système
 const system = new System();
 
-// Enregistrer les applications
-// Main app
+// --- Enregistrer les applications ---
+// Main applictions
 system.registerApp(cvApp);
 system.registerApp(projectsApp);
 system.registerApp(contactApp);
-// app
+// Applications
 system.registerApp(weatherApp);
 system.registerApp(calculatriceApp);
 system.registerApp(parametersApp);
-// game
+// Games
 system.registerApp(game2048App);
-system.registerApp(snakeApp);
+system.registerApp(gameSnakeApp);
+system.registerApp(gameChargebotApp);
 system.registerApp(gameFlappyBirdApp);
 
 $(document).ready(function () {

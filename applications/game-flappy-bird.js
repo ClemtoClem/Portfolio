@@ -348,15 +348,8 @@ export const gameFlappyBirdApp = {
 			// sky
 			ctx.clearRect(0, 0, w, h);
 			const g = ctx.createLinearGradient(0, 0, 0, h);
-
-			// Changer la couleur du ciel si l'effet inverseur est actif
-			if (gameDirection === -1) {
-				g.addColorStop(0, '#5da5adff');
-				g.addColorStop(1, '#80c2d6ff');
-			} else {
-				g.addColorStop(0, '#70c5ce');
-				g.addColorStop(1, '#9be7ff');
-			}
+			g.addColorStop(0, '#70c5ce');
+			g.addColorStop(1, '#9be7ff');
 			ctx.fillStyle = g;
 			ctx.fillRect(0, 0, w, h);
 
@@ -418,6 +411,14 @@ export const gameFlappyBirdApp = {
 			}
 
 			ctx.restore();
+
+			// HUD / niveau
+			ctx.fillStyle = 'rgba(255,255,255,0.06)';
+			ctx.fillRect(0, canvas.height, canvas.width, 12);
+			ctx.fillStyle = '#fff';
+			ctx.font = `16px Roboto`;
+			ctx.textAlign = 'right';
+			ctx.fillText(`Score: ${score}`, canvas.width - 8, canvas.height - 12);
 
 		}
 
@@ -487,7 +488,7 @@ export const gameFlappyBirdApp = {
 		return {
 			pause: () => { pauseGame(); },
 			resume: () => { resumeGame(); },
-			restart: resetGame
+			restart: () => { resetGame(); }
 		};
 	}
 };

@@ -137,8 +137,8 @@ export const game2048App = {
 			</div>
 
 			<div class="slider-container">
-				<label for="grid-size-slider">Taille de la grille :</label>
-				<input type="range" id="grid-size-slider" min="4" max="8" value="4" step="1">
+				<label for="grid-size-slider">Grid size :</label>
+				<input type="range" id="grid-size-slider" min="3" max="8" value="4" step="1">
 				<span id="grid-size-value">4×4</span>
 			</div>
 
@@ -330,6 +330,13 @@ export const game2048App = {
 		observer.observe(document.body, { childList: true, subtree: true });
 
 		restartGame();
+
+		// API exposée
+		return {
+			pause: () => {  },
+			resume: () => {  },
+			restart: () => { resetGame(); }
+		};
 	}
 };
 
