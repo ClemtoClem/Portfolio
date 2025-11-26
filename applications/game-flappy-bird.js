@@ -23,14 +23,15 @@ export const gameFlappyBirdApp = {
 	`,
 	init: function (windowId) {
 		const $window = $(`#${windowId}`);
+		/** @type {HTMLCanvasElement} */
 		const canvas = $window.find('#flappy-canvas')[0];
-		// CORRECTION 1a: Utiliser l'ID correct pour le score
 		const scoreEl = $window.find('#flappy-bird-score')[0];
 		const pauseBtn = $window.find('#flappy-bird-pause-btn')[0];
 		const restartBtn = $window.find('#flappy-bird-restart-btn')[0];
 		const flapBtn = $window.find('#flappy-flap-btn')[0];
 
 		// Canvas setup & scaling for high-DPI
+        /** @type {CanvasRenderingContext2D} */
 		const ctx = canvas.getContext('2d');
 		let dpr = window.devicePixelRatio || 1;
 

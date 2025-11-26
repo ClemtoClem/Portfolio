@@ -1,0 +1,75 @@
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.game-container {
+    padding: 0;
+    margin: 0;
+}
+
+#gl-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+#joystick-container {
+    position: fixed;
+    left: 16px;
+    bottom: 16px;
+    width: 120px;
+    height: 120px;
+    z-index: 10;
+    touch-action: none;
+    pointer-events: none;
+    /* enabled only on mobile by JS */
+}
+
+#look-joystick-container {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    width: 120px;
+    height: 120px;
+    z-index: 10;
+    touch-action: none;
+    pointer-events: none;
+    /* enabled only on mobile by JS */
+}
+
+/* Crosshair */
+#crosshair {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    width: 16px;
+    height: 16px;
+    margin-left: -8px;
+    margin-top: -8px;
+    pointer-events: none;
+    z-index: 5;
+}
+
+#crosshair::before,
+#crosshair::after {
+    content: "";
+    position: absolute;
+    background: rgba(255, 255, 255, 0.95);
+}
+
+#crosshair::before {
+    left: 50%;
+    top: 0;
+    width: 2px;
+    height: 100%;
+    transform: translateX(-50%);
+}
+
+#crosshair::after {
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    transform: translateY(-50%);
+}

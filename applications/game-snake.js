@@ -30,11 +30,14 @@ export const gameSnakeApp = {
 	`,
 	init: function (windowId) {
 		const $window = $(`#${windowId}`);
+		/** @type {HTMLCanvasElement} */
 		const canvas = $window.find('#snake-canvas')[0];
 		const scoreEl = $window.find('#snake-score')[0];
 		const pauseBtn = $window.find('#snake-pause-btn')[0];
 		const restartBtn = $window.find('#snake-restart-btn')[0];
 		const effectsList = $window.find('#snake-effects')[0];
+		
+        /** @type {CanvasRenderingContext2D} */
 		const ctx = canvas.getContext('2d');
 
 		// Ajuster la taille du canvas

@@ -142,20 +142,24 @@ export const gameChargebotApp = {
     content: `
         <div class="game-container">
             <div class="game-header">
-                <div class="game-charge">Charge: <span id="chargebot-charge">0</span></div>
-                <div class="game-level">Niveau: <span id="chargebot-level">1</span></div>
+                <div class="game-extra-controls">
+                    <button class="action-btn" id="chargebot-restart-btn">Restart</button>
+                </div>
+                <div style="display: flex; gap: 20px; width: 100%; justify-content: center; margin-top: 10px; margin-bottom: 15px;">
+                    <div class="game-score" class="game-charge">Charge: <span id="chargebot-charge">0</span></div>
+                    <div class="game-score" class="game-level">Niveau: <span id="chargebot-level">1</span></div>
+                </div>
+                <div class="game-message" id="chargebot-help-message"></div>
             </div>
-            <div class="game-message" id="chargebot-help-message"></div>
 
-            <canvas id="chargebot-canvas" class="game-canvas"></canvas>
+            <div style="padding-bottom: 30px;">
+                <canvas id="chargebot-canvas" class="game-canvas"></canvas>
+            </div>
 
             <div id="chargebot-controls" class="game-controls">
+                <button class="left" data-dir="1">◀</button>
                 <button class="up" data-dir="3">▲</button>
-                <div class="middle-row">
-                    <button class="left" data-dir="1">◀</button>
-                    <button class="action-btn" id="chargebot-restart-btn">Restart</button>
-                    <button class="right" data-dir="2">▶</button>
-                </div>
+                <button class="right" data-dir="2">▶</button>
                 <button class="down" data-dir="4">▼</button>
             </div>
             
@@ -169,12 +173,14 @@ export const gameChargebotApp = {
                 <h1>Félicitations !</h1> 
                 <h2>Vous avez terminé tous les niveaux !</h2>
             </div>
-            <small>Utilisez les flèches du clavier (ou Z/Q/S/D) ou les boutons pour vous déplacer.</small>
         </div>
     `,
     init: function (windowId) {
         const $window = $(`#${windowId}`);
+        /** @type {HTMLCanvasElement} */
         const canvas = $window.find('#chargebot-canvas')[0];
+        
+        /** @type {CanvasRenderingContext2D} */
         const ctx = canvas.getContext('2d');
 
 
@@ -217,7 +223,7 @@ export const gameChargebotApp = {
 
         const TILES_DRAW_FUNCTION = {
             0: (x, y) => { drawVoid(x, y); }, // Void
-            1: (x, y) => { drawPlate(x, y, '#cccccc'); }, // Ground Plate
+            1: (x, y) => { drawNormalPlate(x, y); }, // Ground Plate
             2: (x, y) => { drawCrackedPlate(x, y); }, // Cracked Plate
             3: (x, y) => { drawFinishPlate(x, y); }, // Finish Plate
             4: (x, y, charge) => { drawChargingPlate(x, y, charge); }, // Charging Plate
@@ -226,12 +232,25 @@ export const gameChargebotApp = {
             7: (x, y, id, state) => { drawDoorPlate(x, y, id, state); }, // Door Plate
         };
 
-        // --- Utils pour l'isométrie ---
-        function isoToCartesian(x, y) {
-            // Convert grid (x, y) to canvas (screenX, screenY)
-            const screenX = (x - y) * HALF_W;
-            const screenY = (x + y) * HALF_H;
+        // --- Utils pour l'affichage ---
+        function gridToScreen(x, y) {
+            const screenX = x * TILE_WIDTH;
+            const screenY = y * (TILE_HEIGHT + TILE_DEPTH);
             return { x: screenX, y: screenY };
+        }
+
+        function shadeColor(color, percent) {
+            const num = parseInt(color.replace("#",""),16),
+                amt = Math.round(2.55 * percent),
+                R = (num >> 16) + amt,
+                G = (num >> 8 & 0x00FF) + amt,
+                B = (num & 0x0000FF) + amt;
+            return "#" + (
+                0x1000000 + 
+                (R<255?R<1?0:R:255)*0x10000 + 
+                (G<255?G<1?0:G:255)*0x100 + 
+                (B<255?B<1?0:B:255)
+            ).toString(16).slice(1);
         }
 
         function resizeCanvas() {
@@ -242,8 +261,8 @@ export const gameChargebotApp = {
             if (!map) return;
 
             // Calculer la taille de la grille
-            const mapWidth = map[0].length;
-            const mapHeight = map.length;
+            const mapWidth = map[0].length * TILE_WIDTH;
+            const mapHeight = map.length * (TILE_HEIGHT + TILE_DEPTH);
             const maxBoardWidth = (mapWidth + mapHeight) * HALF_W;
             const maxBoardHeight = (mapWidth + mapHeight) * HALF_H + TILE_DEPTH;
 
@@ -263,36 +282,22 @@ export const gameChargebotApp = {
         }
 
         // --- Fonctions de Dessin ---
-
         function drawTile(x, y, topColor, sideColor) {
+            const { x: sx, y: sy } = gridToScreen(x, y);
             ctx.save();
-            const { x: isoX, y: isoY } = isoToCartesian(x, y);
-
-            // Décalage pour centrer la grille
-            const centerOffsetX = canvas.width / 2;
-            const centerOffsetY = TILE_DEPTH;
-            ctx.translate(centerOffsetX + isoX, centerOffsetY + isoY);
-
-            // Dessiner le côté 
-            ctx.fillStyle = sideColor;
-            ctx.beginPath();
-            ctx.moveTo(0, HALF_H);
-            ctx.lineTo(HALF_W, TILE_HEIGHT);
-            ctx.lineTo(HALF_W, TILE_HEIGHT + TILE_DEPTH);
-            ctx.lineTo(0, HALF_H + TILE_DEPTH);
-            ctx.lineTo(-HALF_W, TILE_HEIGHT);
-            ctx.lineTo(-HALF_W, TILE_HEIGHT + TILE_DEPTH);
-            ctx.lineTo(0, HALF_H + TILE_DEPTH);
-            ctx.closePath();
-            ctx.fill();
+            ctx.translate(sx, sy);
 
             // Dessiner le dessus
             ctx.fillStyle = topColor;
+            ctx.fillRect(0, 0, TILE_WIDTH, TILE_HEIGHT);
+
+            // Dessiner la face avant (effet 3D)
+            ctx.fillStyle = sideColor;
             ctx.beginPath();
-            ctx.moveTo(0, 0);
-            ctx.lineTo(HALF_W, HALF_H);
-            ctx.lineTo(0, TILE_HEIGHT);
-            ctx.lineTo(-HALF_W, HALF_H);
+            ctx.moveTo(0, TILE_HEIGHT);
+            ctx.lineTo(0, TILE_HEIGHT + TILE_DEPTH);
+            ctx.lineTo(TILE_WIDTH, TILE_HEIGHT + TILE_DEPTH);
+            ctx.lineTo(TILE_WIDTH, TILE_HEIGHT);
             ctx.closePath();
             ctx.fill();
 
@@ -305,44 +310,72 @@ export const gameChargebotApp = {
         }
 
         function drawPlate(x, y, color) {
-            drawTile(x, y, color, '#999999');
+            drawTile(x, y, color, shadeColor(color, -30)); // petit assombrissement
+        }
+
+        function drawNormalPlate(x, y) {
+            drawPlate(x, y, '#cccccc');
+        }
+
+        function drawChargingPlate(x, y, charge) {
+            drawPlate(x, y, charge > 0 ? '#16a32dff' : '#017214ff');
+            const { x: sx, y: sy } = gridToScreen(x, y);
+            ctx.save();
+            ctx.fillStyle = 'black';
+            ctx.font = 'bold 16px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('+' + charge, sx + TILE_WIDTH / 2, sy + TILE_HEIGHT / 1.5);
+            ctx.restore();
         }
 
         function drawCrackedPlate(x, y) {
-            drawPlate(x, y, '#d35400', '#a04000'); // Orange/Marron
+            drawPlate(x, y, '#cccccc');
 
+            const { x: sx, y: sy } = gridToScreen(x, y);
             ctx.save();
-            const { x: isoX, y: isoY } = isoToCartesian(x, y);
-            const centerOffsetX = canvas.width / 2;
-            const centerOffsetY = TILE_DEPTH;
-            ctx.translate(centerOffsetX + isoX, centerOffsetY + isoY);
+            ctx.translate(sx, sy);
 
-            ctx.strokeStyle = '#2c3e50'; // Gris foncé pour les fissures
+            ctx.strokeStyle = '#2c3e50';
             ctx.lineWidth = 2;
             ctx.beginPath();
-            // Fissures simples en croix
-            ctx.moveTo(-HALF_W * 0.5, HALF_H * 0.5);
-            ctx.lineTo(HALF_W * 0.7, HALF_H * 1.5);
-            ctx.moveTo(HALF_W * 0.3, HALF_H * 0.3);
-            ctx.lineTo(-HALF_W * 0.7, HALF_H * 1.3);
+
+            // Fissures en croix dans la surface
+            ctx.moveTo(TILE_WIDTH * 0.2, TILE_HEIGHT * 0.2);
+            ctx.lineTo(TILE_WIDTH * 0.8, TILE_HEIGHT * 0.8);
+            ctx.moveTo(TILE_WIDTH * 0.8, TILE_HEIGHT * 0.3);
+            ctx.lineTo(TILE_WIDTH * 0.3, TILE_HEIGHT * 0.9);
             ctx.stroke();
 
             ctx.restore();
         }
 
         function drawFinishPlate(x, y) {
-            drawPlate(x, y, '#2ecc71', '#27ae60'); // Vert
+            drawPlate(x, y, '#cccccc');
 
+            const { x: sx, y: sy } = gridToScreen(x, y);
             ctx.save();
-            const { x: isoX, y: isoY } = isoToCartesian(x, y);
-            const centerOffsetX = canvas.width / 2;
-            const centerOffsetY = TILE_DEPTH;
-            ctx.translate(centerOffsetX + isoX, centerOffsetY + isoY);
+            ctx.translate(sx, sy);
 
-            ctx.fillStyle = 'white';
-            ctx.font = 'bold 15px sans-serif';
+            // --- Dessin du damier 4x4 ---
+            const cells = 4;
+            const cellW = TILE_WIDTH / cells;
+            const cellH = TILE_HEIGHT / cells;
+
+            for (let row = 0; row < cells; row++) {
+                for (let col = 0; col < cells; col++) {
+                    // alternance noir/blanc
+                    if ((row + col) % 2 === 0) ctx.fillStyle = '#ffffff';
+                    else ctx.fillStyle = '#000000';
+                    ctx.fillRect(col * cellW, row * cellH, cellW, cellH);
+                }
+            }
+
+            // --- Texte "FIN" au centre ---
+            ctx.fillStyle = 'red';
+            ctx.font = 'bold 18px sans-serif';
             ctx.textAlign = 'center';
-            ctx.fillText('FIN', 0, HALF_H + 5);
+            ctx.textBaseline = 'middle';
+            ctx.fillText('FIN', TILE_WIDTH / 2, TILE_HEIGHT / 2);
 
             ctx.restore();
         }
@@ -352,7 +385,7 @@ export const gameChargebotApp = {
             drawPlate(x, y, isCharged ? '#f1c40f' : '#7f8c8d', isCharged ? '#f39c12' : '#7f8c8d'); // Jaune/Gris
 
             ctx.save();
-            const { x: isoX, y: isoY } = isoToCartesian(x, y);
+            const { x: isoX, y: isoY } = gridToScreen(x, y);
             const centerOffsetX = canvas.width / 2;
             const centerOffsetY = TILE_DEPTH;
             ctx.translate(centerOffsetX + isoX, centerOffsetY + isoY);
@@ -366,27 +399,21 @@ export const gameChargebotApp = {
         }
 
         function drawConveyorPlate(x, y, direction) {
-            drawPlate(x, y, '#3498db', '#2980b9'); // Bleu
+            drawPlate(x, y, '#3498db');
 
+            const { x: sx, y: sy } = gridToScreen(x, y);
             ctx.save();
-            const { x: isoX, y: isoY } = isoToCartesian(x, y);
-            const centerOffsetX = canvas.width / 2;
-            const centerOffsetY = TILE_DEPTH;
-            ctx.translate(centerOffsetX + isoX, centerOffsetY + isoY);
+            ctx.translate(sx + TILE_WIDTH / 2, sy + TILE_HEIGHT / 2);
 
-            // Dessiner une flèche pour la direction
             const dir = DIRECTION[direction];
             if (dir) {
-                const angle = Math.atan2(dir.dy, -dir.dx) + Math.PI / 2;
-
-                ctx.translate(0, HALF_H);
+                const angle = Math.atan2(dir.dy, dir.dx);
                 ctx.rotate(angle);
-
                 ctx.fillStyle = 'white';
                 ctx.beginPath();
-                ctx.moveTo(0, -10); // Pointe de la flèche
-                ctx.lineTo(-5, 0);
-                ctx.lineTo(5, 0);
+                ctx.moveTo(0, -10);
+                ctx.lineTo(-5, 5);
+                ctx.lineTo(5, 5);
                 ctx.closePath();
                 ctx.fill();
             }
@@ -394,73 +421,61 @@ export const gameChargebotApp = {
             ctx.restore();
         }
 
-        // NOUVEAU: Dessin du bouton
         function drawButtonPlate(x, y, id, isBotOn) {
-            drawPlate(x, y, isBotOn ? '#e67e22' : '#f39c12', '#d35400'); // Orange/Jaune
+            drawPlate(x, y, isBotOn ? '#e67e22' : '#f39c12'); // Orange/Jaune
 
+            const { x: sx, y: sy } = gridToScreen(x, y);
             ctx.save();
-            const { x: isoX, y: isoY } = isoToCartesian(x, y);
-            const centerOffsetX = canvas.width / 2;
-            const centerOffsetY = TILE_DEPTH;
-            ctx.translate(centerOffsetX + isoX, centerOffsetY + isoY);
+            ctx.translate(sx, sy);
 
-            // Dessiner un petit cercle comme bouton
-            ctx.fillStyle = isBotOn ? '#c0392b' : '#e74c3c'; // Rouge foncé quand pressé
+            ctx.fillStyle = isBotOn ? '#c0392b' : '#e74c3c'; // Rouge foncé si pressé
             ctx.beginPath();
-            ctx.arc(0, HALF_H, 6, 0, Math.PI * 2);
+            ctx.arc(TILE_WIDTH / 2, TILE_HEIGHT / 1.5, 6, 0, Math.PI * 2);
             ctx.fill();
 
             ctx.restore();
         }
 
-        // NOUVEAU: Dessin de la porte
         function drawDoorPlate(x, y, id, state) {
             const isClosed = state === 'closed';
-            // Rouge (Fermé) ou Gris-Bleu (Ouvert)
-            const topColor = isClosed ? '#c0392b' : '#7f8c8d';
-            const sideColor = isClosed ? '#a93226' : '#607d8b';
+            drawTile(x, y, isClosed ? '#c0392b' : '#7f8c8d');
 
-            drawTile(x, y, topColor, sideColor);
-
+            const { x: sx, y: sy } = gridToScreen(x, y);
             ctx.save();
-            const { x: isoX, y: isoY } = isoToCartesian(x, y);
-            const centerOffsetX = canvas.width / 2;
-            const centerOffsetY = TILE_DEPTH;
-            ctx.translate(centerOffsetX + isoX, centerOffsetY + isoY);
+            ctx.translate(sx, sy);
 
             ctx.fillStyle = 'white';
             ctx.font = 'bold 15px sans-serif';
             ctx.textAlign = 'center';
-            // Afficher X ou O selon l'état
-            ctx.fillText(isClosed ? 'X' : 'O', 0, HALF_H + 5);
+            ctx.fillText(isClosed ? 'X' : 'O', TILE_WIDTH / 2, TILE_HEIGHT / 1.5);
 
             ctx.restore();
         }
 
         function drawBot(x, y, charge) {
+            // Correction : Utiliser gridToScreen pour la base, puis centrer le bot.
+            const { x: sx, y: sy } = gridToScreen(x, y);
             ctx.save();
-            const { x: isoX, y: isoY } = isoToCartesian(x, y);
-            const centerOffsetX = canvas.width / 2;
-            const centerOffsetY = TILE_DEPTH;
+            // Translate à la position de la grille (sx, sy) + centrage (TILE_WIDTH/2)
+            // Et un petit décalage en Y pour que les pieds soient sur la tuile (TILE_HEIGHT/2)
+            ctx.translate(sx + TILE_WIDTH / 2, sy + TILE_HEIGHT / 2); // Modification ici
 
-            // Positionnement au milieu de la tuile et au-dessus de la profondeur
-            ctx.translate(centerOffsetX + isoX, centerOffsetY + isoY - TILE_DEPTH + 3);
-
-            // Corps du bot
-            const radius = 10;
-            ctx.fillStyle = (charge > 0) ? '#e74c3c' : '#7f8c8d'; // Rouge ou Gris
+            // Ombre (ajustement de la position car le point 0,0 est maintenant centré en haut de la tuile)
+            ctx.fillStyle = 'rgba(0,0,0,0.3)';
             ctx.beginPath();
-            ctx.arc(0, 0, radius, 0, Math.PI * 2);
+            ctx.ellipse(0, TILE_HEIGHT / 2, 10, 4, 0, 0, Math.PI * 2); // Position ajustée
             ctx.fill();
-            ctx.strokeStyle = '#c0392b';
-            ctx.lineWidth = 2;
-            ctx.stroke();
 
-            // Afficher la charge
-            ctx.fillStyle = 'white';
-            ctx.font = 'bold 10px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText(charge, 0, 3);
+            // Corps (décalé vers le haut par rapport au centre)
+            const botHeight = 25;
+            ctx.fillStyle = (charge > 0) ? '#e74c3c' : '#7f8c8d';
+            ctx.fillRect(-10, -botHeight, 20, botHeight); // Reste centré en X, décalé vers le haut
+
+            // Tête
+            ctx.fillStyle = '#fefefe';
+            ctx.beginPath();
+            ctx.arc(0, -botHeight, 8, 0, Math.PI * 2);
+            ctx.fill();
 
             ctx.restore();
         }
@@ -549,20 +564,37 @@ export const gameChargebotApp = {
             const newX = bot.x + dx;
             const newY = bot.y + dy;
 
+            // L'ancienne tuile (avant le move) est nécessaire pour relâcher les boutons.
+            const oldX = bot.x;
+            const oldY = bot.y;
+            const currentTileBeforeMove = map[oldY][oldX]; 
+
+
+            // 1. --- Gestion de la tuile quittée (ex: relâcher le bouton) ---
+            // Uniquement si le robot bouge ET quitte un bouton
+            if (currentTileBeforeMove.type === 6) {
+                // Le bot quitte un bouton : refermer la porte associée
+                currentTileBeforeMove._pressed = false;
+                const buttonId = currentTileBeforeMove.id;
+                map.forEach(row =>
+                    row.forEach(tile => {
+                        if (tile.type === 7 && tile.id === buttonId) {
+                            tile.state = 'closed'; // La porte se referme
+                        }
+                    })
+                );
+            }
+
             // Check bounds
             if (newY < 0 || newY >= map.length || newX < 0 || newX >= map[0].length) {
-                // Moving outside the map is like moving into a void
-                isMoving = true;
-                (() => {
-                    isMoving = false;
-                    running = "gameover";
-                    overlayTitle.text("Échec !");
-                    $window.find('#chargebot-overlay-message').text("Hors limites !");
-                    nextLevelBtn.hide();
-                    tryAgainBtn.show();
-                    overlay.show();
-                    draw();
-                }, 150);
+                // Hors limites = Game Over
+                running = "gameover";
+                overlayTitle.text("Échec !");
+                $window.find('#chargebot-overlay-message').text("Hors limites !");
+                nextLevelBtn.hide();
+                tryAgainBtn.show();
+                overlay.show();
+                draw();
                 return;
             }
 
@@ -578,7 +610,18 @@ export const gameChargebotApp = {
             // Check move feasibility: Only player moves cost charge
             if (!isConveyorMove) {
                 if (bot.charge <= 0) {
-                    return; // Cannot move, no charge
+                    // Si on est sur une tuile de fin (type 3), on ne bloque pas le move et on ne déclenche pas le GO
+                    if (currentTileBeforeMove.type === 3) return;
+                    
+                    // Si on n'est pas sur la fin et sans charge, on bloque le move et GO
+                    running = "gameover";
+                    overlayTitle.text("Échec !");
+                    $window.find('#chargebot-overlay-message').text("Plus de charge !");
+                    nextLevelBtn.hide();
+                    tryAgainBtn.show();
+                    overlay.show();
+                    draw();
+                    return;
                 }
                 bot.charge--; // Consume charge for player move
             }
@@ -586,45 +629,43 @@ export const gameChargebotApp = {
             // Move the bot
             bot.x = newX;
             bot.y = newY;
-            isMoving = true;
+            isMoving = true; // Empêche les nouvelles entrées
             updateDisplay();
             draw();
 
-            // Délai pour l'animation/feedback avant l'interaction avec la tuile
-            (() => {
-                isMoving = false;
-                const currentTile = map[bot.y][bot.x];
+            // Délai pour l'animation/feedback (150ms) avant l'interaction avec la tuile
+            // **CORRECTION CRITIQUE** : Utilisation correcte de setTimeout pour le délai.
+            setTimeout(() => { 
+                isMoving = false; // Débloque l'input après l'animation
+                const currentTileAfterMove = map[bot.y][bot.x];
 
-                // 1. Interaction: Charging Plate (type:4)
-                if (currentTile.type === 4 && currentTile.charge > 0) {
-                    bot.charge += currentTile.charge;
-                    currentTile.charge = 0; // Plate becomes empty
+                // 2. Interaction: Charging Plate (type:4)
+                if (currentTileAfterMove.type === 4 && currentTileAfterMove.charge > 0) {
+                    bot.charge += currentTileAfterMove.charge;
+                    currentTileAfterMove.charge = 0; // Plate becomes empty
                 }
 
-                // 2. Interaction: Cracked Plate (type:2)
-                if (currentTile.type === 2) {
-                    currentTile.type = 0; // Turn cracked plate into void
+                // 3. Interaction: Cracked Plate (type:2)
+                if (currentTileAfterMove.type === 2) {
+                    currentTileAfterMove.type = 0; // Turn cracked plate into void
                 }
 
-                // 3. Interaction: Button (type:6)
-                if (currentTile.type === 6) {
-                    const buttonId = currentTile.id;
-                    // Trouver toutes les portes liées à ce id et alterner leur état
+                // 4. Interaction: Button (type:6) - Presser le bouton
+                if (currentTileAfterMove.type === 6) {
+                    currentTileAfterMove._pressed = true;
+                    const buttonId = currentTileAfterMove.id;
+                    // Trouver toutes les portes liées à ce id et les ouvrir
                     map.forEach(row => 
                         row.forEach(tile => {
                             if (tile.type === 7 && tile.id === buttonId) { 
-                                // Si la porte est fermée, on l'ouvre
-                                if (tile.state === 'closed') { 
-                                    tile.state = 'open'; 
-                                }
+                                tile.state = 'open';
                             }
                         })
                     );
-                    currentTile._pressed = true;
                 }
 
-                // 4. Check de Victoire (type:3)
-                if (currentTile.type === 3) {
+                // 5. Check de Victoire (type:3)
+                if (currentTileAfterMove.type === 3) {
                     currentLevel.isFinished = true;
                     currentLevel.finishedTime = Date.now();
                     running = "finished";
@@ -634,18 +675,33 @@ export const gameChargebotApp = {
                     nextLevelBtn.show();
                     overlay.show();
                     draw();
-                    return; // Victoire, on arrête tout
+                    return; 
                 }
 
-                // 5. Check Tapis Roulant (type:5) - NOUVELLE LOGIQUE POUR LE CHAÎNAGE
-                if (currentTile.type === 5) {
-                    const dir = DIRECTION[currentTile.direction];
-                    // Déclenche un mouvement automatique et sans consommation de charge
-                    moveBot(dir.dx, dir.dy, true); 
-                    return; // Le nouveau moveBot gérera l'affichage et les interactions
+                // 6. Check Tapis Roulant (type:5) - Chaînage
+                if (currentTileAfterMove.type === 5) {
+                    const dir = DIRECTION[currentTileAfterMove.direction];
+                    
+                    isMoving = true; // Verrouiller à nouveau l'input utilisateur pour l'enchaînement
+                    // Relance du mouvement du tapis roulant sans consommation de charge
+                    moveBot(dir.dx, dir.dy, true);
+                    return; // Le moveBot récursif gère son propre timeout et son isMoving=false final
                 }
 
-                // 6. Check Fin de Partie (plus de charge) - S'applique uniquement si on n'est PAS sur une tuile de fin ou un tapis roulant
+                // 7. Check fin de partie (tombé dans le vide - type:0)
+                if (currentTileAfterMove.type === 0) {
+                    running = "gameover";
+                    overlayTitle.text("Échec !");
+                    $window.find('#chargebot-overlay-message').text("Tombé dans le vide !");
+                    nextLevelBtn.hide();
+                    tryAgainBtn.show();
+                    overlay.show();
+                    draw();
+                    return;
+                }
+
+                // 8. Check Fin de Partie (plus de charge)
+                // Seul le mouvement du joueur consomme la charge. Si la charge est à 0 après l'interaction (et non victoire/tapis), c'est la fin.
                 if (bot.charge <= 0) {
                     running = "gameover";
                     overlayTitle.text("Échec !");
@@ -654,7 +710,7 @@ export const gameChargebotApp = {
                     tryAgainBtn.show();
                     overlay.show();
                     draw();
-                    return; // Échec, on arrête
+                    return;
                 }
 
                 // Final update/draw pour un mouvement normal
@@ -693,7 +749,7 @@ export const gameChargebotApp = {
             const w = canvas.width;
             const h = canvas.height;
 
-            id: 'game-flappy-bird', ctx.clearRect(0, 0, w, h);
+            ctx.clearRect(0, 0, w, h);
 
             // Draw all tiles (looping from top-left to bottom-right for correct isometric layering)
             if (map) {

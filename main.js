@@ -11,6 +11,7 @@ import { game2048App 		} from './applications/game-2048.js';
 import { gameChargebotApp   } from './applications/game-chargebot.js';
 import { gameFlappyBirdApp 	} from './applications/game-flappy-bird.js';
 import { gameSnakeApp		} from './applications/game-snake.js';
+import { gameTownFPSApp     } from './applications/game-town-fps.js';
 
 // Initialisation du Système
 const system = new System();
@@ -29,6 +30,7 @@ system.registerApp(game2048App);
 system.registerApp(gameSnakeApp);
 system.registerApp(gameChargebotApp);
 system.registerApp(gameFlappyBirdApp);
+system.registerApp(gameTownFPSApp);
 
 $(document).ready(function () {
 	const $androidScreen    = $("#android-screen");
