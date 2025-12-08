@@ -33,30 +33,59 @@ system.registerApp(gameFlappyBirdApp);
 system.registerApp(gameTownFPSApp);
 
 $(document).ready(function () {
+	/** @type {JQuery<HTMLElement>} */
 	const $androidScreen    = $("#android-screen");
+	/** @type {JQuery<HTMLElement>} */
 	const $desktopWrapper   = $('#desktop-wrapper');
+	/** @type {JQuery<HTMLElement>} */
 	const $desktopContainer = $('#desktop-container');
+	/** @type {JQuery<HTMLElement>} */
 	const $dots             = $('.dot');
 
 	let currentPage  = 0;
 	const totalPages = $('.desktop-page').length;
 
 	// --- Rendu des Icônes d'Applications ---
+	/** @type {JQuery<HTMLElement>} */
 	const mainDrawer = $('#app-drawer-main');
+	/** @type {JQuery<HTMLElement>} */
 	const appDrawer  = $('#app-drawer-app');
+	/** @type {JQuery<HTMLElement>} */
 	const gameDrawer = $('#app-drawer-games');
 
-	for (const [id, app] of system.appRegistry.entries()) {
-		const iconHTML = `
-			<a class="app-icon" data-app="${id}">
-				<div class="icon-bg" style="${app.iconColor ? 'background-color:' + app.iconColor : ''}">
-					${app.icon}
-				</div>
-				<span>${app.title}</span>
-			</a>`;
-		if      (app.type === 'main') mainDrawer.append(iconHTML);
-		else if (app.type === 'app')  appDrawer.append(iconHTML);
-		else if (app.type === 'game') gameDrawer.append(iconHTML);
+	function updateDesktop() {
+    	if (system.hasSettingsChange()) {
+			mainDrawer.html("");
+			appDrawer.html("");
+			gameDrawer.html("");
+			for (const [id, app] of system.appRegistry.entries()) {
+				var title = '';
+				if (app.title !== null) {
+					if (typeof(app.title) === 'object') {
+						if (app.title[system.settings.language] !== null) {
+							title = app.title[system.settings.language];
+						} else {
+							title = app.title['en-US'];
+						}
+					} else {
+						title = app.title;
+					}
+				}
+				const iconHTML = `
+					<a class="app-icon" data-app="${id}">
+						<div class="icon-bg" style="${app.iconColor ? 'background-color:' + app.iconColor : ''}">
+							${app.icon}
+						</div>
+						<span>${title}</span>
+					</a>`;
+				if      (app.type === 'main') mainDrawer.append(iconHTML);
+				else if (app.type === 'app')  appDrawer.append(iconHTML);
+				else if (app.type === 'game') gameDrawer.append(iconHTML);
+			}
+
+			// RESET FLAG IMPORTANT
+			system.has_settings_change = false;
+		}
 	}
 
 	// --- Horloge de la barre de statut ---
@@ -86,9 +115,12 @@ $(document).ready(function () {
 	}
 
 	function goToPage(pageIndex, animate = true) {
+		updateDesktop();
+
 		$('#desktop-wrapper').css('width', `${100 * totalPages}%`);
-		if (pageIndex < 0 || pageIndex >= totalPages) return;
-		currentPage = pageIndex;
+		if (pageIndex < 0) currentPage = totalPages-1;
+		else if (pageIndex >= totalPages) currentPage = 0;
+		else currentPage = pageIndex;
 
 		const pageWidth = $androidScreen.width();
 		currentTranslate = -currentPage * pageWidth;
@@ -119,15 +151,16 @@ $(document).ready(function () {
 
 		const pageWidth = $androidScreen.width();
 		const dragThreshold = 100;
-		const diffX = currentTranslate - (-currentPage * pageWidth);
+		let pageIndex = currentPage;
+		const diffX = currentTranslate - (-pageIndex * pageWidth);
 
-		if (diffX < -dragThreshold && currentPage < totalPages - 1) {
-			currentPage++;
-		} else if (diffX > dragThreshold && currentPage > 0) {
-			currentPage--;
+		if (diffX < -dragThreshold) {
+			pageIndex++;
+		} else if (diffX > dragThreshold) {
+			pageIndex--;
 		}
 
-		goToPage(currentPage);
+		goToPage(pageIndex);
 	}
 
 	// --- GitHub Pages fix ---

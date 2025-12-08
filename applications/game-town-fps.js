@@ -8,6 +8,7 @@ export const gameTownFPSApp = {
     icon: `<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>crosshair</title> <path d="M30 14.75h-2.824c-0.608-5.219-4.707-9.318-9.874-9.921l-0.053-0.005v-2.824c0-0.69-0.56-1.25-1.25-1.25s-1.25 0.56-1.25 1.25v0 2.824c-5.219 0.608-9.318 4.707-9.921 9.874l-0.005 0.053h-2.824c-0.69 0-1.25 0.56-1.25 1.25s0.56 1.25 1.25 1.25v0h2.824c0.608 5.219 4.707 9.318 9.874 9.921l0.053 0.005v2.824c0 0.69 0.56 1.25 1.25 1.25s1.25-0.56 1.25-1.25v0-2.824c5.219-0.608 9.318-4.707 9.921-9.874l0.005-0.053h2.824c0.69 0 1.25-0.56 1.25-1.25s-0.56-1.25-1.25-1.25v0zM17.25 24.624v-2.624c0-0.69-0.56-1.25-1.25-1.25s-1.25 0.56-1.25 1.25v0 2.624c-3.821-0.57-6.803-3.553-7.368-7.326l-0.006-0.048h2.624c0.69 0 1.25-0.56 1.25-1.25s-0.56-1.25-1.25-1.25v0h-2.624c0.57-3.821 3.553-6.804 7.326-7.368l0.048-0.006v2.624c0 0.69 0.56 1.25 1.25 1.25s1.25-0.56 1.25-1.25v0-2.624c3.821 0.57 6.803 3.553 7.368 7.326l0.006 0.048h-2.624c-0.69 0-1.25 0.56-1.25 1.25s0.56 1.25 1.25 1.25v0h2.624c-0.571 3.821-3.553 6.803-7.326 7.368l-0.048 0.006z"></path> </g></svg>`,
     iconColor: '#7ed0ec',
     type: 'game',
+    style: ``,
     content: `
         <link rel="stylesheet" href="./applications/game-town-fps/styles.css" />
         <script type="importmap">
@@ -25,11 +26,24 @@ export const gameTownFPSApp = {
             <div id="crosshair"></div>
         </div>
     `,
-    init: function (windowId) {
+	/**
+	 * Init function
+	 * @param {System} sys - System class instance
+	 * @param {String} windowId - Window html ID in which the application will be drawn
+	 */
+	init: function (sys, windowId) {
+        /** @type {System} */
+		const system = sys;
+        /** @type {JQuery<HTMLElement>} */
         const $window = $(`#${windowId}`);
+
+        /** @type {HTMLCanvasElement} */
         const canvas = $window.find('#gl-canvas')[0];
+        /** @type {JQuery<HTMLElement>} */
         const joystickContainer = $window.find('#joystick-container')[0];
+        /** @type {JQuery<HTMLElement>} */
         const lookJoystickContainer = $window.find('#look-joystick-container')[0];
+        /** @type {JQuery<HTMLElement>} */
         const crosshair = $window.find('#crosshair')[0];
 
         const renderer = new THREE.WebGLRenderer({

@@ -1,91 +1,149 @@
 export const weatherApp = {
 	id: 'weather-app',
-	title: 'Météo',
+	title: {'en-US':'Weather', 'fr-FR':'Météo'},
 	icon: `<svg viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M621.7 451.6m-129.5 0a129.5 129.5 0 1 0 259 0 129.5 129.5 0 1 0-259 0Z" fill="#F4CE26"></path><path d="M621.7 607.4c-85.9 0-155.8-69.9-155.8-155.8s69.9-155.8 155.8-155.8 155.8 69.9 155.8 155.8S707.6 607.4 621.7 607.4z m0-258.9c-56.8 0-103.1 46.2-103.1 103.1s46.3 103.1 103.1 103.1 103-46.3 103-103.2-46.2-103-103-103z" fill="#000000"></path><path d="M502.1 198c11.8-6.8 26.9-2.8 33.7 9l24.7 42.7c6.8 11.8 2.8 26.9-9 33.7-11.8 6.8-26.9 2.8-33.7-9l-24.7-42.7c-6.9-11.9-2.8-26.9 9-33.7zM807.8 406.4c3.5 13.2 17 21 30.2 17.4l47.6-12.8c13.2-3.5 21-17 17.4-30.2-3.5-13.2-17-21-30.2-17.4l-47.6 12.8c-13.1 3.5-20.9 17-17.4 30.2zM794.6 517.3c-3.5 13.2 4.3 26.7 17.4 30.2l47.6 12.8c13.2 3.5 26.7-4.3 30.2-17.4 3.5-13.2-4.3-26.7-17.4-30.2l-47.6-12.8c-13.1-3.5-26.6 4.3-30.2 17.4zM665.7 161.8c13.6 0 24.7 11 24.7 24.7v49.3c0 13.6-11 24.7-24.7 24.7-13.6 0-24.7-11-24.7-24.7v-49.3c0-13.6 11-24.7 24.7-24.7zM832.8 231.3c-9.6-9.6-25.2-9.6-34.9 0L763 266.2c-9.6 9.6-9.6 25.2 0 34.9 9.6 9.6 25.2 9.6 34.9 0l34.9-34.9c9.7-9.7 9.7-25.3 0-34.9z" fill="#000000"></path><path d="M264.5 740.8c-2.2 0.2-4.3 0.4-6.5 0.5-60.5 3.4-111-49.7-111-111s49.7-111 111-111c4.2 0 8.4 0.2 12.5 0.7-0.1-2.3-0.1-4.6-0.1-6.9 0-85.1 69-154.1 154.1-154.1 75.2 0 137.8 53.8 151.4 125 6.9-1.1 14-1.7 21.2-1.7 71.5 0 129.5 58 129.5 129.5-0.2 45.7-23.8 85.9-59.6 108.9-20.2 13-44.2 21.3-70 20.5-3.5-0.1-6.9-0.3-10.3-0.7-1.1 0.1-2.3 0.1-3.4 0.1H264.5z" fill="#FFFFFF"></path><path d="M252.4 767.8c-32.4 0-63.3-12.5-87.9-35.8-27.9-26.4-43.9-63.5-43.9-101.7 0-71.3 54.7-130.2 124.3-136.7 9.8-90.3 86.5-160.9 179.4-160.9 78.4 0 147 50.6 171.2 123.3h1.4c86 0 155.9 69.9 155.9 155.8 0 53.3-26.7 102.3-71.5 131.1-26.5 17.1-56.1 25.6-85.1 24.7-3.4-0.1-6.7-0.3-10-0.6-1 0-2 0.1-3 0.1H265.8c-2.1 0.2-4.2 0.4-6.3 0.5-2.4 0.1-4.7 0.2-7.1 0.2z m5.5-222.1c-46.6 0-84.6 38-84.6 84.6 0 23.8 10 46.9 27.4 63.4 15.7 14.9 35.7 22.5 55.7 21.2 1.7-0.1 3.5-0.2 5.2-0.4l2.8-0.2h324.9c2.8 0.3 5.6 0.5 8.4 0.6 23.2 0.8 42.8-8.5 54.9-16.4 29.8-19 47.5-51.4 47.5-86.7 0-56.8-46.3-103.1-103.1-103.1-5.7 0-11.4 0.5-16.9 1.4l-25.4 4.2-4.8-25.3c-11.5-60-64.2-103.6-125.5-103.6-70.5 0-127.8 57.3-127.8 127.8 0 1.9 0 3.8 0.1 5.7l1.4 30.9-30.7-3.5c-3.1-0.4-6.2-0.6-9.5-0.6z" fill="#000000"></path></g></svg>`,
 	iconColor: '#2196F3',
 	headerColor: '#2196F3',
 	type: 'app',
-	content: `
-		<style>
-			.weather-app-container { display: flex; flex-direction: column; gap: 15px; }
-			.weather-search-bar { display: flex; width: 100%; gap: 8px; }
-			.weather-search-bar input { flex-grow: 1; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1em; font-family: 'Roboto', sans-serif; }
-			.weather-search-bar button {
-				flex-shrink: 0; width: 50px; border: none;
-				background-color: var(--accent-color); color: white; border-radius: 8px;
-				cursor: pointer; display: flex; justify-content: center; align-items: center;
-				transition: background-color 0.2s;
-			}
-			.weather-search-bar button:hover { background-color: #1e88e5; }
-			.weather-search-bar button#weather-geoloc-btn { background-color: #616161; }
-			.weather-search-bar button#weather-geoloc-btn:hover { background-color: #424242; }
-			.weather-search-bar button svg { width: 24px; height: 24px; fill: white; }
-			
-			#weather-message-display { text-align: center; color: #616161; font-size: 1.1em; padding: 20px 0; }
-			#weather-current-conditions { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); text-align: center; }
-			#weather-current-conditions h4 { margin: 0 0 15px; color: var(--text-color); font-size: 1.2em; }
-			.current-details { display: flex; flex-direction: column; align-items: center; gap: 5px; }
-			#weather-current-icon svg { width: 80px; height: 80px; }
-			#weather-current-temp { font-size: 3.5em; font-weight: 300; color: var(--text-color); line-height: 1.1; }
-			#weather-current-desc { font-size: 1.1em; color: #616161; }
-			#weather-results-container h5 { font-size: 1em; font-weight: 500; color: #616161; margin: 15px 0 10px; padding-left: 5px; }
-			#weather-forecast-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px; }
-			@media (max-width: 400px) { #weather-forecast-grid { grid-template-columns: repeat(3, 1fr); } }
-			.weather-day-card { background: #fff; border-radius: 12px; padding: 10px 5px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; flex-direction: column; align-items: center; gap: 8px; }
-			.weather-day-card .day-name { font-weight: 500; font-size: 0.9em; text-transform: capitalize; }
-			.weather-day-card .day-icon svg { width: 40px; height: 40px; }
-			.weather-day-card .day-temp { display: flex; gap: 8px; font-size: 0.95em; }
-			.weather-day-card .day-temp-max { font-weight: 500; color: var(--text-color); }
-			.weather-day-card .day-temp-min { color: #757575; }
-		</style>
-		<div class="app-content weather-app-container">
-			<h1>Prévisions Météo</h1>
-			
-			<div class="weather-search-bar">
-				<input type="text" id="weather-city-input" placeholder="Entrez une ville (ex: Paris, FR)">
+	style: `
+		.weather-app-container { display: flex; flex-direction: column; gap: 15px; }
+		.weather-search-bar { display: flex; width: 100%; gap: 8px; }
+		.weather-search-bar input { flex-grow: 1; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1em; font-family: 'Roboto', sans-serif; }
+		.weather-search-bar button {
+			flex-shrink: 0; width: 50px; border: none;
+			background-color: var(--accent-color); color: white; border-radius: 8px;
+			cursor: pointer; display: flex; justify-content: center; align-items: center;
+			transition: background-color 0.2s;
+		}
+		.weather-search-bar button:hover { background-color: #1e88e5; }
+		.weather-search-bar button#weather-geoloc-btn { background-color: #616161; }
+		.weather-search-bar button#weather-geoloc-btn:hover { background-color: #424242; }
+		.weather-search-bar button svg { width: 24px; height: 24px; fill: white; }
+		
+		#weather-message-display { text-align: center; color: #616161; font-size: 1.1em; padding: 20px 0; }
+		#weather-current-conditions { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); text-align: center; }
+		#weather-current-conditions h4 { margin: 0 0 15px; color: var(--text-color); font-size: 1.2em; }
+		.current-details { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+		#weather-current-icon svg { width: 80px; height: 80px; }
+		#weather-current-temp { font-size: 3.5em; font-weight: 300; color: var(--text-color); line-height: 1.1; }
+		#weather-current-desc { font-size: 1.1em; color: #616161; }
+		#weather-results-container h5 { font-size: 1em; font-weight: 500; color: #616161; margin: 15px 0 10px; padding-left: 5px; }
+		#weather-forecast-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px; }
+		@media (max-width: 400px) { #weather-forecast-grid { grid-template-columns: repeat(3, 1fr); } }
+		.weather-day-card { background: #fff; border-radius: 12px; padding: 10px 5px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; flex-direction: column; align-items: center; gap: 8px; }
+		.weather-day-card .day-name { font-weight: 500; font-size: 0.9em; text-transform: capitalize; }
+		.weather-day-card .day-icon svg { width: 40px; height: 40px; }
+		.weather-day-card .day-temp { display: flex; gap: 8px; font-size: 0.95em; }
+		.weather-day-card .day-temp-max { font-weight: 500; color: var(--text-color); }
+		.weather-day-card .day-temp-min { color: #757575; }
+		`,
+	content: {
+		'fr-FR': `
+			<div class="app-content weather-app-container">
+				<h1>Weather Forecast</h1>
 				
-				<!-- Bouton de Géolocalisation -->
-				<button id="weather-geoloc-btn" title="Me localiser">
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94V1h-2v2.06C6.83 3.52 3.52 6.83 3.06 11H1v2h2.06c.46 4.17 3.77 7.48 7.94 7.94V23h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg>
-				</button>
-				
-				<!-- Bouton de Recherche -->
-				<button id="weather-search-btn" title="Rechercher">
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-				</button>
-			</div>
-			
-			<div id="weather-message-display">
-				<p>Recherchez une ville ou utilisez la géolocalisation.</p>
-			</div>
-			
-			<div id="weather-results-container" style="display: none;">
-				<div id="weather-current-conditions">
-					<h4 id="weather-city-name"></h4>
-					<div class="current-details">
-						<div id="weather-current-icon"></div>
-						<div id="weather-current-temp"></div>
-						<div id="weather-current-desc"></div>
-					</div>
+				<div class="weather-search-bar">
+					<input type="text" id="weather-city-input" placeholder="Enter a city(ex: New York, EN)">
+					
+					<!-- Bouton de Géolocalisation -->
+					<button id="weather-geoloc-btn" title="Locate me">
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94V1h-2v2.06C6.83 3.52 3.52 6.83 3.06 11H1v2h2.06c.46 4.17 3.77 7.48 7.94 7.94V23h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg>
+					</button>
+					
+					<!-- Bouton de Recherche -->
+					<button id="weather-search-btn" title="Research">
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+					</button>
 				</div>
 				
-				<h5>Prévisions sur 7 jours</h5>
-				<div id="weather-forecast-grid"></div>
+				<div id="weather-message-display">
+					<p>Search for a city or use geolocation.</p>
+				</div>
+				
+				<div id="weather-results-container" style="display: none;">
+					<div id="weather-current-conditions">
+						<h4 id="weather-city-name"></h4>
+						<div class="current-details">
+							<div id="weather-current-icon"></div>
+							<div id="weather-current-temp"></div>
+							<div id="weather-current-desc"></div>
+						</div>
+					</div>
+					
+					<h5>7-day forecast</h5>
+					<div id="weather-forecast-grid"></div>
+				</div>
 			</div>
-		</div>
-	`,
-	init: function(windowId) {
-		const $window = $(`#${windowId}`);
+		`,
+		'fr-FR': `
+			<div class="app-content weather-app-container">
+				<h1>Prévisions Météo</h1>
+				
+				<div class="weather-search-bar">
+					<input type="text" id="weather-city-input" placeholder="Entrez une ville (ex: Paris, FR)">
+					
+					<!-- Bouton de Géolocalisation -->
+					<button id="weather-geoloc-btn" title="Me localiser">
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94V1h-2v2.06C6.83 3.52 3.52 6.83 3.06 11H1v2h2.06c.46 4.17 3.77 7.48 7.94 7.94V23h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg>
+					</button>
+					
+					<!-- Bouton de Recherche -->
+					<button id="weather-search-btn" title="Rechercher">
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+					</button>
+				</div>
+				
+				<div id="weather-message-display">
+					<p>Recherchez une ville ou utilisez la géolocalisation.</p>
+				</div>
+				
+				<div id="weather-results-container" style="display: none;">
+					<div id="weather-current-conditions">
+						<h4 id="weather-city-name"></h4>
+						<div class="current-details">
+							<div id="weather-current-icon"></div>
+							<div id="weather-current-temp"></div>
+							<div id="weather-current-desc"></div>
+						</div>
+					</div>
+					
+					<h5>Prévisions sur 7 jours</h5>
+					<div id="weather-forecast-grid"></div>
+				</div>
+			</div>
+		`
+	},
+	/**
+	 * Init function
+	 * @param {System} sys - System class instance
+	 * @param {String} windowId - Window html ID in which the application will be drawn
+	 */
+	init: function (sys, windowId) {
+        /** @type {System} */
+		const system = sys;
+        /** @type {JQuery<HTMLElement>} */
+        const $window = $(`#${windowId}`);
+
+        /** @type {JQuery<HTMLElement>} */
 		const searchInput = $window.find('#weather-city-input')[0];
+        /** @type {JQuery<HTMLElement>} */
 		const searchBtn = $window.find('#weather-search-btn')[0];
-		const geolocBtn = $window.find('#weather-geoloc-btn')[0]; // Nouveau bouton
+        /** @type {JQuery<HTMLElement>} */
+		const geolocBtn = $window.find('#weather-geoloc-btn')[0];
+        /** @type {JQuery<HTMLElement>} */
 		const messageDisplay = $window.find('#weather-message-display')[0];
+        /** @type {JQuery<HTMLElement>} */
 		const resultsContainer = $window.find('#weather-results-container')[0];
 		
+        /** @type {JQuery<HTMLElement>} */
 		const cityNameEl = $window.find('#weather-city-name')[0];
+        /** @type {JQuery<HTMLElement>} */
 		const currentIconEl = $window.find('#weather-current-icon')[0];
+        /** @type {JQuery<HTMLElement>} */
 		const currentTempEl = $window.find('#weather-current-temp')[0];
+        /** @type {JQuery<HTMLElement>} */
 		const currentDescEl = $window.find('#weather-current-desc')[0];
+        /** @type {JQuery<HTMLElement>} */
 		const forecastGridEl = $window.find('#weather-forecast-grid')[0];
 
 		// --- Écouteurs ---
@@ -106,7 +164,10 @@ export const weatherApp = {
 			const cityName = searchInput.value.trim();
 			if (!cityName) return;
 			
-			setLoadingState('Recherche de la ville...');
+			if (system.settings.language === 'en-US')
+				setLoadingState('Searching for the city...');
+			else if (system.settings.language === 'fr-FR')
+				setLoadingState('Recherche de la ville...');
 			
 			try {
 				// 1. Géocodage (Ville -> Coordonnées)
@@ -114,7 +175,10 @@ export const weatherApp = {
 				const geoData = await geoResponse.json();
 				
 				if (!geoData.results || geoData.results.length === 0) {
-					setErrorMessage("Ville non trouvée. Essayez 'Ville, CodePays'.");
+					if (system.settings.language === 'en-US')
+						setErrorMessage("City not found. Try 'City, CountryCode'.");
+					else if (system.settings.language === 'fr-FR')
+						setErrorMessage("Ville non trouvée. Essayez 'Ville, CodePays'.");
 					return;
 				}
 				
@@ -125,8 +189,13 @@ export const weatherApp = {
 				await fetchWeather(location.latitude, location.longitude, displayName);
 
 			} catch (error) {
-				console.error("Erreur lors de la recherche de la ville:", error);
-				setErrorMessage("Erreur de réseau. Veuillez réessayer.");
+				if (system.settings.language === 'en-US') {
+					console.error("Error searching for the city:", error);
+					setErrorMessage("Network error. Please try again.");
+				} else if (system.settings.language === 'fr-FR') {
+					console.error("Erreur lors de la recherche de la ville:", error);
+					setErrorMessage("Erreur de réseau. Veuillez réessayer.");
+				}
 			}
 		}
 
@@ -135,7 +204,10 @@ export const weatherApp = {
 		 */
 		function handleGeolocation() {
 			if (!navigator.geolocation) {
-				setErrorMessage("La géolocalisation n'est pas supportée par votre navigateur.");
+				if (system.settings.language === 'en-US')
+					setErrorMessage("Geolocation is not supported by your browser.");
+				else if (system.settings.language === 'fr-FR')
+					setErrorMessage("La géolocalisation n'est pas supportée par votre navigateur.");
 				return;
 			}
 
@@ -240,7 +312,7 @@ export const weatherApp = {
 			forecastGridEl.innerHTML = '';
 			for (let i = 0; i < daily.time.length; i++) {
 				const dateStr = daily.time[i];
-				const dayName = new Date(dateStr).toLocaleDateString('fr-FR', { weekday: 'short' });
+				const dayName = new Date(dateStr).toLocaleDateString(system.settings.language, { weekday: 'short' });
 				const maxTemp = Math.round(daily.temperature_2m_max[i]);
 				const minTemp = Math.round(daily.temperature_2m_min[i]);
 				const code = daily.weathercode[i];

@@ -5,29 +5,45 @@ export const gameFlappyBirdApp = {
 	iconColor: '#ff6b6b',
 	headerColor: '#ff6b6b',
 	type: 'game',
-	content: `
-		<div class="game-container">
-			<div class="game-score">Score: <span id="flappy-bird-score">0</span></div>
-			<div class="game-extra-controls">
-				<button id="flappy-bird-pause-btn" class="pause-btn">Pause</button>
-				<button id="flappy-bird-restart-btn">Restart</button>
-			</div>
+	style: ``,
+	content: {
+		'fr-FR':`
+			<div class="game-container">
+				<div class="game-score">Score: <span id="flappy-bird-score">0</span></div>
+				<div class="game-extra-controls">
+					<button id="flappy-bird-pause-btn" class="pause-btn">Pause</button>
+					<button id="flappy-bird-restart-btn">Restart</button>
+				</div>
 
-			<canvas id="flappy-canvas" class="game-canvas"></canvas>
+				<canvas id="flappy-canvas" class="game-canvas"></canvas>
 
-			<div id="flappy-controls" class="game-controls">
-				<button class="up" id="flappy-flap-btn">Flap</button>
+				<div id="flappy-controls" class="game-controls">
+					<button class="up" id="flappy-flap-btn">Flap</button>
+				</div>
+				<small>Appuie sur <strong>ESPACE</strong> ou clique / tape pour battre des ailes</small>
 			</div>
-			<small>Appuie sur <strong>ESPACE</strong> ou clique / tape pour battre des ailes</small>
-		</div>
-	`,
-	init: function (windowId) {
-		const $window = $(`#${windowId}`);
+		`
+	},
+	/**
+	 * Init function
+	 * @param {System} sys - System class instance
+	 * @param {String} windowId - Window html ID in which the application will be drawn
+	 */
+	init: function (sys, windowId) {
+        /** @type {System} */
+		const system = sys;
+        /** @type {JQuery<HTMLElement>} */
+        const $window = $(`#${windowId}`);
+
 		/** @type {HTMLCanvasElement} */
 		const canvas = $window.find('#flappy-canvas')[0];
+		/** @type {JQuery<HTMLElement>} */
 		const scoreEl = $window.find('#flappy-bird-score')[0];
+		/** @type {JQuery<HTMLElement>} */
 		const pauseBtn = $window.find('#flappy-bird-pause-btn')[0];
+		/** @type {JQuery<HTMLElement>} */
 		const restartBtn = $window.find('#flappy-bird-restart-btn')[0];
+		/** @type {JQuery<HTMLElement>} */
 		const flapBtn = $window.find('#flappy-flap-btn')[0];
 
 		// Canvas setup & scaling for high-DPI

@@ -139,44 +139,56 @@ export const gameChargebotApp = {
     iconColor: '#8BC34A',
     headerColor: '#8BC34A',
     type: 'game',
-    content: `
-        <div class="game-container">
-            <div class="game-header">
-                <div class="game-extra-controls">
-                    <button class="action-btn" id="chargebot-restart-btn">Restart</button>
+    style: ``,
+    content: {
+        'fr-FR':`
+            <div class="game-container">
+                <div class="game-header">
+                    <div class="game-extra-controls">
+                        <button class="action-btn" id="chargebot-restart-btn">Restart</button>
+                    </div>
+                    <div style="display: flex; gap: 20px; width: 100%; justify-content: center; margin-top: 10px; margin-bottom: 15px;">
+                        <div class="game-score" class="game-charge">Charge: <span id="chargebot-charge">0</span></div>
+                        <div class="game-score" class="game-level">Niveau: <span id="chargebot-level">1</span></div>
+                    </div>
+                    <div class="game-message" id="chargebot-help-message"></div>
                 </div>
-                <div style="display: flex; gap: 20px; width: 100%; justify-content: center; margin-top: 10px; margin-bottom: 15px;">
-                    <div class="game-score" class="game-charge">Charge: <span id="chargebot-charge">0</span></div>
-                    <div class="game-score" class="game-level">Niveau: <span id="chargebot-level">1</span></div>
+
+                <div style="padding-bottom: 30px;">
+                    <canvas id="chargebot-canvas" class="game-canvas"></canvas>
                 </div>
-                <div class="game-message" id="chargebot-help-message"></div>
-            </div>
 
-            <div style="padding-bottom: 30px;">
-                <canvas id="chargebot-canvas" class="game-canvas"></canvas>
+                <div id="chargebot-controls" class="game-controls">
+                    <button class="left" data-dir="1">◀</button>
+                    <button class="up" data-dir="3">▲</button>
+                    <button class="right" data-dir="2">▶</button>
+                    <button class="down" data-dir="4">▼</button>
+                </div>
+                
+                <div class="game-message-overlay" id="chargebot-overlay" style="display: none;">
+                    <h2 id="chargebot-overlay-title"></h2>
+                    <p id="chargebot-overlay-message"></p>
+                    <button id="chargebot-next-level-btn" style="display: none;">Niveau Suivant</button>
+                    <button id="chargebot-try-again-btn" style="display: none;">Réessayer</button>
+                </div>
+                <div class="game-message-overlay" id="chargebot-congratulation" style="display: none;">
+                    <h1>Félicitations !</h1> 
+                    <h2>Vous avez terminé tous les niveaux !</h2>
+                </div>
             </div>
-
-            <div id="chargebot-controls" class="game-controls">
-                <button class="left" data-dir="1">◀</button>
-                <button class="up" data-dir="3">▲</button>
-                <button class="right" data-dir="2">▶</button>
-                <button class="down" data-dir="4">▼</button>
-            </div>
-            
-            <div class="game-message-overlay" id="chargebot-overlay" style="display: none;">
-                <h2 id="chargebot-overlay-title"></h2>
-                <p id="chargebot-overlay-message"></p>
-                <button id="chargebot-next-level-btn" style="display: none;">Niveau Suivant</button>
-                <button id="chargebot-try-again-btn" style="display: none;">Réessayer</button>
-            </div>
-            <div class="game-message-overlay" id="chargebot-congratulation" style="display: none;">
-                <h1>Félicitations !</h1> 
-                <h2>Vous avez terminé tous les niveaux !</h2>
-            </div>
-        </div>
-    `,
-    init: function (windowId) {
+        `,
+    },
+	/**
+	 * Init function
+	 * @param {System} sys - System class instance
+	 * @param {String} windowId - Window html ID in which the application will be drawn
+	 */
+	init: function (sys, windowId) {
+        /** @type {System} */
+		const system = sys;
+        /** @type {JQuery<HTMLElement>} */
         const $window = $(`#${windowId}`);
+
         /** @type {HTMLCanvasElement} */
         const canvas = $window.find('#chargebot-canvas')[0];
         

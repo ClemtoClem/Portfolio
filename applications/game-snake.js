@@ -5,36 +5,52 @@ export const gameSnakeApp = {
 	iconColor: '#8BC34A',
 	headerColor: '#8BC34A',
 	type: 'game',
-	content: `
-		<div class="game-container">
-			<div class="game-score">Score: <span id="snake-score">0</span></div>
-			<div class="game-extra-controls">
-				<button id="snake-pause-btn" class="pause-btn">Pause</button>
-				<button id="snake-restart-btn">Restart</button>
-			</div>
-			<!-- Le canvas doit avoir la classe 'square-canvas' comme les autres jeux -->
-			<canvas id="snake-canvas" class="game-canvas square-canvas"></canvas>
+	style: ``,
+	content: {
+		'fr-FR':`
+			<div class="game-container">
+				<div class="game-score">Score: <span id="snake-score">0</span></div>
+				<div class="game-extra-controls">
+					<button id="snake-pause-btn" class="pause-btn">Pause</button>
+					<button id="snake-restart-btn">Restart</button>
+				</div>
+				<!-- Le canvas doit avoir la classe 'square-canvas' comme les autres jeux -->
+				<canvas id="snake-canvas" class="game-canvas square-canvas"></canvas>
 
-			<div id="snake-controls" class="game-controls">
-				<button class="up" data-dir="up", title="up">▲</button>
-				<button class="left" data-dir="left" title="left">◄</button>
-				<button class="down" data-dir="down" title="down">▼</button>
-				<button class="right" data-dir="right" title="right">►</button>
-			</div>
+				<div id="snake-controls" class="game-controls">
+					<button class="up" data-dir="up", title="up">▲</button>
+					<button class="left" data-dir="left" title="left">◄</button>
+					<button class="down" data-dir="down" title="down">▼</button>
+					<button class="right" data-dir="right" title="right">►</button>
+				</div>
 
-			<div class="status-panel">
-				<h4>Effets actifs</h4>
-				<ul id="snake-effects"></ul>
+				<div class="status-panel">
+					<h4>Effets actifs</h4>
+					<ul id="snake-effects"></ul>
+				</div>
 			</div>
-		</div>
-	`,
-	init: function (windowId) {
-		const $window = $(`#${windowId}`);
+		`
+	},
+	/**
+	 * Init function
+	 * @param {System} sys - System class instance
+	 * @param {String} windowId - Window html ID in which the application will be drawn
+	 */
+	init: function (sys, windowId) {
+        /** @type {System} */
+		const system = sys;
+        /** @type {JQuery<HTMLElement>} */
+        const $window = $(`#${windowId}`);
+
 		/** @type {HTMLCanvasElement} */
 		const canvas = $window.find('#snake-canvas')[0];
+		/** @type {JQuery<HTMLElement>} */
 		const scoreEl = $window.find('#snake-score')[0];
+		/** @type {JQuery<HTMLElement>} */
 		const pauseBtn = $window.find('#snake-pause-btn')[0];
+		/** @type {JQuery<HTMLElement>} */
 		const restartBtn = $window.find('#snake-restart-btn')[0];
+		/** @type {JQuery<HTMLElement>} */
 		const effectsList = $window.find('#snake-effects')[0];
 		
         /** @type {CanvasRenderingContext2D} */

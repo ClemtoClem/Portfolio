@@ -5,161 +5,177 @@ export const game2048App = {
 	iconColor: '#ffc107',
 	headerColor: '#ffc107',
 	type: 'game',
-	content: `
-		<style>
-			/* Styles 2048 */
-			#game-2048-board {
-				display: grid;
-				grid-template-columns: repeat(4, 1fr);
-				grid-template-rows: repeat(4, 1fr);
-				gap: 10px;
-				background: #bbada0;
-				padding: 10px;
-				border-radius: 8px;
-				width: 100%;
-				max-width: 400px;
-				aspect-ratio: 1 / 1;
-				box-sizing: border-box;
-				position: relative;
-				
-				font-size: 2em;
-				font-weight: bold;
-			}
+	style: `
+		/* Styles 2048 */
+		#game-2048-board {
+			display: grid;
+			grid-template-columns: repeat(4, 1fr);
+			grid-template-rows: repeat(4, 1fr);
+			gap: 10px;
+			background: #bbada0;
+			padding: 10px;
+			border-radius: 8px;
+			width: 100%;
+			max-width: 400px;
+			aspect-ratio: 1 / 1;
+			box-sizing: border-box;
+			position: relative;
+			
+			font-size: 2em;
+			font-weight: bold;
+		}
 
-			.tile {
-				display: flex;
-				justify-content: center;
-				align-items: center;
-				border-radius: 4px;
-				color: #776e65;
-				background: #cdc1b4;
-			}
+		.tile {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			border-radius: 4px;
+			color: #776e65;
+			background: #cdc1b4;
+		}
 
-			/* Tuiles 2048 avec couleurs */
-			.tile[data-value="2"] {
-				background: #eee4da;
-			}
+		/* Tuiles 2048 avec couleurs */
+		.tile[data-value="2"] {
+			background: #eee4da;
+		}
 
-			.tile[data-value="4"] {
-				background: #ede0c8;
-			}
+		.tile[data-value="4"] {
+			background: #ede0c8;
+		}
 
-			.tile[data-value="8"] {
-				background: #f2b179;
-				color: #f9f6f2;
-			}
+		.tile[data-value="8"] {
+			background: #f2b179;
+			color: #f9f6f2;
+		}
 
-			.tile[data-value="16"] {
-				background: #f59563;
-				color: #f9f6f2;
-			}
+		.tile[data-value="16"] {
+			background: #f59563;
+			color: #f9f6f2;
+		}
 
-			.tile[data-value="32"] {
-				background: #f67c5f;
-				color: #f9f6f2;
-			}
+		.tile[data-value="32"] {
+			background: #f67c5f;
+			color: #f9f6f2;
+		}
 
-			.tile[data-value="64"] {
-				background: #f65e3b;
-				color: #f9f6f2;
-			}
+		.tile[data-value="64"] {
+			background: #f65e3b;
+			color: #f9f6f2;
+		}
 
-			.tile[data-value="128"] {
-				background: #edcf72;
-				color: #f9f6f2;
-			}
+		.tile[data-value="128"] {
+			background: #edcf72;
+			color: #f9f6f2;
+		}
 
-			.tile[data-value="256"] {
-				background: #edcc61;
-				color: #f9f6f2;
-			}
+		.tile[data-value="256"] {
+			background: #edcc61;
+			color: #f9f6f2;
+		}
 
-			.tile[data-value="512"] {
-				background: #edc850;
-				color: #f9f6f2;
-			}
+		.tile[data-value="512"] {
+			background: #edc850;
+			color: #f9f6f2;
+		}
 
-			.tile[data-value="1024"] {
-				background: #edc53f;
-				color: #f9f6f2;
-			}
+		.tile[data-value="1024"] {
+			background: #edc53f;
+			color: #f9f6f2;
+		}
 
-			.tile[data-value="2048"] {
-				background: #edc22e;
-				color: #f9f6f2;
-			}
+		.tile[data-value="2048"] {
+			background: #edc22e;
+			color: #f9f6f2;
+		}
 
-			.tile[data-value="4096"] {
-				background: #9e70c9ff;
-				color: #f9f6f2;
-			}
+		.tile[data-value="4096"] {
+			background: #9e70c9ff;
+			color: #f9f6f2;
+		}
 
-			.tile[data-value="8192"] {
-				background: #9e70c9ff;
-				color: #f9f6f2;
-			}
+		.tile[data-value="8192"] {
+			background: #9e70c9ff;
+			color: #f9f6f2;
+		}
 
-			.tile[data-value="16384"] {
-				background: #9e70c9ff;
-				color: #f9f6f2;
-			}
+		.tile[data-value="16384"] {
+			background: #9e70c9ff;
+			color: #f9f6f2;
+		}
 
-			.tile[data-value="32768"] {
-				background: #781fcaff;
-				color: #f9f6f2;
-			}
+		.tile[data-value="32768"] {
+			background: #781fcaff;
+			color: #f9f6f2;
+		}
 
-			.tile[data-value="65536"] {
-				background: #781fcaff;
-				color: #f9f6f2;
-			}
+		.tile[data-value="65536"] {
+			background: #781fcaff;
+			color: #f9f6f2;
+		}
 
-			.tile[data-value="32768"] {
-				background: #781fcaff;
-				color: #f9f6f2;
-			}
+		.tile[data-value="32768"] {
+			background: #781fcaff;
+			color: #f9f6f2;
+		}
 
-			.slider-container {
-				margin: 10px 0;
-				display: flex;
-				align-items: center;
-				gap: 8px;
-				color: #000;
-			}
-			.slider-container input[type="range"] {
-				width: 100%;
-			}
-		</style>
-		<div class="game-container">
-			<div class="game-score">Score: <span id="2048-score">0</span></div>
-			<div class="game-extra-controls">
-				<button id="2048-restart-btn">Restart</button>
+		.slider-container {
+			margin: 10px 0;
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			color: #000;
+		}
+		.slider-container input[type="range"] {
+			width: 100%;
+		}
+		`,
+	content: {
+		'fr-FR': `
+			<div class="game-container">
+				<div class="game-score">Score: <span id="2048-score">0</span></div>
+				<div class="game-extra-controls">
+					<button id="2048-restart-btn">Restart</button>
+				</div>
+
+				<div class="slider-container">
+					<label for="grid-size-slider">Grid size :</label>
+					<input type="range" id="grid-size-slider" min="3" max="8" value="4" step="1">
+					<span id="grid-size-value">4×4</span>
+				</div>{'fr-FR':
+
+				<div id="game-2048-board"></div>
+
+				<div id="2048-controls" class="game-controls">
+					<button class="left" data-dir="counterclockwise" title="rotate counterclockwise"><svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12.5 20.5C17.1944 20.5 21 16.6944 21 12C21 7.30558 17.1944 3.5 12.5 3.5C7.80558 3.5 4 7.30558 4 12C4 13.5433 4.41128 14.9905 5.13022 16.238M1.5 15L5.13022 16.238M6.82531 12.3832L5.47107 16.3542L5.13022 16.238" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg></button>
+					<button class="up" data-dir="up", title="up">▲</button>
+					<button class="right" data-dir="clockwise" title="rotate clockwise"><svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M11.5 20.5C6.80558 20.5 3 16.6944 3 12C3 7.30558 6.80558 3.5 11.5 3.5C16.1944 3.5 20 7.30558 20 12C20 13.5433 19.5887 14.9905 18.8698 16.238M22.5 15L18.8698 16.238M17.1747 12.3832L18.5289 16.3542L18.8698 16.238" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg></button>
+					<button class="left" data-dir="left" title="left">◄</button>
+					<button class="down" data-dir="down" title="down">▼</button>
+					<button class="right" data-dir="right" title="right">►</button>
+				</div>
 			</div>
+		`
+	},
+	/**
+	 * Init function
+	 * @param {System} sys - System class instance
+	 * @param {String} windowId - Window html ID in which the application will be drawn
+	 */
+	init: function (sys, windowId) {
+        /** @type {System} */
+		const system = sys;
+        /** @type {JQuery<HTMLElement>} */
+        const $window = $(`#${windowId}`);
 
-			<div class="slider-container">
-				<label for="grid-size-slider">Grid size :</label>
-				<input type="range" id="grid-size-slider" min="3" max="8" value="4" step="1">
-				<span id="grid-size-value">4×4</span>
-			</div>
-
-			<div id="game-2048-board"></div>
-
-			<div id="2048-controls" class="game-controls">
-				<button class="left" data-dir="counterclockwise" title="rotate counterclockwise"><svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12.5 20.5C17.1944 20.5 21 16.6944 21 12C21 7.30558 17.1944 3.5 12.5 3.5C7.80558 3.5 4 7.30558 4 12C4 13.5433 4.41128 14.9905 5.13022 16.238M1.5 15L5.13022 16.238M6.82531 12.3832L5.47107 16.3542L5.13022 16.238" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg></button>
-				<button class="up" data-dir="up", title="up">▲</button>
-				<button class="right" data-dir="clockwise" title="rotate clockwise"><svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M11.5 20.5C6.80558 20.5 3 16.6944 3 12C3 7.30558 6.80558 3.5 11.5 3.5C16.1944 3.5 20 7.30558 20 12C20 13.5433 19.5887 14.9905 18.8698 16.238M22.5 15L18.8698 16.238M17.1747 12.3832L18.5289 16.3542L18.8698 16.238" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg></button>
-				<button class="left" data-dir="left" title="left">◄</button>
-				<button class="down" data-dir="down" title="down">▼</button>
-				<button class="right" data-dir="right" title="right">►</button>
-			</div>
-		</div>
-	`,
-	init: function(windowId) {
-		const $window = $(`#${windowId}`);
+        /** @type {JQuery<HTMLElement>} */
 		const boardEl = $window.find('#game-2048-board')[0];
+        /** @type {JQuery<HTMLElement>} */
 		const scoreEl = $window.find('#2048-score')[0];
+        /** @type {JQuery<HTMLElement>} */
 		const restartBtn = $window.find('#2048-restart-btn')[0];
+        /** @type {JQuery<HTMLElement>} */
 		const gridSlider = $window.find('#grid-size-slider');
+        /** @type {JQuery<HTMLElement>} */
 		const gridLabel = $window.find('#grid-size-value');
 		
 		let gridSize = 4;
