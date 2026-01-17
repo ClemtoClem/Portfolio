@@ -1,7 +1,7 @@
 export const contactApp = {
-	id: 'contact-page',
+	id: 'app-contact',
 	title: {'en-US':'Contact', 'fr-FR':'Contact'},
-	icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20,4H4C2.9,4,2.01,4.9,2.01,6L2,18c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V6C22,4.9,21.1,4,20,4z M20,8l-8,5l-8-5V6l8,5l8-5V8z" /></svg>`,
+	icon: `<svg viewBox="0 0 24 24"><path d="M20,4H4C2.9,4,2.01,4.9,2.01,6L2,18c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V6C22,4.9,21.1,4,20,4z M20,8l-8,5l-8-5V6l8,5l8-5V8z" /></svg>`,
 	iconColor: '#f44336',
 	type: 'main',
 	style: `
@@ -100,6 +100,8 @@ export const contactApp = {
 		const system = sys;
         /** @type {JQuery<HTMLElement>} */
         const $window = $(`#${windowId}`);
+		
+		const STORAGE_KEY = this.id;
 
         /** @type {JQuery<HTMLElement>} */
 		const $form = $window.find('#contact-form');

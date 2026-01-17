@@ -1,7 +1,7 @@
 export const projectsApp = {
-	id: 'projects-page',
+	id: 'app-projects',
 	title: {'en-US':'Projects', 'fr-FR':'Projets'},
-	icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4,6H2v14c0,1.1,0.9,2,2,2h14v-2H4V6z M20,2H8C6.9,2,6,2.9,6,4v12c0,1.1,0.9,2,2,2h12c1.1,0,2-0.9,2-2V4C22,2.9,21.1,2,20,2z M12,14.5v-9l6,4.5L12,14.5z" /></svg>`,
+	icon: `<svg viewBox="0 0 24 24"><path d="M4,6H2v14c0,1.1,0.9,2,2,2h14v-2H4V6z M20,2H8C6.9,2,6,2.9,6,4v12c0,1.1,0.9,2,2,2h12c1.1,0,2-0.9,2-2V4C22,2.9,21.1,2,20,2z M12,14.5v-9l6,4.5L12,14.5z" /></svg>`,
 	iconColor: '#ff9800',
 	type: 'main',
 	style: `
@@ -154,7 +154,7 @@ export const projectsApp = {
 
 			<!-- Vues Détails des Projets (cachées) -->
 			<div id="project-detail-1" class="project-detail-view">
-				<a class="back-to-grid"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20,11H7.83l5.59-5.59L12,4l-8,8l8,8l1.41-1.41L7.83,13H20V11z" /></svg> Retour</a>
+				<a class="back-to-grid"><svg viewBox="0 0 24 24"><path d="M20,11H7.83l5.59-5.59L12,4l-8,8l8,8l1.41-1.41L7.83,13H20V11z" /></svg> Retour</a>
 				<img class="main-image" src="./assets/img/polyadventure-capture.png" alt="PolyAdventure">
 				<h1>PolyAdventure</h1>
 				<div class="project-tags">
@@ -168,7 +168,7 @@ export const projectsApp = {
 			</div>
 
 			<div id="project-detail-2" class="project-detail-view">
-				<a class="back-to-grid"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20,11H7.83l5.59-5.59L12,4l-8,8l8,8l1.41-1.41L7.83,13H20V11z" /></svg> Retour</a>
+				<a class="back-to-grid"><svg viewBox="0 0 24 24"><path d="M20,11H7.83l5.59-5.59L12,4l-8,8l8,8l1.41-1.41L7.83,13H20V11z" /></svg> Retour</a>
 				<img class="main-image" src="./assets/img/red-pitaya.png" alt="Red Pitaya">
 				<h1>Red Pitaya</h1>
 				<div class="project-tags">
@@ -186,7 +186,7 @@ export const projectsApp = {
 			</div>
 
 			<div id="project-detail-3" class="project-detail-view">
-				<a class="back-to-grid"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20,11H7.83l5.59-5.59L12,4l-8,8l8,8l1.41-1.41L7.83,13H20V11z" /></svg> Retour</a>
+				<a class="back-to-grid"><svg viewBox="0 0 24 24"><path d="M20,11H7.83l5.59-5.59L12,4l-8,8l8,8l1.41-1.41L7.83,13H20V11z" /></svg> Retour</a>
 				<img class="main-image" src="./assets/img/holonome-robot-capture1.png" alt="Robot Holonome">
 				<h1>Robot Holonome</h1>
 				<div class="project-tags">
@@ -250,7 +250,7 @@ export const projectsApp = {
 			</div>
 
 			<div id="project-detail-4" class="project-detail-view">
-				<a class="back-to-grid"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20,11H7.83l5.59-5.59L12,4l-8,8l8,8l1.41-1.41L7.83,13H20V11z" /></svg> Retour</a>
+				<a class="back-to-grid"><svg viewBox="0 0 24 24"><path d="M20,11H7.83l5.59-5.59L12,4l-8,8l8,8l1.41-1.41L7.83,13H20V11z" /></svg> Retour</a>
 				<img class="main-image" src="./assets/img/batspy_logo.jpg" alt="Gite Chauves-souris">
 				<h1>Gîte à Chauves-souris Connecté</h1>
 				<div class="project-tags">
