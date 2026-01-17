@@ -1,43 +1,92 @@
+const VERSION = '1.0.0';
 export const gameFlappyBirdApp = {
 	id: 'game-flappy-bird',
 	title: 'Flappy Bird',
-	version: '1.0.0',
+	version: VERSION,
 	icon: `<svg viewBox="0 -4 91 91" fill="#000000"><g id="bgCarrier" stroke-width="0"></g><g id="tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="iconCarrier"> <g id="Group_8" data-name="Group 8" transform="translate(-286 -709)"> <path id="Path_55" data-name="Path 55" d="M344,768l23.669-23.669L344,720.663" fill="#ff7800" stroke="#2d4168" stroke-linejoin="round" stroke-width="4"></path> <path id="Path_56" data-name="Path 56" d="M321,711c-.755,0-1.5.034-2.243.084a23.007,23.007,0,0,1-30.673,30.673c-.05.742-.084,1.488-.084,2.243a33,33,0,1,0,33-33Z" fill="#f6d32d" stroke="#2d4168" stroke-linejoin="round" stroke-width="4"></path> <g id="Group_4" data-name="Group 4"> <path id="Path_57" data-name="Path 57" d="M354,721a22.939,22.939,0,0,0-8.026,1.442,32.966,32.966,0,0,1,0,43.116A23,23,0,1,0,354,721Z" fill="none"></path> </g> <line id="Line_17" data-name="Line 17" y2="13" transform="translate(321 777)" fill="none" stroke="#2d4168" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"></line> <line id="Line_18" data-name="Line 18" x2="13" transform="translate(321 790)" fill="none" stroke="#2d4168" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"></line> <path id="Path_60" data-name="Path 60" d="M345.974,722.442a23.005,23.005,0,0,0,0,43.116,32.966,32.966,0,0,0,0-43.116Z" fill="#ffffff" stroke="#2d4168" stroke-miterlimit="10" stroke-width="4"></path> </g> </g></svg>`,
 	iconColor: '#ff6b6b',
 	headerColor: '#ff6b6b',
 	type: 'game',
-	style: ``,
+	style: `
+		:root {
+			--primary-color: #ff6b6b;
+			--primary-dark-color: #c21212;
+			--primary-background-color: #fdb7b7;
+		}
+		.app-content { padding: 0px; }
+
+		.paused { opacity: 0.7; }
+	`,
 	content: {
 		'en-US':`
 			<div class="game-container">
-				<div class="game-score">Score: <span id="flappy-bird-score">0</span></div>
-				<div class="game-extra-controls">
-					<button id="flappy-bird-pause-btn" class="pause-btn">Pause</button>
-					<button id="flappy-bird-restart-btn">Restart</button>
+				<div id="game-main-menu" class="game-menu-screen">
+					<h1 class="game-title">Flappy Bird</h1>
+					<div class="game-version">Version ${VERSION}</div>
+					<button id="game-play-btn" class="game-btn">PLAY</button>
 				</div>
-
-				<canvas id="flappy-canvas" class="game-canvas"></canvas>
-
-				<div id="flappy-controls" class="game-controls">
-					<button class="up" id="flappy-flap-btn">Flap</button>
+				<div id="game-content-flappy" class="game-content" style="display:none;">
+					<div class="game-header">
+						<div class="game-top-row">
+							<button class="game-action-btn" id="game-exit-btn">
+								<svg viewBox="0 0 24 24"><path d="M4 5C3.44772 5 3 5.44772 3 6C3 6.55228 3.44772 7 4 7H20C20.5523 7 21 6.55228 21 6C21 5.44772 20.5523 5 20 5H4ZM3 12C3 11.4477 3.44772 11 4 11H20C20.5523 11 21 11.4477 21 12C21 12.5523 20.5523 13 20 13H4C3.44772 13 3 12.5523 3 12ZM3 18C3 17.4477 3.44772 17 4 17H20C20.5523 17 21 17.4477 21 18C21 18.5523 20.5523 19 20 19H4C3.44772 19 3 18.5523 3 18Z"></path></svg>
+								Menu
+							</button>
+							<div class="game-score">Score: <span id="flappy-bird-score">0</span></div>
+							<button class="game-action-btn" id="pause-btn-flappy" title="Pause (P)">Pause</button>
+							<button class="game-action-btn" id="restart-btn-flappy" title="Restart (R)">
+								<svg viewBox="0 0 100 100"><path d="M76.5,58.3c0,0.1,0,0.2-0.1,0.2c-0.3,1.1-0.7,2.2-1.1,3.3c-0.5,1.2-1,2.3-1.6,3.4c-1.2,2.2-2.7,4.2-4.5,6 c-1.7,1.8-3.7,3.4-5.9,4.7c-2.2,1.3-4.5,2.3-7,3c-2.5,0.7-5.1,1.1-7.7,1.1C32.8,80,20,67.2,20,51.3s12.8-28.6,28.6-28.6 c5.3,0,10.3,1.5,14.6,4c0,0,0,0,0.1,0c2.1,1.2,4,2.7,5.6,4.4c0.5,0.4,0.8,0.7,1.2,1.2c0.9,0.8,1.6,0.3,1.6-0.9V22c0-1.1,0.9-2,2-2h4 c1.1,0,2,0.9,2.2,2v24.5c0,0.9-0.8,1.8-1.8,1.8H53.6c-1.1,0-1.9-0.8-1.9-1.9v-4.2c0-1.1,0.9-2,2-2h9.4c0.8,0,1.4-0.2,1.7-0.7 c-3.6-5-9.6-8.3-16.2-8.3c-11.1,0-20.1,9-20.1,20.1s9,20.1,20.1,20.1c8.7,0,16.1-5.5,18.9-13.3c0,0,0.3-1.8,1.7-1.8 c1.4,0,4.8,0,5.7,0c0.8,0,1.6,0.6,1.6,1.5C76.5,58,76.5,58.1,76.5,58.3z"></path></svg>
+							</button>
+						</div>
+					</div>
+					<div class="game-main">
+						<div class="game-canvas-wrapper">
+							<canvas id="canvas-flappy" class="game-canvas"></canvas>
+						</div>
+						<div id="controls-flappy" class="game-controls">
+							<button class="up" id="flap-btn">Flap</button>
+						</div>
+					</div>
+					<div class="game-footer">
+						<small>Press <strong>SPACE</strong> or click/tap to flap your wings</small>
+					<div>
 				</div>
-				<small>Press <strong>SPACE</strong> or click/tap to flap your wings</small>
 			</div>
 		`,
 		'fr-FR':`
 			<div class="game-container">
-				<div class="game-score">Score: <span id="flappy-bird-score">0</span></div>
-				<div class="game-extra-controls">
-					<button id="flappy-bird-pause-btn" class="pause-btn">Pause</button>
-					<button id="flappy-bird-restart-btn">Redémarrer</button>
+				<div id="game-main-menu" class="game-menu-screen">
+					<h1 class="game-title">Flappy Bird</h1>
+					<div class="game-version">Version ${VERSION}</div>
+					<button id="game-play-btn" class="game-btn">JOUER</button>
 				</div>
-
-				<canvas id="flappy-canvas" class="game-canvas"></canvas>
-
-				<div id="flappy-controls" class="game-controls">
-					<button class="up" id="flappy-flap-btn">Flap</button>
+				<div id="game-content-flappy" class="game-content" style="display:none;">
+					<div class="game-header">
+						<div class="game-top-row">
+							<button class="game-action-btn" id="game-exit-btn">
+								<svg viewBox="0 0 24 24"><path d="M4 5C3.44772 5 3 5.44772 3 6C3 6.55228 3.44772 7 4 7H20C20.5523 7 21 6.55228 21 6C21 5.44772 20.5523 5 20 5H4ZM3 12C3 11.4477 3.44772 11 4 11H20C20.5523 11 21 11.4477 21 12C21 12.5523 20.5523 13 20 13H4C3.44772 13 3 12.5523 3 12ZM3 18C3 17.4477 3.44772 17 4 17H20C20.5523 17 21 17.4477 21 18C21 18.5523 20.5523 19 20 19H4C3.44772 19 3 18.5523 3 18Z"></path></svg>
+								Menu
+							</button>
+							<div class="game-score">Score: <span id="flappy-bird-score">0</span></div>
+							<button class="game-action-btn" id="pause-btn-flappy" title="Pause (P)">Pause</button>
+							<button class="game-action-btn" id="restart-btn-flappy" title="Redémarrer (R)">
+								<svg viewBox="0 0 100 100"><path d="M76.5,58.3c0,0.1,0,0.2-0.1,0.2c-0.3,1.1-0.7,2.2-1.1,3.3c-0.5,1.2-1,2.3-1.6,3.4c-1.2,2.2-2.7,4.2-4.5,6 c-1.7,1.8-3.7,3.4-5.9,4.7c-2.2,1.3-4.5,2.3-7,3c-2.5,0.7-5.1,1.1-7.7,1.1C32.8,80,20,67.2,20,51.3s12.8-28.6,28.6-28.6 c5.3,0,10.3,1.5,14.6,4c0,0,0,0,0.1,0c2.1,1.2,4,2.7,5.6,4.4c0.5,0.4,0.8,0.7,1.2,1.2c0.9,0.8,1.6,0.3,1.6-0.9V22c0-1.1,0.9-2,2-2h4 c1.1,0,2,0.9,2.2,2v24.5c0,0.9-0.8,1.8-1.8,1.8H53.6c-1.1,0-1.9-0.8-1.9-1.9v-4.2c0-1.1,0.9-2,2-2h9.4c0.8,0,1.4-0.2,1.7-0.7 c-3.6-5-9.6-8.3-16.2-8.3c-11.1,0-20.1,9-20.1,20.1s9,20.1,20.1,20.1c8.7,0,16.1-5.5,18.9-13.3c0,0,0.3-1.8,1.7-1.8 c1.4,0,4.8,0,5.7,0c0.8,0,1.6,0.6,1.6,1.5C76.5,58,76.5,58.1,76.5,58.3z"></path></svg>
+							</button>
+						</div>
+					</div>
+					<div class="game-main">
+						<div class="game-canvas-wrapper">
+							<canvas id="canvas-flappy" class="game-canvas"></canvas>
+						</div>
+							
+						<div id="controls-flappy" class="game-controls">
+							<button class="up" id="flap-btn">Flap</button>
+						</div>
+					</div>
+					<div class="game-footer">
+						<small>Appuie sur <strong>ESPACE</strong> ou clique / tape pour battre des ailes</small>
+					</div>
 				</div>
-				<small>Appuie sur <strong>ESPACE</strong> ou clique / tape pour battre des ailes</small>
 			</div>
 		`
 	},
@@ -52,31 +101,60 @@ export const gameFlappyBirdApp = {
         /** @type {JQuery<HTMLElement>} */
         const $window = $(`#${windowId}`);
 
-		/** @type {HTMLCanvasElement} */
-		const canvas = $window.find('#flappy-canvas')[0];
-		/** @type {JQuery<HTMLElement>} */
-		const scoreEl = $window.find('#flappy-bird-score')[0];
-		/** @type {JQuery<HTMLElement>} */
-		const pauseBtn = $window.find('#flappy-bird-pause-btn')[0];
-		/** @type {JQuery<HTMLElement>} */
-		const restartBtn = $window.find('#flappy-bird-restart-btn')[0];
-		/** @type {JQuery<HTMLElement>} */
-		const flapBtn = $window.find('#flappy-flap-btn')[0];
+		// --- DICTIONNAIRE D'ÉLÉMENTS UI ---
+        const ui = {
+            screens: {
+                menu: $window.find('#game-main-menu'),
+                game: $window.find('#game-content-flappy')
+            },
+            game: {
+                canvas: $window.find('#canvas-flappy')[0],
+                $canvas: $window.find('#canvas-flappy'),
+                score: $window.find('#flappy-bird-score'),
+                flapBtn: $window.find('#flap-btn')
+            },
+            buttons: {
+                play: $window.find('#game-play-btn'),
+                exit: $window.find('#game-exit-btn'),
+                pause: $window.find('#pause-btn-flappy'),
+                restart: $window.find('#restart-btn-flappy')
+            }
+        };
 
-		// Canvas setup & scaling for high-DPI
+		const canvas = ui.game.canvas;
         /** @type {CanvasRenderingContext2D} */
 		const ctx = canvas.getContext('2d');
 		let dpr = window.devicePixelRatio || 1;
+		
+		// Game state
+        let running = false;
+        let isGameOver = false;
+        let score = 0;
+        let gameDirection = 1;
+        const powerUpChance = 0.05;
 
+        // Bird physics
+        const bird = {
+            x: 80, y: 200, radius: 14, vel: 0,
+            gravity: 0.9, flapStrength: -12, maxDrop: 14, rotation: 0
+        };
+
+        const pipes = [];
+        const pipeWidth = 60;
+        const pipeGap = 150;
+        const pipeSpawnInterval = 1500;
+        let lastPipeTime = 0;
+        const pipeSpeed = 140;
+        const ground = { height: 60 };
+        let lastTime = performance.now();
+
+        // --- SYSTÈME ---
 		function resizeCanvas() {
-			const rect = canvas.getBoundingClientRect();
-			dpr = window.devicePixelRatio || 1;
-			canvas.width = Math.max(300, Math.floor(rect.width * dpr));
-			canvas.height = Math.max(200, Math.floor(rect.height * dpr));
-			ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+			const rect = ui.game.canvas.getBoundingClientRect();
+			ui.game.canvas.width = rect.width * dpr;
+			ui.game.canvas.height = rect.height * dpr;
+			ctx.scale(dpr, dpr);
 		}
-
-		resizeCanvas();
 
 		// Recalculer la taille si la fenêtre du navigateur change
 		const resizeObserver = new ResizeObserver(() => {
@@ -93,42 +171,6 @@ export const gameFlappyBirdApp = {
 			}
 		});
 		resizeObserver.observe(canvas);
-
-
-		// Game state
-		let running = false; // <-- NE PAS DÉMARRER AUTOMATIQUEMENT
-		let isGameOver = false;
-		let score = 0;
-		let gameDirection = 1;
-		const powerUpChance = 0.05; // 5% de chance qu'un tuyau soit un inverseur
-
-		// Bird physics
-		const bird = {
-			x: 80,
-			y: 200,
-			radius: 14,
-			vel: 0,
-			gravity: 0.9,
-			flapStrength: -12,
-			maxDrop: 14,
-			rotation: 0
-		};
-
-		// Pipes
-		const pipes = [];
-		const pipeWidth = 60;
-		const pipeGap = 150;
-		const pipeSpawnInterval = 1500; // ms
-		let lastPipeTime = 0;
-		const pipeSpeed = 140; // px/sec
-
-		// Ground
-		const ground = {
-			height: 60
-		};
-
-		// Timing
-		let lastTime = performance.now();
 
 		// --- MESSAGES OVERLAY ---
 		function drawReadyMessage() {
@@ -184,8 +226,8 @@ export const gameFlappyBirdApp = {
 			updateScoreEl();
 
 			// Mettre à jour le bouton pause pour refléter l'état "prêt"
-			pauseBtn.textContent = 'Resume';
-			pauseBtn.classList.add('paused');
+			ui.buttons.pause.text('Resume');
+			ui.buttons.pause.addClass('paused');
 
 			spawnPipe(true); // Spawner le premier tuyau pour l'écran "Ready", non-inverseur
 			draw(); // Dessiner la frame initiale
@@ -193,7 +235,7 @@ export const gameFlappyBirdApp = {
 		}
 
 		function updateScoreEl() {
-			if (scoreEl) scoreEl.textContent = `${score}`;
+			if (ui.game.score) ui.game.score.text(`${score}`);
 		}
 
 		function spawnPipe(forceNormal = false) {
@@ -241,8 +283,8 @@ export const gameFlappyBirdApp = {
 
 			// Le jeu est en cours, on le met en pause
 			running = false;
-			pauseBtn.textContent = 'Resume';
-			pauseBtn.classList.add('paused');
+			ui.buttons.pause.text('Resume');
+			ui.buttons.pause.addClass('paused');
 			drawPausedMessage(); // Afficher le message de pause
 		}
 
@@ -251,8 +293,8 @@ export const gameFlappyBirdApp = {
 			if (!running && !isGameOver) {
 				running = true;
 
-				pauseBtn.textContent = 'Pause';
-				pauseBtn.classList.remove('paused');
+				ui.buttons.pause.text('Pause');
+				ui.buttons.pause.removeClass('paused');
 
 				lastTime = performance.now(); // Réinitialiser le timer
 				lastPipeTime = lastTime; // Assurer que le spawn de tuyaux commence maintenant
@@ -369,8 +411,8 @@ export const gameFlappyBirdApp = {
 			isGameOver = true;
 			running = false;
 			// Mettre à jour le bouton pause pour refléter l'état "Game Over"
-			pauseBtn.textContent = 'Resume';
-			pauseBtn.classList.add('paused');
+			ui.buttons.pause.text('Resume');
+			ui.buttons.pause.addClass('paused');
 
 			drawGameOverMessage(); // Dessiner le message Game Over une fois
 		}
@@ -474,45 +516,31 @@ export const gameFlappyBirdApp = {
 			}
 		}
 
-		// --- Écouteurs d'événements ---
-
-		// Mise à jour des IDs des boutons
-		pauseBtn.addEventListener('click', togglePause);
-		restartBtn.addEventListener('click', resetGame);
-
-		canvas.addEventListener('mousedown', () => flap());
-		canvas.addEventListener('touchstart', (e) => { e.preventDefault(); flap(); }, { passive: false });
-		flapBtn.addEventListener('click', () => flap());
+		// --- EVENTS ---
+		ui.buttons.play.on('click', () => { ui.screens.menu.hide(); ui.screens.game.show(); resizeCanvas(); resetGame(); });
+		ui.buttons.exit.on('click', () => { ui.screens.menu.show(); ui.screens.game.hide(); running = false; });
+		ui.buttons.pause.on('click', () => running ? pauseGame() : resumeGame());
+		ui.buttons.restart.on('click', resetGame);
+		ui.game.flapBtn.on('click', flap);
+		ui.game.$canvas.on('mousedown', flap);
 
 		const keyHandler = (e) => {
 			// S'assurer que l'app est active
-			if (!document.body.contains(canvas)) return;
-
-			if (e.key === 'p' || e.key === 'P') {
-				e.preventDefault();
-				togglePause();
-				return;
-			}
-			if (e.key === ' ') { // space
-				e.preventDefault();
-				flap();
-			}
-			if (e.key === 'r' || e.key === 'R') {
-				e.preventDefault();
-				resetGame();
-			}
+			if (!document.body.contains(ui.game.canvas)) return;
+			if (e.code === 'Space') { e.preventDefault(); flap(); }
+			if (e.key === 'p') running ? pauseGame() : resumeGame();
+			if (e.key === 'r') resetGame();
 		};
-		document.addEventListener('keydown', keyHandler);
+		$(document).on('keydown', keyHandler);
 
 		// --- Start ---
 		resetGame(); // Prépare le jeu et affiche l'écran "Ready"
 
 		// Nettoyage lors de la fermeture
-		const observer = new MutationObserver((mutations) => {
-			if (!document.body.contains(canvas)) {
-				running = false; // Arrêter la boucle
-				document.removeEventListener('keydown', keyHandler);
-				resizeObserver.disconnect();
+		const observer = new MutationObserver(() => {
+			if (!document.body.contains(ui.game.canvas)) {
+				running = false;
+				$(document).off('keydown', keyHandler);
 				observer.disconnect();
 			}
 		});

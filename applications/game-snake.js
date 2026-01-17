@@ -1,56 +1,112 @@
+const VERSION = "beta";
 export const gameSnakeApp = {
 	id: 'game-snake',
 	title: 'Snake',
-	version: '1.0.0',
-	icon: `<svg version="1.1" id="Layer_1" viewBox="0 0 512 512" xml:space="preserve" fill="#000000"><g id="bgCarrier" stroke-width="0"></g><g id="tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="iconCarrier"> <path style="fill:#82C35F;" d="M503,169.56c0-31.597-9.838-58.418-24.559-71.841c-20.789-40.934-98.446-34.167-167.06-28.179 c-20.615,1.798-40.092,3.496-55.381,3.533c-15.289-0.037-34.766-1.734-55.381-3.533c-68.615-5.987-146.271-12.754-167.06,28.179 C18.838,111.141,9,137.963,9,169.56c0,17.684,3.09,33.862,8.384,47.047c-0.424,0.956-0.665,2.012-0.665,3.125 c0,44.715,10.612,76.196,32.441,96.239c22.748,20.887,54.68,26.391,89.427,26.391c19.601,0,40.101-1.752,60.349-3.483 c19.18-1.64,39-3.329,57.064-3.36c18.063,0.032,37.884,1.721,57.064,3.36c20.251,1.731,40.745,3.483,60.349,3.483 c34.744,0,66.681-5.506,89.427-26.391c21.83-20.043,32.441-51.524,32.441-96.239c0-1.113-0.24-2.169-0.665-3.125 C499.91,203.421,503,187.243,503,169.56z"></path> <g> <path style="fill:#73AF55;" d="M38,281.111c30.928,0,56-46.563,56-104c0-47.056-16.839-86.754-39.929-99.583 c-9.007,4.865-16.064,11.433-20.512,20.19C18.838,111.141,9,137.963,9,169.56c0,17.684,3.091,33.862,8.384,47.047 c-0.425,0.956-0.665,2.012-0.665,3.125c0,16.463,1.444,31.126,4.351,44.091c4.675,6.566,9.441,12.248,13.861,17.001 C35.953,280.926,36.964,281.111,38,281.111z"></path> <path style="fill:#73AF55;" d="M418.003,177.111c0,57.438,25.072,104,56,104c1.036,0,2.047-0.185,3.069-0.288 c3.681-3.958,8.467-9.61,13.757-16.536c2.977-13.078,4.452-27.897,4.452-44.556c0-1.113-0.24-2.169-0.665-3.125 C499.91,203.421,503,187.243,503,169.56c0-31.597-9.838-58.418-24.559-71.841c-4.447-8.756-11.503-15.324-20.51-20.189 C434.842,90.359,418.003,130.057,418.003,177.111z"></path> </g> <path style="fill:#C1C95A;" d="M443.148,306.024c-25.027,0-56.844-8.333-80.934-61.633C337.26,189.18,283.303,171.709,257,171.709 s-80.26,17.471-105.214,72.683c-24.09,53.299-55.907,61.633-80.934,61.633c-12.908,0-30.715-13.061-42.67-36.751 C51.517,376.772,167.85,337.563,256,337.411c85.329,0.148,197.07,36.898,225.3-58.254 C469.171,296.567,454.13,306.024,443.148,306.024z"></path> <path style="fill:#82C35F;" d="M70.852,306.024c25.027,0,56.844-8.333,80.934-61.633C176.74,189.18,230.697,171.709,257,171.709 s80.26,17.471,105.214,72.683c24.09,53.299,55.907,61.633,80.934,61.633c10.982,0,26.023-9.457,38.152-26.868 c23.624-33.912,35.034-156.798-5.3-188.132c-49.671-38.588-154.797-14.126-219-14.126S63.587,40.519,34,96.024 c-40.333,75.667-23.847,137.52-5.818,173.249C40.137,292.964,57.944,306.024,70.852,306.024z"></path> <g> <ellipse style="fill:#FFCE56;" cx="48" cy="169.02" rx="40" ry="76"></ellipse> <ellipse style="fill:#FFCE56;" cx="464" cy="169.02" rx="40" ry="76"></ellipse> </g> <path d="M512,168.316c0-32.748-10.197-60.547-25.454-74.459C465,51.432,384.513,58.445,313.399,64.651 c-21.366,1.864-41.553,3.623-57.399,3.662c-15.846-0.039-36.033-1.798-57.399-3.662C127.486,58.446,47,51.432,25.454,93.857 C10.197,107.769,0,135.568,0,168.316c0,18.328,3.203,35.096,8.689,48.761C8.249,218.068,8,219.162,8,220.316 c0,46.345,10.999,78.972,33.624,99.746c23.577,21.648,56.672,27.353,92.686,27.353c20.315,0,41.562-1.816,62.548-3.61 c17.084-1.46,34.654-2.953,51.143-3.367v68.273l-29.657,29.657c-3.125,3.124-3.125,8.189,0,11.313 c1.562,1.562,3.609,2.343,5.657,2.343s4.095-0.781,5.657-2.343L256,423.338l26.343,26.343c1.562,1.562,3.609,2.343,5.657,2.343 s4.095-0.781,5.657-2.343c3.125-3.124,3.125-8.189,0-11.313L264,408.711v-68.273c16.489,0.414,34.059,1.906,51.143,3.367 c20.989,1.794,42.229,3.61,62.548,3.61c36.01,0,69.11-5.707,92.686-27.353C493.001,299.288,504,266.661,504,220.316 c0-1.154-0.249-2.248-0.689-3.239C508.797,203.412,512,186.644,512,168.316z M496,168.316c0,40.073-16.864,68-32,68 s-32-27.927-32-68s16.864-68,32-68S496,128.243,496,168.316z M48,100.316c15.136,0,32,27.927,32,68s-16.864,68-32,68 s-32-27.927-32-68S32.864,100.316,48,100.316z M459.555,308.276c-31.698,29.105-88.305,24.267-143.049,19.587 c-17.464-1.493-35.431-3.02-52.506-3.431V180.548c27.346,1.593,68.581,12.278,88.651,58.929 c11.637,27.048,25.999,46.695,42.686,58.394c10.979,7.697,22.906,11.68,34.545,11.68c4.072,0,8.11-0.488,12.058-1.475 c4.286-1.072,6.892-5.415,5.821-9.702c-1.072-4.287-5.416-6.893-9.702-5.821c-10.816,2.705-22.415,0.013-33.538-7.784 c-14.02-9.829-26.874-27.678-37.173-51.616c-25.167-58.498-78.267-68.392-109.169-68.821c-0.693-0.196-1.423-0.309-2.18-0.309 s-1.486,0.112-2.18,0.309c-30.902,0.43-84.001,10.324-109.169,68.821c-10.299,23.938-23.154,41.787-37.173,51.616 c-11.122,7.797-22.72,10.49-33.538,7.784c-4.288-1.071-8.63,1.535-9.702,5.821c-1.071,4.287,1.535,8.63,5.821,9.702 c15.232,3.808,31.783,0.184,46.604-10.206c16.687-11.699,31.048-31.346,42.686-58.394c20.071-46.651,61.306-57.336,88.651-58.929 V324.43c-17.075,0.411-35.042,1.938-52.506,3.431c-54.744,4.68-111.351,9.518-143.049-19.587 c-15.555-14.282-24.614-35.961-27.462-65.917c6.797,6.367,14.623,9.958,23.017,9.958c26.916,0,48-36.897,48-84 c0-41.76-16.577-75.475-39.094-82.592c9.792-4.638,23.178-7.581,40.32-8.9c30.187-2.324,67.268,0.911,99.984,3.766 c21.425,1.869,41.681,3.632,58.09,3.717c0.054,0.001,0.107,0.008,0.161,0.008c0.177,0,0.36-0.003,0.538-0.003 s0.361,0.003,0.538,0.003c0.055,0,0.107-0.007,0.161-0.008c16.409-0.085,36.665-1.848,58.09-3.717 c32.715-2.854,69.794-6.089,99.984-3.766c17.142,1.319,30.528,4.262,40.32,8.9C432.578,92.841,416,126.556,416,168.316 c0,47.103,21.084,84,48,84c8.394,0,16.22-3.59,23.017-9.958C484.169,272.315,475.11,293.994,459.555,308.276z"></path> <path d="M464,124.316c-9.731,0-12.542,12.651-13.466,16.809C448.9,148.477,448,158.134,448,168.316s0.9,19.839,2.534,27.191 c0.924,4.157,3.735,16.809,13.466,16.809s12.542-12.651,13.466-16.809c1.634-7.353,2.534-17.009,2.534-27.191 s-0.9-19.839-2.534-27.191C476.542,136.967,473.731,124.316,464,124.316z"></path> <path d="M48,212.316c9.731,0,12.542-12.651,13.466-16.809C63.1,188.155,64,178.498,64,168.316s-0.9-19.839-2.534-27.191 c-0.924-4.158-3.735-16.809-13.466-16.809s-12.542,12.651-13.466,16.809C32.9,148.477,32,158.134,32,168.316 s0.9,19.839,2.534,27.191C35.458,199.665,38.269,212.316,48,212.316z"></path> </g></svg>`,
+	version: VERSION,
+	icon: `<svg viewBox="0 0 512 512" fill="#000000"><g id="bgCarrier" stroke-width="0"></g><g id="tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="iconCarrier"> <path style="fill:#82C35F;" d="M503,169.56c0-31.597-9.838-58.418-24.559-71.841c-20.789-40.934-98.446-34.167-167.06-28.179 c-20.615,1.798-40.092,3.496-55.381,3.533c-15.289-0.037-34.766-1.734-55.381-3.533c-68.615-5.987-146.271-12.754-167.06,28.179 C18.838,111.141,9,137.963,9,169.56c0,17.684,3.09,33.862,8.384,47.047c-0.424,0.956-0.665,2.012-0.665,3.125 c0,44.715,10.612,76.196,32.441,96.239c22.748,20.887,54.68,26.391,89.427,26.391c19.601,0,40.101-1.752,60.349-3.483 c19.18-1.64,39-3.329,57.064-3.36c18.063,0.032,37.884,1.721,57.064,3.36c20.251,1.731,40.745,3.483,60.349,3.483 c34.744,0,66.681-5.506,89.427-26.391c21.83-20.043,32.441-51.524,32.441-96.239c0-1.113-0.24-2.169-0.665-3.125 C499.91,203.421,503,187.243,503,169.56z"></path> <g> <path style="fill:#73AF55;" d="M38,281.111c30.928,0,56-46.563,56-104c0-47.056-16.839-86.754-39.929-99.583 c-9.007,4.865-16.064,11.433-20.512,20.19C18.838,111.141,9,137.963,9,169.56c0,17.684,3.091,33.862,8.384,47.047 c-0.425,0.956-0.665,2.012-0.665,3.125c0,16.463,1.444,31.126,4.351,44.091c4.675,6.566,9.441,12.248,13.861,17.001 C35.953,280.926,36.964,281.111,38,281.111z"></path> <path style="fill:#73AF55;" d="M418.003,177.111c0,57.438,25.072,104,56,104c1.036,0,2.047-0.185,3.069-0.288 c3.681-3.958,8.467-9.61,13.757-16.536c2.977-13.078,4.452-27.897,4.452-44.556c0-1.113-0.24-2.169-0.665-3.125 C499.91,203.421,503,187.243,503,169.56c0-31.597-9.838-58.418-24.559-71.841c-4.447-8.756-11.503-15.324-20.51-20.189 C434.842,90.359,418.003,130.057,418.003,177.111z"></path> </g> <path style="fill:#C1C95A;" d="M443.148,306.024c-25.027,0-56.844-8.333-80.934-61.633C337.26,189.18,283.303,171.709,257,171.709 s-80.26,17.471-105.214,72.683c-24.09,53.299-55.907,61.633-80.934,61.633c-12.908,0-30.715-13.061-42.67-36.751 C51.517,376.772,167.85,337.563,256,337.411c85.329,0.148,197.07,36.898,225.3-58.254 C469.171,296.567,454.13,306.024,443.148,306.024z"></path> <path style="fill:#82C35F;" d="M70.852,306.024c25.027,0,56.844-8.333,80.934-61.633C176.74,189.18,230.697,171.709,257,171.709 s80.26,17.471,105.214,72.683c24.09,53.299,55.907,61.633,80.934,61.633c10.982,0,26.023-9.457,38.152-26.868 c23.624-33.912,35.034-156.798-5.3-188.132c-49.671-38.588-154.797-14.126-219-14.126S63.587,40.519,34,96.024 c-40.333,75.667-23.847,137.52-5.818,173.249C40.137,292.964,57.944,306.024,70.852,306.024z"></path> <g> <ellipse style="fill:#FFCE56;" cx="48" cy="169.02" rx="40" ry="76"></ellipse> <ellipse style="fill:#FFCE56;" cx="464" cy="169.02" rx="40" ry="76"></ellipse> </g> <path d="M512,168.316c0-32.748-10.197-60.547-25.454-74.459C465,51.432,384.513,58.445,313.399,64.651 c-21.366,1.864-41.553,3.623-57.399,3.662c-15.846-0.039-36.033-1.798-57.399-3.662C127.486,58.446,47,51.432,25.454,93.857 C10.197,107.769,0,135.568,0,168.316c0,18.328,3.203,35.096,8.689,48.761C8.249,218.068,8,219.162,8,220.316 c0,46.345,10.999,78.972,33.624,99.746c23.577,21.648,56.672,27.353,92.686,27.353c20.315,0,41.562-1.816,62.548-3.61 c17.084-1.46,34.654-2.953,51.143-3.367v68.273l-29.657,29.657c-3.125,3.124-3.125,8.189,0,11.313 c1.562,1.562,3.609,2.343,5.657,2.343s4.095-0.781,5.657-2.343L256,423.338l26.343,26.343c1.562,1.562,3.609,2.343,5.657,2.343 s4.095-0.781,5.657-2.343c3.125-3.124,3.125-8.189,0-11.313L264,408.711v-68.273c16.489,0.414,34.059,1.906,51.143,3.367 c20.989,1.794,42.229,3.61,62.548,3.61c36.01,0,69.11-5.707,92.686-27.353C493.001,299.288,504,266.661,504,220.316 c0-1.154-0.249-2.248-0.689-3.239C508.797,203.412,512,186.644,512,168.316z M496,168.316c0,40.073-16.864,68-32,68 s-32-27.927-32-68s16.864-68,32-68S496,128.243,496,168.316z M48,100.316c15.136,0,32,27.927,32,68s-16.864,68-32,68 s-32-27.927-32-68S32.864,100.316,48,100.316z M459.555,308.276c-31.698,29.105-88.305,24.267-143.049,19.587 c-17.464-1.493-35.431-3.02-52.506-3.431V180.548c27.346,1.593,68.581,12.278,88.651,58.929 c11.637,27.048,25.999,46.695,42.686,58.394c10.979,7.697,22.906,11.68,34.545,11.68c4.072,0,8.11-0.488,12.058-1.475 c4.286-1.072,6.892-5.415,5.821-9.702c-1.072-4.287-5.416-6.893-9.702-5.821c-10.816,2.705-22.415,0.013-33.538-7.784 c-14.02-9.829-26.874-27.678-37.173-51.616c-25.167-58.498-78.267-68.392-109.169-68.821c-0.693-0.196-1.423-0.309-2.18-0.309 s-1.486,0.112-2.18,0.309c-30.902,0.43-84.001,10.324-109.169,68.821c-10.299,23.938-23.154,41.787-37.173,51.616 c-11.122,7.797-22.72,10.49-33.538,7.784c-4.288-1.071-8.63,1.535-9.702,5.821c-1.071,4.287,1.535,8.63,5.821,9.702 c15.232,3.808,31.783,0.184,46.604-10.206c16.687-11.699,31.048-31.346,42.686-58.394c20.071-46.651,61.306-57.336,88.651-58.929 V324.43c-17.075,0.411-35.042,1.938-52.506,3.431c-54.744,4.68-111.351,9.518-143.049-19.587 c-15.555-14.282-24.614-35.961-27.462-65.917c6.797,6.367,14.623,9.958,23.017,9.958c26.916,0,48-36.897,48-84 c0-41.76-16.577-75.475-39.094-82.592c9.792-4.638,23.178-7.581,40.32-8.9c30.187-2.324,67.268,0.911,99.984,3.766 c21.425,1.869,41.681,3.632,58.09,3.717c0.054,0.001,0.107,0.008,0.161,0.008c0.177,0,0.36-0.003,0.538-0.003 s0.361,0.003,0.538,0.003c0.055,0,0.107-0.007,0.161-0.008c16.409-0.085,36.665-1.848,58.09-3.717 c32.715-2.854,69.794-6.089,99.984-3.766c17.142,1.319,30.528,4.262,40.32,8.9C432.578,92.841,416,126.556,416,168.316 c0,47.103,21.084,84,48,84c8.394,0,16.22-3.59,23.017-9.958C484.169,272.315,475.11,293.994,459.555,308.276z"></path> <path d="M464,124.316c-9.731,0-12.542,12.651-13.466,16.809C448.9,148.477,448,158.134,448,168.316s0.9,19.839,2.534,27.191 c0.924,4.157,3.735,16.809,13.466,16.809s12.542-12.651,13.466-16.809c1.634-7.353,2.534-17.009,2.534-27.191 s-0.9-19.839-2.534-27.191C476.542,136.967,473.731,124.316,464,124.316z"></path> <path d="M48,212.316c9.731,0,12.542-12.651,13.466-16.809C63.1,188.155,64,178.498,64,168.316s-0.9-19.839-2.534-27.191 c-0.924-4.158-3.735-16.809-13.466-16.809s-12.542,12.651-13.466,16.809C32.9,148.477,32,158.134,32,168.316 s0.9,19.839,2.534,27.191C35.458,199.665,38.269,212.316,48,212.316z"></path> </g></svg>`,
 	iconColor: '#8BC34A',
 	headerColor: '#8BC34A',
 	type: 'game',
-	style: ``,
+	style: `
+		:root {
+			--primary-color: #8BC34A;
+			--primary-dark-color: #487217;
+			--primary-background-color: #c4f091;
+		}
+		.app-content { padding: 0px; }
+
+		.paused { opacity: 0.7; }
+	`,
 	content: {
 		'en-US':`
 			<div class="game-container">
-				<div class="game-score">Score: <span id="snake-score">0</span></div>
-				<div class="game-extra-controls">
-					<button id="snake-pause-btn" class="pause-btn">Pause</button>
-					<button id="snake-restart-btn">Restart</button>
+				
+				<div id="game-main-menu" class="game-menu-screen">
+					<h1 class="game-title">Snake</h1>
+					<div class="game-version">Version ${VERSION}</div>
+					<button id="game-play-btn" class="game-btn">PLAY</button>
 				</div>
+				
+				<div id="snake-game-content" class="game-content" style="display:none;">
+					<div class="game-header">
+						<div class="game-top-row">
+							<button id="game-exit-btn" class="game-action-btn">
+								<svg viewBox="0 0 24 24"><path d="M4 5C3.44772 5 3 5.44772 3 6C3 6.55228 3.44772 7 4 7H20C20.5523 7 21 6.55228 21 6C21 5.44772 20.5523 5 20 5H4ZM3 12C3 11.4477 3.44772 11 4 11H20C20.5523 11 21 11.4477 21 12C21 12.5523 20.5523 13 20 13H4C3.44772 13 3 12.5523 3 12ZM3 18C3 17.4477 3.44772 17 4 17H20C20.5523 17 21 17.4477 21 18C21 18.5523 20.5523 19 20 19H4C3.44772 19 3 18.5523 3 18Z"></path></svg>
+								Menu
+							</button>
+							<div class="game-score-board">
+								<div class="game-score">Score: <span id="snake-score">0</span></div>
+							</div>
+							<button id="game-pause-btn" class="game-action-btn">Pause</button>
+							<button class="game-action-btn" id="snake-restart-btn" title="Redémarrer (R)">
+								<svg viewBox="0 0 100 100"><path d="M76.5,58.3c0,0.1,0,0.2-0.1,0.2c-0.3,1.1-0.7,2.2-1.1,3.3c-0.5,1.2-1,2.3-1.6,3.4c-1.2,2.2-2.7,4.2-4.5,6 c-1.7,1.8-3.7,3.4-5.9,4.7c-2.2,1.3-4.5,2.3-7,3c-2.5,0.7-5.1,1.1-7.7,1.1C32.8,80,20,67.2,20,51.3s12.8-28.6,28.6-28.6 c5.3,0,10.3,1.5,14.6,4c0,0,0,0,0.1,0c2.1,1.2,4,2.7,5.6,4.4c0.5,0.4,0.8,0.7,1.2,1.2c0.9,0.8,1.6,0.3,1.6-0.9V22c0-1.1,0.9-2,2-2h4 c1.1,0,2,0.9,2.2,2v24.5c0,0.9-0.8,1.8-1.8,1.8H53.6c-1.1,0-1.9-0.8-1.9-1.9v-4.2c0-1.1,0.9-2,2-2h9.4c0.8,0,1.4-0.2,1.7-0.7 c-3.6-5-9.6-8.3-16.2-8.3c-11.1,0-20.1,9-20.1,20.1s9,20.1,20.1,20.1c8.7,0,16.1-5.5,18.9-13.3c0,0,0.3-1.8,1.7-1.8 c1.4,0,4.8,0,5.7,0c0.8,0,1.6,0.6,1.6,1.5C76.5,58,76.5,58.1,76.5,58.3z"></path></svg>
+							</button>
+						</div>
+					</div>
 
-				<canvas id="snake-canvas" class="game-canvas square-canvas"></canvas>
+					<div class="game-main>
+						<div class="game-canvas-wrapper">
+							<canvas id="snake-canvas"></canvas>
+						</div>
 
-				<div id="snake-controls" class="game-controls">
-					<button class="up" data-dir="up", title="Up">▲</button>
-					<button class="left" data-dir="left" title="Left">◄</button>
-					<button class="down" data-dir="down" title="Down">▼</button>
-					<button class="right" data-dir="right" title="Right">►</button>
-				</div>
+						<div id="snake-controls" class="game-controls">
+							<button class="up" data-dir="up", title="Up">▲</button>
+							<button class="left" data-dir="left" title="Left">◄</button>
+							<button class="center" data-dir="down" title="Down">▼</button>
+							<button class="right" data-dir="right" title="Right">►</button>
+						</div>
+					</div>
 
-				<div class="status-panel">
-					<h4>Actifs effects</h4>
-					<ul id="snake-effects"></ul>
+					<div class="game-footer">
+						<h4>Actifs effects</h4>
+						<ul id="snake-effects"></ul>
+					</div>
 				</div>
 			</div>
 		`,
 		'fr-FR':`
 			<div class="game-container">
-				<div class="game-score">Score: <span id="snake-score">0</span></div>
-				<div class="game-extra-controls">
-					<button id="snake-pause-btn" class="pause-btn">Pause</button>
-					<button id="snake-restart-btn">Redémarrer</button>
+				
+				<div id="game-main-menu" class="game-menu-screen">
+					<h1 class="game-title">Snake</h1>
+					<div class="game-version">Version ${VERSION}</div>
+					<button id="game-play-btn" class="game-btn">PLAY</button>
 				</div>
+				
+				<div id="snake-game-content" class="game-content" style="display:none;">
+					<div class="game-header">
+						<div class="game-top-row">
+							<button id="game-exit-btn" class="game-action-btn">
+								<svg viewBox="0 0 24 24"><path d="M4 5C3.44772 5 3 5.44772 3 6C3 6.55228 3.44772 7 4 7H20C20.5523 7 21 6.55228 21 6C21 5.44772 20.5523 5 20 5H4ZM3 12C3 11.4477 3.44772 11 4 11H20C20.5523 11 21 11.4477 21 12C21 12.5523 20.5523 13 20 13H4C3.44772 13 3 12.5523 3 12ZM3 18C3 17.4477 3.44772 17 4 17H20C20.5523 17 21 17.4477 21 18C21 18.5523 20.5523 19 20 19H4C3.44772 19 3 18.5523 3 18Z"></path></svg>
+								Menu
+							</button>
+							<div class="game-score-board">
+								<div class="game-score">Score: <span id="snake-score">0</span></div>
+							</div>
+							<button id="game-pause-btn" class="game-action-btn">Pause</button>
+							<button class="game-action-btn" id="snake-restart-btn" title="Redémarrer (R)">
+								<svg viewBox="0 0 100 100"><path d="M76.5,58.3c0,0.1,0,0.2-0.1,0.2c-0.3,1.1-0.7,2.2-1.1,3.3c-0.5,1.2-1,2.3-1.6,3.4c-1.2,2.2-2.7,4.2-4.5,6 c-1.7,1.8-3.7,3.4-5.9,4.7c-2.2,1.3-4.5,2.3-7,3c-2.5,0.7-5.1,1.1-7.7,1.1C32.8,80,20,67.2,20,51.3s12.8-28.6,28.6-28.6 c5.3,0,10.3,1.5,14.6,4c0,0,0,0,0.1,0c2.1,1.2,4,2.7,5.6,4.4c0.5,0.4,0.8,0.7,1.2,1.2c0.9,0.8,1.6,0.3,1.6-0.9V22c0-1.1,0.9-2,2-2h4 c1.1,0,2,0.9,2.2,2v24.5c0,0.9-0.8,1.8-1.8,1.8H53.6c-1.1,0-1.9-0.8-1.9-1.9v-4.2c0-1.1,0.9-2,2-2h9.4c0.8,0,1.4-0.2,1.7-0.7 c-3.6-5-9.6-8.3-16.2-8.3c-11.1,0-20.1,9-20.1,20.1s9,20.1,20.1,20.1c8.7,0,16.1-5.5,18.9-13.3c0,0,0.3-1.8,1.7-1.8 c1.4,0,4.8,0,5.7,0c0.8,0,1.6,0.6,1.6,1.5C76.5,58,76.5,58.1,76.5,58.3z"></path></svg>
+							</button>
+						</div>
+					</div>
 
-				<canvas id="snake-canvas" class="game-canvas square-canvas"></canvas>
+					<div class="game-main>
+						<div class="game-canvas-wrapper">
+							<canvas id="snake-canvas"></canvas>
+						</div>
 
-				<div id="snake-controls" class="game-controls">
-					<button class="up" data-dir="up", title="Haut">▲</button>
-					<button class="left" data-dir="left" title="Gauche">◄</button>
-					<button class="down" data-dir="down" title="Bas">▼</button>
-					<button class="right" data-dir="right" title="Droit">►</button>
-				</div>
+						<div id="snake-controls" class="game-controls">
+							<button class="up" data-dir="up", title="Up">▲</button>
+							<button class="left" data-dir="left" title="Left">◄</button>
+							<button class="center" data-dir="down" title="Down">▼</button>
+							<button class="right" data-dir="right" title="Right">►</button>
+						</div>
+					</div>
 
-				<div class="status-panel">
-					<h4>Effets actifs</h4>
-					<ul id="snake-effects"></ul>
+					<div class="game-footer">
+						<h4>Actifs effects</h4>
+						<ul id="snake-effects"></ul>
+					</div>
 				</div>
 			</div>
 		`
@@ -65,18 +121,38 @@ export const gameSnakeApp = {
 		const system = sys;
         /** @type {JQuery<HTMLElement>} */
         const $window = $(`#${windowId}`);
-
-		/** @type {HTMLCanvasElement} */
-		const canvas = $window.find('#snake-canvas')[0];
-		/** @type {JQuery<HTMLElement>} */
-		const scoreEl = $window.find('#snake-score')[0];
-		/** @type {JQuery<HTMLElement>} */
-		const pauseBtn = $window.find('#snake-pause-btn')[0];
-		/** @type {JQuery<HTMLElement>} */
-		const restartBtn = $window.find('#snake-restart-btn')[0];
-		/** @type {JQuery<HTMLElement>} */
-		const effectsList = $window.find('#snake-effects')[0];
 		
+		// UI Elements Dictionary
+		const ui = {
+			screens: {
+        		/** @type {JQuery<HTMLElement>} */
+				menu: $window.find('#game-main-menu'),
+        		/** @type {JQuery<HTMLElement>} */
+				game: $window.find('#snake-game-content')
+			},
+			game: {
+        		/** @type {HTMLElement} */
+				canvas: $window.find('#snake-canvas')[0],
+        		/** @type {JQuery<HTMLElement>} */
+				score: $window.find('#snake-score'),
+        		/** @type {JQuery<HTMLElement>} */
+				controls: $window.find('#snake-controls button'),
+        		/** @type {JQuery<HTMLElement>} */
+				effectsList: $window.find('#snake-effects')
+			},
+			buttons: {
+        		/** @type {JQuery<HTMLElement>} */
+				play: $window.find('#game-play-btn'),
+        		/** @type {JQuery<HTMLElement>} */
+				pause: $window.find('#game-pause-btn'),
+        		/** @type {JQuery<HTMLElement>} */
+				exit: $window.find('#game-exit-btn'),
+        		/** @type {JQuery<HTMLElement>} */
+				restart: $window.find('#snake-restart-btn')
+			}
+		};
+
+		const canvas = ui.game.canvas;
         /** @type {CanvasRenderingContext2D} */
 		const ctx = canvas.getContext('2d');
 
@@ -84,6 +160,7 @@ export const gameSnakeApp = {
 		const canvasSize = Math.max(200, $window.find('.game-canvas').width() || 400);
 		canvas.width = canvasSize;
 
+		// Game state
 		const gridSize = 20;
 		let snake, food, direction, score, gameLoopId, isGameOver, running;
 		let cellSize, growBy = 0;
@@ -123,11 +200,11 @@ export const gameSnakeApp = {
 		function updateEffectsUI() {
 			const now = Date.now();
 			activeEffects.forEach(e => e.remaining = Math.max(0, Math.ceil((e.expiresAt - now) / 1000)));
-			$(effectsList).empty();
+			ui.game.effectsList.empty();
 			activeEffects.forEach(e => {
 				const li = document.createElement('li');
 				li.textContent = `${e.name} (${e.remaining}s)`;
-				effectsList.appendChild(li);
+				ui.game.effectsList.append(li);
 			});
 		}
 
@@ -170,12 +247,13 @@ export const gameSnakeApp = {
 			level = 1;
 			walls = [];
 			activeEffects.length = 0;
-			scoreEl.textContent = String(score);
-			$(effectsList).empty();
+
+			ui.game.score.text(String(score));
+			ui.game.effectsList.empty();
 
 			// Mettre à jour le bouton pause pour refléter l'état "prêt"
-			pauseBtn.textContent = 'Resume';
-			pauseBtn.classList.add('paused');
+			ui.buttons.pause.text('Resume');
+			ui.buttons.pause.addClass('paused');
 
 			cellSize = canvas.width / gridSize;
 			canvas.height = canvasSize + Math.floor(cellSize * 1.2);
@@ -231,16 +309,16 @@ export const gameSnakeApp = {
 		function resumeGame() {
 			if (isGameOver || running) return; // Ne reprendre que si en pause
 			running = true;
-			pauseBtn.textContent = 'Pause';
-			pauseBtn.classList.remove('paused');
+			ui.buttons.pause.text('Pause');
+			ui.buttons.pause.removeClass('paused');
 			setGameInterval(); // Démarrer la boucle de jeu
 		}
 
 		function pauseGame() {
 			if (isGameOver || !running) return; // Ne pauser que si en cours
 			running = false;
-			pauseBtn.textContent = 'Resume';
-			pauseBtn.classList.add('paused');
+			ui.buttons.pause.text('Pause');
+			ui.buttons.pause.addClass('paused');
 			clearInterval(gameLoopId); // Arrêter la boucle de jeu
 
 			// Dessiner le message de pause
@@ -329,7 +407,7 @@ export const gameSnakeApp = {
 					addEffect('Double Red', 60000, null);
 					score += 2;
 				}
-				scoreEl.textContent = String(score);
+				ui.game.score.text(String(score));
 				placeFood();
 				handleLevelUpIfNeeded();
 			} else {
@@ -406,13 +484,21 @@ export const gameSnakeApp = {
 
 		// --- Écouteurs d'événements ---
 
+		ui.buttons.play.on('click', function () {
+			ui.screens.menu.hide();
+			ui.screens.game.show();
+		});
+		ui.buttons.exit.on('click', function () {
+			ui.screens.menu.show();
+			ui.screens.game.hide();
+		});
+		ui.buttons.pause.on('click', () => togglePause());
+		ui.buttons.restart.on('click', () => resetGame());
+
 		// contrôles tactiles / boutons
 		$window.find('#snake-controls button').on('click', function () {
 			changeDirection($(this).data('dir'));
 		});
-
-		pauseBtn.addEventListener('click', togglePause);
-		restartBtn.addEventListener('click', resetGame);
 
 		// clavier
 		const keyHandler = (e) => {
@@ -445,21 +531,25 @@ export const gameSnakeApp = {
 				resetGame();
 			}
 		};
-		document.addEventListener('keydown', keyHandler);
-
-		// --- Start ---
-		resetGame(); // Prépare le jeu et affiche l'écran "Ready"
+		$(document).on('keydown.snake', keyHandler);
 
 		// Nettoyage lors de la fermeture
 		const observer = new MutationObserver(() => {
 			if (!document.body.contains(canvas)) {
 				running = false; // Arrêter la boucle
 				clearInterval(gameLoopId);
-				document.removeEventListener('keydown', keyHandler);
+				$(document).off('keydown.snake', keyHandler);
 				observer.disconnect();
 			}
 		});
-		observer.observe(document.body, { childList: true, subtree: true });
+		observer.observe(document.body, {
+			childList: true,
+			subtree: true
+		});
+
+
+		// --- Start ---
+		resetGame(); // Prépare le jeu et affiche l'écran "Ready"
 
 		// API exposée
 		return {

@@ -121,8 +121,6 @@ export const contactApp = {
 		const system = sys;
         /** @type {JQuery<HTMLElement>} */
         const $window = $(`#${windowId}`);
-		
-		const STORAGE_KEY = this.id;
 
         /** @type {JQuery<HTMLElement>} */
 		const $form = $window.find('#contact-form');

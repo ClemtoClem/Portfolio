@@ -140,54 +140,12 @@ export const gameChargebotApp = {
 	headerColor: '#8BC34A',
 	type: 'game',
 	style: `
+		:root {
+			--primary-color: #8BC34A;
+			--primary-dark-color: #487217;
+			--primary-background-color: #555;
+		}
 		.app-content { padding: 0px; }
-		.game-container { margin: 0; padding: 0; position: relative; width: 100%; height: 100%; background: #222; color: white; display: flex; flex-direction: column; align-items: center; overflow: hidden; font-family: 'Undertale', 'Roboto', sans-serif; }
-		
-		/* --- MENUS --- */
-		.game-menu-screen { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; position: absolute; top:0; left:0; z-index: 10; background: #222; }
-		.game-title { font-size: 3rem; color: #8BC34A; text-transform: uppercase; letter-spacing: 4px; margin-bottom: 40px; text-shadow: 0 0 10px rgba(139, 195, 74, 0.4); }
-		.game-btn { padding: 15px 40px; font-size: 1.2rem; background: #444; border: none; color: white; margin: 10px; cursor: pointer; border-radius: 5px; transition: all 0.2s; min-width: 200px; text-transform: uppercase; font-weight: bold; font-family: 'Undertale', 'Roboto', sans-serif; }
-		.game-btn:hover { background: #8BC34A; color: #111; transform: scale(1.05); }
-		.game-version { margin-top:20px; color:#666; font-size:0.8em; }
-		
-		/* --- LEVEL SELECT --- */
-		.game-level-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; max-width: 600px; margin-bottom: 30px; }
-		.game-level-btn { width: 70px; height: 70px; background: #333; border: 2px solid #555; color: #888; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 8px; transition: all 0.2s; }
-		.game-level-btn.unlocked { background: #444; color: white; border-color: #8BC34A; }
-		.game-level-btn.unlocked:hover { background: #8BC34A; color: black; }
-		.game-level-btn.locked { opacity: 0.5; cursor: not-allowed; }
-		.game-level-btn.completed { background: #2e4a23; border-color: #8BC34A; }
-
-		/* --- GAME UI --- */
-		.game-content { width: 100%; height: 100%; display: flex; flex-direction: column; }
-		.game-header { width: 100%; padding: 10px; box-sizing: border-box; text-align: center; background: rgba(0,0,0,0.4); box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 5; display: flex; flex-direction: column; align-items: center; }
-		.game-top-row { display: flex; width: 100%; justify-content: space-between; align-items: center; padding: 0 10px; }
-		.game-score-board { display: flex; gap: 40px; }
-		.game-score { font-weight: bold; font-size: 1.1rem; color: #8BC34A; text-shadow: 1px 1px 2px black; }
-		.game-score span { color: white; }
-		.game-message { font-size: 0.95rem; color: #ddd; min-height: 1.2em; font-style: italic; margin-top: 5px; }
-		
-		.game-canvas-wrapper { flex-grow: 1; display: flex; align-items: center; justify-content: center; width: 100%; overflow: hidden; position: relative; }
-		.game-canvas { display: block; }
-		
-		.game-controls { display: grid; grid-template-areas: ". up ." "left down right"; gap: 8px; margin-bottom: 20px; z-index: 5; align-self: center; }
-		.game-controls button { width: 55px; height: 55px; font-size: 24px; cursor: pointer; border: none; border-radius: 12px; background: #444; color: #eee; box-shadow: 0 4px 0 #222; transition: transform 0.1s, background 0.2s; }
-		.game-controls button:active { transform: translateY(4px); box-shadow: 0 0 0 #222; background: #8BC34A; color: #000; }
-		.game-controls .up { grid-area: up; }
-		.game-controls .down { grid-area: down; }
-		.game-controls .left { grid-area: left; }
-		.game-controls .right { grid-area: right; }
-		
-		.game-message-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 20; text-align: center; padding: 20px; backdrop-filter: blur(2px); }
-		.game-message-overlay h2 { color: #8BC34A; margin-bottom: 15px; font-size: 2rem; text-transform: uppercase; letter-spacing: 2px; }
-		.game-message-overlay p { font-size: 1.1rem; margin-bottom: 25px; max-width: 400px; line-height: 1.5; }
-		.overlay-buttons { display: flex; gap: 15px; }
-		.game-message-overlay button { padding: 12px 30px; font-size: 1.1rem; cursor: pointer; background: #8BC34A; border: none; border-radius: 50px; color: #1a1a1a; font-weight: bold; transition: transform 0.2s, box-shadow 0.2s; }
-		.game-message-overlay button:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(139, 195, 74, 0.5); }
-		.btn-secondary { background: #555 !important; color: white !important; }
-
-		.action-btn { padding: 5px 10px; background: #444; border: 1px solid #666; color: white; border-radius: 4px; cursor: pointer; font-size: 0.8rem; transition: opacity 0.2s; font-family: 'Undertale', 'Roboto', sans-serif; }
-		.action-btn:hover { background: #666; }
 	`,
 	content: {
 		'en-US':`
@@ -195,54 +153,62 @@ export const gameChargebotApp = {
 				
 				<div id="game-main-menu" class="game-menu-screen">
 					<h1 class="game-title">⚡ Chargebot</h1>
+					<div class="game-version">Version ${VERSION}</div>
 					<button id="game-play-btn" class="game-btn">PLAY</button>
-					<div class="game-version">V ${VERSION}</div>
 				</div>
 
 				<div id="game-level-select" class="game-menu-screen" style="display:none;">
+					<h1 class="game-title">⚡ Chargebot</h1>
 					<h2 style="color:white; margin-bottom:20px;">CHOICE OF LEVEL</h2>
 					<div id="game-level-grid" class="game-level-grid"></div>
 					<button id="game-back-menu-btn" class="game-btn" style="min-width:150px; font-size:1rem;">Return</button>
 				</div>
 
-				<div id="game-content" class="game-content" style="display:none;">
+				<div id="chargebot-game-content" class="game-content" style="display:none;">
 					<div class="game-header">
 						<div class="game-top-row">
-							<button class="action-btn" id="game-exit-btn">☰ Menu</button>
+							<button class="game-action-btn" id="game-exit-btn">
+								<svg viewBox="0 0 24 24"><path d="M4 5C3.44772 5 3 5.44772 3 6C3 6.55228 3.44772 7 4 7H20C20.5523 7 21 6.55228 21 6C21 5.44772 20.5523 5 20 5H4ZM3 12C3 11.4477 3.44772 11 4 11H20C20.5523 11 21 11.4477 21 12C21 12.5523 20.5523 13 20 13H4C3.44772 13 3 12.5523 3 12ZM3 18C3 17.4477 3.44772 17 4 17H20C20.5523 17 21 17.4477 21 18C21 18.5523 20.5523 19 20 19H4C3.44772 19 3 18.5523 3 18Z"></path></svg>
+								Menu
+							</button>
 							<div class="game-score-board">
 								<div class="game-score">⚡ <span id="chargebot-charge">0</span></div>
 								<div class="game-score">⛳ <span id="chargebot-level">1</span></div>
 							</div>
-							<button class="action-btn" id="chargebot-restart-btn" title="Restart (R)">↺</button>
+							<button class="game-action-btn" id="chargebot-restart-btn" title="Restart (R)">
+								<svg viewBox="0 0 100 100"><path d="M76.5,58.3c0,0.1,0,0.2-0.1,0.2c-0.3,1.1-0.7,2.2-1.1,3.3c-0.5,1.2-1,2.3-1.6,3.4c-1.2,2.2-2.7,4.2-4.5,6 c-1.7,1.8-3.7,3.4-5.9,4.7c-2.2,1.3-4.5,2.3-7,3c-2.5,0.7-5.1,1.1-7.7,1.1C32.8,80,20,67.2,20,51.3s12.8-28.6,28.6-28.6 c5.3,0,10.3,1.5,14.6,4c0,0,0,0,0.1,0c2.1,1.2,4,2.7,5.6,4.4c0.5,0.4,0.8,0.7,1.2,1.2c0.9,0.8,1.6,0.3,1.6-0.9V22c0-1.1,0.9-2,2-2h4 c1.1,0,2,0.9,2.2,2v24.5c0,0.9-0.8,1.8-1.8,1.8H53.6c-1.1,0-1.9-0.8-1.9-1.9v-4.2c0-1.1,0.9-2,2-2h9.4c0.8,0,1.4-0.2,1.7-0.7 c-3.6-5-9.6-8.3-16.2-8.3c-11.1,0-20.1,9-20.1,20.1s9,20.1,20.1,20.1c8.7,0,16.1-5.5,18.9-13.3c0,0,0.3-1.8,1.7-1.8 c1.4,0,4.8,0,5.7,0c0.8,0,1.6,0.6,1.6,1.5C76.5,58,76.5,58.1,76.5,58.3z"></path></svg>
+							</button>
 						</div>
 						<div class="game-message" id="chargebot-help-message"></div>
 					</div>
 
-					<div class="game-canvas-wrapper">
-						<canvas id="chargebot-canvas"></canvas>
-					</div>
-
-					<div id="chargebot-controls" class="game-controls">
-						<button class="up" data-dir="3">▲</button>
-						<button class="left" data-dir="1">◀</button>
-						<button class="down" data-dir="4">▼</button>
-						<button class="right" data-dir="2">▶</button>
-					</div>
-					
-					<div class="game-message-overlay" id="chargebot-overlay" style="display: none;">
-						<h2 id="chargebot-overlay-title"></h2>
-						<p id="chargebot-overlay-message"></p>
-						<div class="overlay-buttons">
-							<button id="chargebot-menu-btn" class="btn-secondary">Menu</button>
-							<button id="chargebot-try-again-btn">Restart ↺</button>
-							<button id="chargebot-next-level-btn">Next ➜</button>
+					<div class="game-main>
+						<div class="game-canvas-wrapper">
+							<canvas id="chargebot-canvas"></canvas>
 						</div>
-					</div>
+
+						<div id="chargebot-controls" class="game-controls">
+							<button class="up" data-dir="3">▲</button>
+							<button class="left" data-dir="1">◀</button>
+							<button class="center" data-dir="4">▼</button>
+							<button class="right" data-dir="2">▶</button>
+						</div>
 					
-					<div class="game-message-overlay" id="chargebot-congratulation" style="display: none;">
-						<h2>Congratulations !</h2> 
-						<p>You have completed all levels and saved the little robot !</p>
-						<button id="chargebot-reset-all-btn">Main Menu</button>
+						<div class="game-message-overlay" id="chargebot-overlay" style="display: none;">
+							<h2 id="chargebot-overlay-title"></h2>
+							<p id="chargebot-overlay-message"></p>
+							<div class="overlay-buttons">
+								<button id="chargebot-menu-btn" class="btn-secondary">Menu</button>
+								<button id="chargebot-try-again-btn">Restart ↺</button>
+								<button id="chargebot-next-level-btn">Next ➜</button>
+							</div>
+						</div>
+						
+						<div class="game-message-overlay" id="chargebot-congratulation" style="display: none;">
+							<h2>Congratulations !</h2> 
+							<p>You have completed all levels and saved the little robot !</p>
+							<button id="chargebot-reset-all-btn">Main Menu</button>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -252,26 +218,31 @@ export const gameChargebotApp = {
 				
 				<div id="game-main-menu" class="game-menu-screen">
 					<h1 class="game-title">⚡ Chargebot</h1>
+					<div class="game-version">Version ${VERSION}</div>
 					<button id="game-play-btn" class="game-btn">Jouer</button>
-					<div class="game-version">V ${VERSION}</div>
 				</div>
 
 				<div id="game-level-select" class="game-menu-screen" style="display:none;">
+					<h1 class="game-title">⚡ Chargebot</h1>
 					<h2 style="color:white; margin-bottom:20px;">CHOIX DU NIVEAU</h2>
-					<div id="game-level-grid" class="game-level-grid">
-						</div>
+					<div id="game-level-grid" class="game-level-grid"></div>
 					<button id="game-back-menu-btn" class="game-btn" style="min-width:150px; font-size:1rem;">Retour</button>
 				</div>
 
-				<div id="game-content" class="game-content" style="display:none;">
+				<div id="chargebot-game-content" class="game-content" style="display:none;">
 					<div class="game-header">
 						<div class="game-top-row">
-							<button class="action-btn" id="game-exit-btn">☰ Menu</button>
+							<button class="game-action-btn" id="game-exit-btn">
+								<svg viewBox="0 0 24 24"><path d="M4 5C3.44772 5 3 5.44772 3 6C3 6.55228 3.44772 7 4 7H20C20.5523 7 21 6.55228 21 6C21 5.44772 20.5523 5 20 5H4ZM3 12C3 11.4477 3.44772 11 4 11H20C20.5523 11 21 11.4477 21 12C21 12.5523 20.5523 13 20 13H4C3.44772 13 3 12.5523 3 12ZM3 18C3 17.4477 3.44772 17 4 17H20C20.5523 17 21 17.4477 21 18C21 18.5523 20.5523 19 20 19H4C3.44772 19 3 18.5523 3 18Z"></path></svg>
+								Menu
+							</button>
 							<div class="game-score-board">
 								<div class="game-score">⚡ <span id="chargebot-charge">0</span></div>
 								<div class="game-score">⛳ <span id="chargebot-level">1</span></div>
 							</div>
-							<button class="action-btn" id="chargebot-restart-btn" title="Redémarrer (R)">↺</button>
+							<button class="game-action-btn" id="chargebot-restart-btn" title="Redémarrer (R)">
+								<svg viewBox="0 0 100 100"><path d="M76.5,58.3c0,0.1,0,0.2-0.1,0.2c-0.3,1.1-0.7,2.2-1.1,3.3c-0.5,1.2-1,2.3-1.6,3.4c-1.2,2.2-2.7,4.2-4.5,6 c-1.7,1.8-3.7,3.4-5.9,4.7c-2.2,1.3-4.5,2.3-7,3c-2.5,0.7-5.1,1.1-7.7,1.1C32.8,80,20,67.2,20,51.3s12.8-28.6,28.6-28.6 c5.3,0,10.3,1.5,14.6,4c0,0,0,0,0.1,0c2.1,1.2,4,2.7,5.6,4.4c0.5,0.4,0.8,0.7,1.2,1.2c0.9,0.8,1.6,0.3,1.6-0.9V22c0-1.1,0.9-2,2-2h4 c1.1,0,2,0.9,2.2,2v24.5c0,0.9-0.8,1.8-1.8,1.8H53.6c-1.1,0-1.9-0.8-1.9-1.9v-4.2c0-1.1,0.9-2,2-2h9.4c0.8,0,1.4-0.2,1.7-0.7 c-3.6-5-9.6-8.3-16.2-8.3c-11.1,0-20.1,9-20.1,20.1s9,20.1,20.1,20.1c8.7,0,16.1-5.5,18.9-13.3c0,0,0.3-1.8,1.7-1.8 c1.4,0,4.8,0,5.7,0c0.8,0,1.6,0.6,1.6,1.5C76.5,58,76.5,58.1,76.5,58.3z"></path></svg>
+							</button>
 						</div>
 						<div class="game-message" id="chargebot-help-message"></div>
 					</div>
@@ -283,7 +254,7 @@ export const gameChargebotApp = {
 					<div id="chargebot-controls" class="game-controls">
 						<button class="up" data-dir="3">▲</button>
 						<button class="left" data-dir="1">◀</button>
-						<button class="down" data-dir="4">▼</button>
+						<button class="center" data-dir="4">▼</button>
 						<button class="right" data-dir="2">▶</button>
 					</div>
 					
@@ -307,37 +278,60 @@ export const gameChargebotApp = {
 		`,
 	},
 	init: function (sys, windowId) {
+        /** @type {System} */
 		const system = sys;
+        /** @type {JQuery<HTMLElement>} */
 		const $window = $(`#${windowId}`);
+
 		const canvas = $window.find('#chargebot-canvas')[0];
 		const ctx = canvas.getContext('2d');
 
 		// UI Elements Dictionary
 		const ui = {
 			screens: {
+        		/** @type {JQuery<HTMLElement>} */
 				menu: $window.find('#game-main-menu'),
+        		/** @type {JQuery<HTMLElement>} */
 				levels: $window.find('#game-level-select'),
-				game: $window.find('#game-content')
+        		/** @type {JQuery<HTMLElement>} */
+				game: $window.find('#chargebot-game-content')
 			},
 			game: {
+        		/** @type {JQuery<HTMLElement>} */
 				charge: $window.find('#chargebot-charge'),
+        		/** @type {JQuery<HTMLElement>} */
 				level: $window.find('#chargebot-level'),
+        		/** @type {JQuery<HTMLElement>} */
 				help: $window.find('#chargebot-help-message'),
+        		/** @type {JQuery<HTMLElement>} */
 				overlay: $window.find('#chargebot-overlay'),
+        		/** @type {JQuery<HTMLElement>} */
 				congrats: $window.find('#chargebot-congratulation'),
+        		/** @type {JQuery<HTMLElement>} */
 				overlayTitle: $window.find('#chargebot-overlay-title'),
+        		/** @type {JQuery<HTMLElement>} */
 				overlayMsg: $window.find('#chargebot-overlay-message'),
+        		/** @type {JQuery<HTMLElement>} */
 				controls: $window.find('#chargebot-controls button')
 			},
 			buttons: {
+        		/** @type {JQuery<HTMLElement>} */
 				play: $window.find('#game-play-btn'),
+        		/** @type {JQuery<HTMLElement>} */
 				backToMenu: $window.find('#game-back-menu-btn'),
+        		/** @type {JQuery<HTMLElement>} */
 				levelGrid: $window.find('#game-level-grid'),
+        		/** @type {JQuery<HTMLElement>} */
 				exitGame: $window.find('#game-exit-btn'),
+        		/** @type {JQuery<HTMLElement>} */
 				restart: $window.find('#chargebot-restart-btn'),
+        		/** @type {JQuery<HTMLElement>} */
 				ovMenu: $window.find('#chargebot-menu-btn'),
+        		/** @type {JQuery<HTMLElement>} */
 				ovRetry: $window.find('#chargebot-try-again-btn'),
+        		/** @type {JQuery<HTMLElement>} */
 				ovNext: $window.find('#chargebot-next-level-btn'),
+        		/** @type {JQuery<HTMLElement>} */
 				ovReset: $window.find('#chargebot-reset-all-btn')
 			}
 		};
@@ -686,7 +680,6 @@ export const gameChargebotApp = {
 		const observer = new MutationObserver(() => {
 			if (!document.body.contains(canvas)) {
 				cancelAnimationFrame(gameLoopId);
-				document.removeEventListener('keydown', keyHandler);
 				$(document).off('keydown', keyHandler);
 				resizeObserver.disconnect();
 				observer.disconnect();

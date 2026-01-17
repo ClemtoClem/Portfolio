@@ -246,7 +246,7 @@ export const cvApp = {
 					<li>Programmation web (NodeJs, Jquery, HTML, JavaScript, CSS)</li>
 					<li>Programmation de jeux vidéo (C/C++, GL, glm, SDL3)</li>
 					<li>Jeux vidéo (Minetest, OpenArena, etc.)</li>
-					<li>Musique (LMMS, Fasttracker 2), Piano (Jazz)</li>
+					<li>Musique (LMMS, Fasttracker 2)</li>
 					<li>Dessin</li>
 				</ul>
 			</div>

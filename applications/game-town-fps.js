@@ -27,12 +27,12 @@ export const gameTownFPSApp = {
 
                 <div id="game-main-menu" class="game-menu-screen">
                     <h1 class="game-title">📚 TOWN FPS</h1>
+                    <div class="game-version">Version ${VERSION}</div>
                     <div class="game-menu-buttons">
                         <button class="game-btn" id="btn-new-game">NEW PART</button>
                         <button class="game-btn" id="btn-open-saves">LOAD PART</button>
                         <button class="game-btn" id="btn-open-settings">SETTINGS</button>
                     </div>
-                    <div class="game-version">V ${VERSION}</div>
                 </div>
 
                 <div id="game-new-part-menu" class="game-menu-screen" style="display:none;">
@@ -82,12 +82,12 @@ export const gameTownFPSApp = {
             <div class="game-container">
                 <div id="game-main-menu" class="game-menu-screen">
                     <h1 class="game-title">📚 TOWN FPS</h1>
+                    <div class="game-version">Version ${VERSION}</div>
                     <div class="game-menu-buttons">
                         <button class="game-btn" id="btn-new-game">NOUVELLE PARTIE</button>
                         <button class="game-btn" id="btn-open-saves">CHARGER UNE PARTIE</button>
                         <button class="game-btn" id="btn-open-settings">CONFIGURATIONS</button>
                     </div>
-                    <div class="game-version">V ${VERSION}</div>
                 </div>
 
                 <div id="game-new-part-menu" class="game-menu-screen" style="display:none;">
