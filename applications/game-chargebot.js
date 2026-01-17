@@ -138,7 +138,7 @@ export const gameChargebotApp = {
 	headerColor: '#8BC34A',
 	type: 'game',
 	style: `
-		.game-container { margin: 0px; position: relative; width: 100%; height: 100%; background: #222; color: white; display: flex; flex-direction: column; align-items: center; overflow: hidden; font-family: 'Segoe UI', sans-serif; }
+		.game-container { margin: 0; padding: 0; position: relative; width: 100%; height: 100%; background: #222; color: white; display: flex; flex-direction: column; align-items: center; overflow: hidden; font-family: 'Segoe UI', sans-serif; }
 		
 		/* --- MENUS --- */
 		.cb-screen { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; position: absolute; top:0; left:0; z-index: 10; background: #222; }

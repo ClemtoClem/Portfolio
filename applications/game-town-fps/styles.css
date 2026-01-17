@@ -23,7 +23,6 @@
     z-index: 10;
     touch-action: none;
     pointer-events: none;
-    /* enabled only on mobile by JS */
 }
 
 #look-joystick-container {
@@ -35,7 +34,6 @@
     z-index: 10;
     touch-action: none;
     pointer-events: none;
-    /* enabled only on mobile by JS */
 }
 
 /* Crosshair */
