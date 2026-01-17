@@ -130,22 +130,23 @@ const ALL_LEVELS = [
 	], 2, 6, 7, "Press the buttons to open the doors corresponding to the same key number."),
 ];
 
-const VERSION = '1.0';
+const VERSION = 'beta';
 export const gameChargebotApp = {
 	id: 'game-chargebot',
 	title: 'Chargebot',
+	version: VERSION,
 	icon: `<svg fill="#000000" viewBox="0 0 24 24"><path d="M21.928 11.607c-.202-.488-.635-.605-.928-.633V8c0-1.103-.897-2-2-2h-6V4.61c.305-.274.5-.668.5-1.11a1.5 1.5 0 0 0-3 0c0 .442.195.836.5 1.11V6H5c-1.103 0-2 .897-2 2v2.997l-.082.006A1 1 0 0 0 1.99 12v2a1 1 0 0 0 1 1H3v5c0 1.103.897 2 2 2h14c1.103 0 2-.897 2-2v-5a1 1 0 0 0 1-1v-1.938a1.006 1.006 0 0 0-.072-.455zM5 20V8h14l.001 3.996L19 12v2l.001.005.001 5.995H5z"></path><ellipse cx="8.5" cy="12" rx="1.5" ry="2"></ellipse><ellipse cx="15.5" cy="12" rx="1.5" ry="2"></ellipse><path d="M8 16h8v2H8z"></path></svg>`,
 	iconColor: '#8BC34A',
 	headerColor: '#8BC34A',
 	type: 'game',
 	style: `
 		.app-content { padding: 0px; }
-		.game-container { margin: 0; padding: 0; position: relative; width: 100%; height: 100%; background: #222; color: white; display: flex; flex-direction: column; align-items: center; overflow: hidden; font-family: 'Segoe UI', sans-serif; }
+		.game-container { margin: 0; padding: 0; position: relative; width: 100%; height: 100%; background: #222; color: white; display: flex; flex-direction: column; align-items: center; overflow: hidden; font-family: 'Undertale', 'Roboto', sans-serif; }
 		
 		/* --- MENUS --- */
 		.game-menu-screen { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; position: absolute; top:0; left:0; z-index: 10; background: #222; }
 		.game-title { font-size: 3rem; color: #8BC34A; text-transform: uppercase; letter-spacing: 4px; margin-bottom: 40px; text-shadow: 0 0 10px rgba(139, 195, 74, 0.4); }
-		.game-btn { padding: 15px 40px; font-size: 1.2rem; background: #444; border: none; color: white; margin: 10px; cursor: pointer; border-radius: 5px; transition: all 0.2s; min-width: 200px; text-transform: uppercase; font-weight: bold; }
+		.game-btn { padding: 15px 40px; font-size: 1.2rem; background: #444; border: none; color: white; margin: 10px; cursor: pointer; border-radius: 5px; transition: all 0.2s; min-width: 200px; text-transform: uppercase; font-weight: bold; font-family: 'Undertale', 'Roboto', sans-serif; }
 		.game-btn:hover { background: #8BC34A; color: #111; transform: scale(1.05); }
 		.game-version { margin-top:20px; color:#666; font-size:0.8em; }
 		
@@ -185,10 +186,67 @@ export const gameChargebotApp = {
 		.game-message-overlay button:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(139, 195, 74, 0.5); }
 		.btn-secondary { background: #555 !important; color: white !important; }
 
-		.action-btn { padding: 5px 10px; background: #444; border: 1px solid #666; color: white; border-radius: 4px; cursor: pointer; font-size: 0.8rem; transition: opacity 0.2s; }
+		.action-btn { padding: 5px 10px; background: #444; border: 1px solid #666; color: white; border-radius: 4px; cursor: pointer; font-size: 0.8rem; transition: opacity 0.2s; font-family: 'Undertale', 'Roboto', sans-serif; }
 		.action-btn:hover { background: #666; }
 	`,
 	content: {
+		'en-US':`
+			<div class="game-container">
+				
+				<div id="game-main-menu" class="game-menu-screen">
+					<h1 class="game-title">⚡ Chargebot</h1>
+					<button id="game-play-btn" class="game-btn">PLAY</button>
+					<div class="game-version">V ${VERSION}</div>
+				</div>
+
+				<div id="game-level-select" class="game-menu-screen" style="display:none;">
+					<h2 style="color:white; margin-bottom:20px;">CHOICE OF LEVEL</h2>
+					<div id="game-level-grid" class="game-level-grid"></div>
+					<button id="game-back-menu-btn" class="game-btn" style="min-width:150px; font-size:1rem;">Return</button>
+				</div>
+
+				<div id="game-content" class="game-content" style="display:none;">
+					<div class="game-header">
+						<div class="game-top-row">
+							<button class="action-btn" id="game-exit-btn">☰ Menu</button>
+							<div class="game-score-board">
+								<div class="game-score">⚡ <span id="chargebot-charge">0</span></div>
+								<div class="game-score">⛳ <span id="chargebot-level">1</span></div>
+							</div>
+							<button class="action-btn" id="chargebot-restart-btn" title="Restart (R)">↺</button>
+						</div>
+						<div class="game-message" id="chargebot-help-message"></div>
+					</div>
+
+					<div class="game-canvas-wrapper">
+						<canvas id="chargebot-canvas"></canvas>
+					</div>
+
+					<div id="chargebot-controls" class="game-controls">
+						<button class="up" data-dir="3">▲</button>
+						<button class="left" data-dir="1">◀</button>
+						<button class="down" data-dir="4">▼</button>
+						<button class="right" data-dir="2">▶</button>
+					</div>
+					
+					<div class="game-message-overlay" id="chargebot-overlay" style="display: none;">
+						<h2 id="chargebot-overlay-title"></h2>
+						<p id="chargebot-overlay-message"></p>
+						<div class="overlay-buttons">
+							<button id="chargebot-menu-btn" class="btn-secondary">Menu</button>
+							<button id="chargebot-try-again-btn">Restart ↺</button>
+							<button id="chargebot-next-level-btn">Next ➜</button>
+						</div>
+					</div>
+					
+					<div class="game-message-overlay" id="chargebot-congratulation" style="display: none;">
+						<h2>Congratulations !</h2> 
+						<p>You have completed all levels and saved the little robot !</p>
+						<button id="chargebot-reset-all-btn">Main Menu</button>
+					</div>
+				</div>
+			</div>
+		`,
 		'fr-FR':`
 			<div class="game-container">
 				

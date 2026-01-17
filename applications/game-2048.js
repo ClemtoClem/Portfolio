@@ -1,6 +1,7 @@
 export const game2048App = {
 	id: 'game-2048',
 	title: '2048',
+	version: '1.0.0',
 	icon: `<svg viewBox="0 0 24 24"><path d="M19,3H5C3.89,3,3,3.89,3,5V19C3,20.11,3.89,21,5,21H19C20.11,21,21,20.11,21,19V5C21,3.89,20.11,3,19,3Z M11,11H7V7H11V11Z M17,11H13V7H17V11Z M11,17H7V13H11V17Z M17,17H13V13H17V17Z"/></svg>`,
 	iconColor: '#ffc107',
 	headerColor: '#ffc107',

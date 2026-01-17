@@ -1,6 +1,7 @@
 export const projectsApp = {
 	id: 'app-projects',
 	title: {'en-US':'Projects', 'fr-FR':'Projets'},
+	version: '1.0.0',
 	icon: `<svg viewBox="0 0 24 24"><path d="M4,6H2v14c0,1.1,0.9,2,2,2h14v-2H4V6z M20,2H8C6.9,2,6,2.9,6,4v12c0,1.1,0.9,2,2,2h12c1.1,0,2-0.9,2-2V4C22,2.9,21.1,2,20,2z M12,14.5v-9l6,4.5L12,14.5z" /></svg>`,
 	iconColor: '#ff9800',
 	type: 'main',
@@ -127,8 +128,7 @@ export const projectsApp = {
 			margin-right: 5px;
 			margin-bottom: 5px;
 		}`,
-	content: {
-		'fr-FR': `
+	content: `
 			<!-- Vue Grille des Projets -->
 			<div id="projects-page">
 				<h1>Mes projets</h1>
@@ -263,7 +263,7 @@ export const projectsApp = {
 				
 			</div>
 		`
-	},
+	,
 	/**
 	 * Init function
 	 * @param {System} sys - System class instance
