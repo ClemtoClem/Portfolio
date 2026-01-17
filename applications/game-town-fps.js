@@ -80,7 +80,8 @@ export const gameTownFPSApp = {
             }
             </script>
             <div class="game-container">
-                <div id="game-main-menu" class="game-menu-screen">
+
+				<div id="game-main-menu" class="game-menu-screen">
                     <h1 class="game-title">📚 TOWN FPS</h1>
                     <div class="game-version">Version ${VERSION}</div>
                     <div class="game-menu-buttons">

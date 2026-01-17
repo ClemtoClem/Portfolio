@@ -1291,6 +1291,12 @@ input[type="range"]::-ms-tooltip {
 	text-shadow: 0 0 10px #ccc;
 }
 
+.game-menu-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
 .game-btn {
 	padding: 15px 40px;
 	font-size: 1.2rem;
