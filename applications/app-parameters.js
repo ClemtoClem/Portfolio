@@ -96,8 +96,9 @@ export const parametersApp = {
 			} else if (mode === "tablet") {
 				$androidScreen.addClass("tablet-mode");
 			}
+			system.setSetting('screenMode', mode);
 			updateScreenSize();
-			system.setSettings('screenMode', mode);
+			renderStorageList();
 		});
 
 		// Appliquer le mode actuel
@@ -113,7 +114,7 @@ export const parametersApp = {
 		}
 
 		$languageSelect.on("change", function() {
-			system.setSettings('language', this.value);
+			system.setSetting('language', this.value);
 			system.reopenApp(self.id, windowId);
 		});
 

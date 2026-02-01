@@ -104,19 +104,29 @@ export const gameFlappyBirdApp = {
 		// --- DICTIONNAIRE D'ÉLÉMENTS UI ---
         const ui = {
             screens: {
+        		/** @type {JQuery<HTMLElement>} */
                 menu: $window.find('#game-main-menu'),
+        		/** @type {JQuery<HTMLElement>} */
                 game: $window.find('#game-content-flappy')
             },
             game: {
+        		/** @type {HTMLCanvasElement} */
                 canvas: $window.find('#canvas-flappy')[0],
+        		/** @type {JQuery<HTMLElement>} */
                 $canvas: $window.find('#canvas-flappy'),
+        		/** @type {JQuery<HTMLElement>} */
                 score: $window.find('#flappy-bird-score'),
+        		/** @type {JQuery<HTMLElement>} */
                 flapBtn: $window.find('#flap-btn')
             },
             buttons: {
+        		/** @type {JQuery<HTMLElement>} */
                 play: $window.find('#game-play-btn'),
+        		/** @type {JQuery<HTMLElement>} */
                 exit: $window.find('#game-exit-btn'),
+        		/** @type {JQuery<HTMLElement>} */
                 pause: $window.find('#pause-btn-flappy'),
+        		/** @type {JQuery<HTMLElement>} */
                 restart: $window.find('#restart-btn-flappy')
             }
         };

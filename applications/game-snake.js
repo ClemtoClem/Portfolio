@@ -131,7 +131,7 @@ export const gameSnakeApp = {
 				game: $window.find('#snake-game-content')
 			},
 			game: {
-        		/** @type {HTMLElement} */
+        		/** @type {HTMLCanvasElement} */
 				canvas: $window.find('#snake-canvas')[0],
         		/** @type {JQuery<HTMLElement>} */
 				score: $window.find('#snake-score'),

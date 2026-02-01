@@ -1,4 +1,4 @@
-import { System } from '../system.js';
+import { System } from '../system/system.js';
 export const calculatriceApp = {
 	id: 'app-calculatrice',
 	title: {'en-US': 'Calculator', 'fr-FR':'Calculatrice'},
@@ -534,7 +534,7 @@ export const calculatriceApp = {
 				case 'DEG': case 'RAD': toggleDegRad(); break;
 				case 'sqrt': case 'cbrt': case 'abs': case 'rand': case 'fact': case 'perm': case 'comb': case 'sin': case 'cos': case 'tan': case 'asin': case 'acos': case 'atan': case 'ln': case 'log10': case 'exp': case 'pow10':
 					// fonctions: ajout du nom et ouverture de parenthèse
-					if (value === 'pow10') expression += 'pow10(';
+					if (value === 'pow10') expression += 'pow(';
 					else expression += value + '(';
 					break;
 				case 'pi': case 'e': expression += value; break;

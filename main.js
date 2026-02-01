@@ -1,4 +1,4 @@
-import { System } from './system.js';
+import { System } from './system/system.js';
 
 // Importer toutes les applications
 import { cvApp 				} from './applications/app-cv.js';
@@ -6,6 +6,7 @@ import { projectsApp 		} from './applications/app-projects.js';
 import { contactApp 		} from './applications/app-contact.js';
 import { weatherApp 		} from './applications/app-weather.js';
 import { calculatriceApp    } from './applications/app-calculatrice.js';
+import { musicReaderApp     } from './applications/app-music-reader.js';
 import { parametersApp 		} from './applications/app-parameters.js';
 import { game2048App 		} from './applications/game-2048.js';
 import { gameChargebotApp   } from './applications/game-chargebot.js';
@@ -24,6 +25,7 @@ system.registerApp(contactApp);
 // Applications
 system.registerApp(weatherApp);
 system.registerApp(calculatriceApp);
+system.registerApp(musicReaderApp);
 system.registerApp(parametersApp);
 // Games
 system.registerApp(game2048App);
@@ -82,9 +84,6 @@ $(document).ready(function () {
 				else if (app.type === 'app')  appDrawer.append(iconHTML);
 				else if (app.type === 'game') gameDrawer.append(iconHTML);
 			}
-
-			// RESET FLAG IMPORTANT
-			system.has_settings_change = false;
 		}
 	}
 
