@@ -44,13 +44,13 @@ export const gameSnakeApp = {
 						</div>
 					</div>
 
-					<div class="game-main>
+					<div class="game-main">
 						<div class="game-canvas-wrapper">
 							<canvas id="snake-canvas"></canvas>
 						</div>
 
 						<div id="snake-controls" class="game-controls">
-							<button class="up" data-dir="up", title="Up">▲</button>
+							<button class="up" data-dir="up" title="Up">▲</button>
 							<button class="left" data-dir="left" title="Left">◄</button>
 							<button class="center" data-dir="down" title="Down">▼</button>
 							<button class="right" data-dir="right" title="Right">►</button>
@@ -90,13 +90,13 @@ export const gameSnakeApp = {
 						</div>
 					</div>
 
-					<div class="game-main>
+					<div class="game-main">
 						<div class="game-canvas-wrapper">
 							<canvas id="snake-canvas"></canvas>
 						</div>
 
 						<div id="snake-controls" class="game-controls">
-							<button class="up" data-dir="up", title="Up">▲</button>
+							<button class="up" data-dir="up" title="Up">▲</button>
 							<button class="left" data-dir="left" title="Left">◄</button>
 							<button class="center" data-dir="down" title="Down">▼</button>
 							<button class="right" data-dir="right" title="Right">►</button>
@@ -113,12 +113,10 @@ export const gameSnakeApp = {
 	},
 	/**
 	 * Init function
-	 * @param {System} sys - System class instance
+	 * @param {object} sys - System class instance
 	 * @param {String} windowId - Window html ID in which the application will be drawn
 	 */
-	init: function (sys, windowId) {
-        /** @type {System} */
-		const system = sys;
+	init: function (_sys, windowId) {
         /** @type {JQuery<HTMLElement>} */
         const $window = $(`#${windowId}`);
 		

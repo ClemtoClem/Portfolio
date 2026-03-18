@@ -10,8 +10,9 @@ export class System {
 		this.audioManager		 = new AudioManager();
 
 		this.appRegistry         = new Map();
+		this.appAPIs             = new Map(); // API par windowId
 		this.openApps            = []; // Pile pour gérer les fenêtres ouvertes
-		
+
 		this.has_settings_change = true;
 		this.appWindowContainer  = document.getElementById('app-window-container');
 		this.exitButtonsvg       = `<svg viewBox="0 0 24 24"> <path d="M12.1,11.9c-0.4-0.4-1-0.4-1.4,0L10,12.6l-0.7-0.7c-0.4-0.4-1-0.4-1.4,0s-0.4,1,0,1.4L8.6,14l-0.7,0.7 c-0.4,0.4-0.4,1,0,1.4c0.2,0.2,0.5,0.3,0.7,0.3s0.5-0.1,0.7-0.3l0.7-0.7l0.7,0.7c0.2,0.2,0.5,0.3,0.7,0.3s0.5-0.1,0.7-0.3 c0.4-0.4,0.4-1,0-1.4L11.4,14l0.7-0.7C12.5,12.9,12.5,12.3,12.1,11.9z"></path> <path d="M17,3h-6C8.8,3,7,4.8,7,7c-2.2,0-4,1.8-4,4v6c0,2.2,1.8,4,4,4h6c2.2,0,4-1.8,4-4c2.2,0,4-1.8,4-4V7C21,4.8,19.2,3,17,3z M15,16v1c0,1.1-0.9,2-2,2H7c-1.1,0-2-0.9-2-2v-6c0-1.1,0.9-2,2-2h1h5c1.1,0,2,0.9,2,2V16z M19,13c0,1.1-0.9,2-2,2v-4 c0-2.2-1.8-4-4-4H9c0-1.1,0.9-2,2-2h6c1.1,0,2,0.9,2,2V13z" /></svg>`;
@@ -89,8 +90,8 @@ export class System {
 
 		setTimeout(() => appWindow.classList.add('open'), 10);
 
-		this.api = {};
-		if (app.init !== undefined) this.api = app.init(this, windowId);
+		const api = app.init !== undefined ? (app.init(this, windowId) ?? {}) : {};
+		this.appAPIs.set(windowId, api);
 
 		appWindow.querySelector('.back-btn')
 			.addEventListener('click', () => this.closeApp(windowId));
@@ -104,23 +105,24 @@ export class System {
 		const appWindow = document.getElementById(windowId);
 		if (!appWindow) return;
 
-		if (this.api.quit !== undefined) this.api.quit();
+		const api = this.appAPIs.get(windowId) ?? {};
+		if (api.quit !== undefined) api.quit();
+		this.appAPIs.delete(windowId);
 
 		appWindow.classList.remove('open');
-
 		this.openApps = this.openApps.filter(win => win.id !== windowId);
 
-		setTimeout(() => {
-			appWindow.remove();
-		}, 300);
+		setTimeout(() => appWindow.remove(), 300);
 	}
 
 	pauseApp(windowId) {
-		if (this.api.pause !== undefined) this.api.pause();
+		const api = this.appAPIs.get(windowId) ?? {};
+		if (api.pause !== undefined) api.pause();
 	}
 
 	resumeApp(windowId) {
-		if (this.api.resume !== undefined) this.api.resume();
+		const api = this.appAPIs.get(windowId) ?? {};
+		if (api.resume !== undefined) api.resume();
 	}
 
 	/**
@@ -130,7 +132,7 @@ export class System {
 	 */
 	reopenApp(appId, windowId) {
 		this.closeApp(windowId);
-		this.openApp(appId);
+		setTimeout(() => this.openApp(appId), 310);
 	}
 
 	/**

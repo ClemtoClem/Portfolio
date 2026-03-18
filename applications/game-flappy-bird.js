@@ -49,7 +49,7 @@ export const gameFlappyBirdApp = {
 					</div>
 					<div class="game-footer">
 						<small>Press <strong>SPACE</strong> or click/tap to flap your wings</small>
-					<div>
+					</div>
 				</div>
 			</div>
 		`,

@@ -71,7 +71,7 @@ const ALL_LEVELS = [
 	new Level([
 		[{ type: 1 }, { type: 1 }, { type: 2 }, { type: 2 }, { type: 2 }, { type: 1 }, { type: 1 }],
 		[{ type: 1 }, { type: 4, charge: 4 }, { type: 2 }, { type: 2, charge: 4 }, { type: 2 }, { type: 3 }, { type: 1 }], // Recharge +3 et Fin
-		[{ type: 1 }, { type: 1 }, { type: 2 }, { type: 2 }, { type: 12 }, { type: 1 }, { type: 1 }],
+		[{ type: 1 }, { type: 1 }, { type: 2 }, { type: 2 }, { type: 2 }, { type: 1 }, { type: 1 }],
 		[{ type: 1 }, { type: 0 }, { type: 0 }, { type: 0 }, { type: 0 }, { type: 0 }, { type: 0 }]
 	], 0, 3, 3, "Cracked plates can only be used once before they break."),
 	// Niveau 4
@@ -119,7 +119,7 @@ const ALL_LEVELS = [
 	], 2, 6, 6),
 	// Niveau 8: Boutons et Portes
 	new Level([
-		[{ type: 1 }, { type: 1 }, { type: 1 }, { type: 5, direction: 1 }, { type: 4, charge: 9 }, { type: 5, direction: 5 }, { type: 1 }, { type: 1 }, { type: 1 }],
+		[{ type: 1 }, { type: 1 }, { type: 1 }, { type: 5, direction: 1 }, { type: 4, charge: 9 }, { type: 5, direction: 2 }, { type: 1 }, { type: 1 }, { type: 1 }],
 		[{ type: 1 }, { type: 1 }, { type: 1 }, { type: 0 }, { type: 0 }, { type: 0 }, { type: 1 }, { type: 6, id: 1 }, { type: 1 }],
 		[{ type: 1 }, { type: 1 }, { type: 1 }, { type: 5, direction: 2 }, { type: 5, direction: 2 }, { type: 5, direction: 2 }, { type: 1 }, { type: 1 }, { type: 1 }],
 		[{ type: 1 }, { type: 1 }, { type: 1 }, { type: 0 }, { type: 0 }, { type: 0 }, { type: 0 }, { type: 0 }, { type: 0 }],
@@ -182,7 +182,7 @@ export const gameChargebotApp = {
 						<div class="game-message" id="chargebot-help-message"></div>
 					</div>
 
-					<div class="game-main>
+					<div class="game-main">
 						<div class="game-canvas-wrapper">
 							<canvas id="chargebot-canvas"></canvas>
 						</div>
@@ -193,7 +193,7 @@ export const gameChargebotApp = {
 							<button class="center" data-dir="4">▼</button>
 							<button class="right" data-dir="2">▶</button>
 						</div>
-					
+
 						<div class="game-message-overlay" id="chargebot-overlay" style="display: none;">
 							<h2 id="chargebot-overlay-title"></h2>
 							<p id="chargebot-overlay-message"></p>
@@ -203,9 +203,9 @@ export const gameChargebotApp = {
 								<button id="chargebot-next-level-btn">Next ➜</button>
 							</div>
 						</div>
-						
+
 						<div class="game-message-overlay" id="chargebot-congratulation" style="display: none;">
-							<h2>Congratulations !</h2> 
+							<h2>Congratulations !</h2>
 							<p>You have completed all levels and saved the little robot !</p>
 							<button id="chargebot-reset-all-btn">Main Menu</button>
 						</div>
@@ -277,9 +277,7 @@ export const gameChargebotApp = {
 			</div>
 		`,
 	},
-	init: function (sys, windowId) {
-        /** @type {System} */
-		const system = sys;
+	init: function (_sys, windowId) {
         /** @type {JQuery<HTMLElement>} */
 		const $window = $(`#${windowId}`);
 
@@ -389,7 +387,7 @@ export const gameChargebotApp = {
 
 		function renderLevelGrid() {
 			ui.buttons.levelGrid.empty();
-			ALL_LEVELS.forEach((lvl, idx) => {
+			ALL_LEVELS.forEach((_lvl, idx) => {
 				const isLocked = idx > maxUnlockedLevel;
 				const btn = $(`<div class="game-level-btn ${isLocked ? 'locked' : 'unlocked'}">${isLocked ? '🔒' : (idx + 1)}</div>`);
 				
@@ -448,14 +446,14 @@ export const gameChargebotApp = {
 		}
 
 		const TILES_DRAW_FUNCTION = {
-			0: (x, y) => { }, 
+			0: (_x, _y) => { },
 			1: (x, y) => drawTileBase(x, y, '#bdc3c7'),
 			2: (x, y) => { drawTileBase(x, y, '#95a5a6'); const { x: sx, y: sy } = gridToScreen(x, y); ctx.save(); ctx.translate(sx, sy); ctx.strokeStyle = '#2c3e50'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(-10, -5); ctx.lineTo(5, 5); ctx.moveTo(5, -5); ctx.lineTo(-5, 8); ctx.stroke(); ctx.restore(); },
 			3: (x, y) => { drawTileBase(x, y, '#ecf0f1'); const { x: sx, y: sy } = gridToScreen(x, y); ctx.save(); ctx.translate(sx, sy); ctx.fillStyle = 'rgba(0,0,0,0.1)'; ctx.beginPath(); ctx.moveTo(0, -HALF_H); ctx.lineTo(0, HALF_H); ctx.lineTo(-HALF_W, 0); ctx.fill(); ctx.fillStyle = '#27ae60'; ctx.font = 'bold 14px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('FIN', 0, 5); ctx.restore(); },
 			4: (x, y, charge) => { const isActive = charge > 0; drawTileBase(x, y, isActive ? '#f1c40f' : '#7f8c8d'); if(isActive) { const { x: sx, y: sy } = gridToScreen(x, y); ctx.fillStyle = '#d35400'; ctx.font = 'bold 16px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('+' + charge, sx, sy + 5); } },
 			5: (x, y, direction) => { drawTileBase(x, y, '#3498db'); const { x: sx, y: sy } = gridToScreen(x, y); ctx.save(); ctx.translate(sx, sy); ctx.fillStyle = 'rgba(255,255,255,0.6)'; ctx.font = '20px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; let char = ''; switch(direction) { case 1: char = '↙'; break; case 2: char = '↗'; break; case 3: char = '↖'; break; case 4: char = '↘'; break; } ctx.fillText(char, 0, 0); ctx.restore(); },
-			6: (x, y, id, isBotOn) => { drawTileBase(x, y, isBotOn ? '#d35400' : '#e67e22'); const { x: sx, y: sy } = gridToScreen(x, y); ctx.fillStyle = isBotOn ? '#a04000' : '#c0392b'; ctx.beginPath(); ctx.ellipse(sx, sy, 8, 4, 0, 0, Math.PI*2); ctx.fill(); },
-			7: (x, y, id, state) => { const isClosed = state === 'closed'; if(isClosed) { drawTileBase(x, y, '#c0392b'); const { x: sx, y: sy } = gridToScreen(x, y); ctx.fillStyle = '#922b21'; ctx.fillRect(sx - 10, sy - 20, 20, 20); ctx.strokeStyle = 'white'; ctx.strokeRect(sx - 10, sy - 20, 20, 20); ctx.beginPath(); ctx.moveTo(sx-10, sy-20); ctx.lineTo(sx+10, sy); ctx.stroke(); } else { drawTileBase(x, y, '#95a5a6'); const { x: sx, y: sy } = gridToScreen(x, y); ctx.strokeStyle = '#27ae60'; ctx.lineWidth = 2; ctx.strokeRect(sx - 12, sy - 12, 24, 24); } },
+			6: (x, y, _id, isBotOn) => { drawTileBase(x, y, isBotOn ? '#d35400' : '#e67e22'); const { x: sx, y: sy } = gridToScreen(x, y); ctx.fillStyle = isBotOn ? '#a04000' : '#c0392b'; ctx.beginPath(); ctx.ellipse(sx, sy, 8, 4, 0, 0, Math.PI*2); ctx.fill(); },
+			7: (x, y, _id, state) => { const isClosed = state === 'closed'; if(isClosed) { drawTileBase(x, y, '#c0392b'); const { x: sx, y: sy } = gridToScreen(x, y); ctx.fillStyle = '#922b21'; ctx.fillRect(sx - 10, sy - 20, 20, 20); ctx.strokeStyle = 'white'; ctx.strokeRect(sx - 10, sy - 20, 20, 20); ctx.beginPath(); ctx.moveTo(sx-10, sy-20); ctx.lineTo(sx+10, sy); ctx.stroke(); } else { drawTileBase(x, y, '#95a5a6'); const { x: sx, y: sy } = gridToScreen(x, y); ctx.strokeStyle = '#27ae60'; ctx.lineWidth = 2; ctx.strokeRect(sx - 12, sy - 12, 24, 24); } },
 		};
 
 		function drawBot(x, y, charge) {

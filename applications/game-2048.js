@@ -97,6 +97,18 @@ export const game2048App = {
 						<button class="left" data-dir="left">◄</button>
 						<button class="center" data-dir="down">▼</button>
 						<button class="right" data-dir="right">►</button>
+					<div class="game-message-overlay" id="gameover-2048" style="display:none;">
+						<h2 id="gameover-2048-title"></h2>
+						<p id="gameover-2048-msg"></p>
+						<div class="overlay-buttons">
+							<button id="gameover-2048-restart">Restart ↺</button>
+						</div>
+					<div class="game-message-overlay" id="gameover-2048" style="display:none;">
+						<h2 id="gameover-2048-title"></h2>
+						<p id="gameover-2048-msg"></p>
+						<div class="overlay-buttons">
+							<button id="gameover-2048-restart">Recommencer ↺</button>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -158,7 +170,11 @@ export const game2048App = {
 				score: $window.find('#score-2048'),
 				gridSlider: $window.find('#grid-size-slider'),
 				gridLabel: $window.find('#grid-size-value'),
-				controls: $window.find('#controls-2048 button')
+				controls: $window.find('#controls-2048 button'),
+				overlay: $window.find('#gameover-2048'),
+				overlayTitle: $window.find('#gameover-2048-title'),
+				overlayMsg: $window.find('#gameover-2048-msg'),
+				overlayRestart: $window.find('#gameover-2048-restart')
 			},
 			buttons: {
 				play: $window.find('#game-play-btn'),
@@ -297,21 +313,35 @@ export const game2048App = {
 				}
 			}
 			isGameOver = true;
-			alert("Game Over! Score: " + score);
+			ui.game.overlayTitle.text('Game Over');
+			ui.game.overlayMsg.text('Score: ' + score);
+			ui.game.overlay.fadeIn(200);
 		}
 
 		ui.buttons.play.on('click', () => { ui.screens.menu.hide(); ui.screens.game.show(); });
 		ui.buttons.exit.on('click', () => { ui.screens.menu.show(); ui.screens.game.hide(); });
 		ui.buttons.restart.on('click', () => restartGame());
+		ui.game.overlayRestart.on('click', () => { ui.game.overlay.hide(); restartGame(); });
 		ui.game.controls.on('click', function () { move($(this).data('dir')); });
 		ui.game.gridSlider.on('input', function () { gridSize = parseInt(this.value); restartGame(); });
 
-		$(document).on('keydown.game2048', (e) => {
-			if (e.key === 'ArrowUp') move('up');
-			if (e.key === 'ArrowDown') move('down');
-			if (e.key === 'ArrowLeft') move('left');
-			if (e.key === 'ArrowRight') move('right');
+		const keyHandler = (e) => {
+			if (!document.body.contains(ui.game.board[0])) return;
+			if (e.key === 'ArrowUp')    { e.preventDefault(); move('up'); }
+			if (e.key === 'ArrowDown')  { e.preventDefault(); move('down'); }
+			if (e.key === 'ArrowLeft')  { e.preventDefault(); move('left'); }
+			if (e.key === 'ArrowRight') { e.preventDefault(); move('right'); }
+			if (e.key === 'r' || e.key === 'R') restartGame();
+		};
+		$(document).on('keydown.game2048', keyHandler);
+
+		const observer = new MutationObserver(() => {
+			if (!document.body.contains(ui.game.board[0])) {
+				$(document).off('keydown.game2048', keyHandler);
+				observer.disconnect();
+			}
 		});
+		observer.observe(document.body, { childList: true, subtree: true });
 
 		restartGame();
 		return { restart: () => restartGame() };

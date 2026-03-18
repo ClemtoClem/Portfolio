@@ -236,7 +236,6 @@ export const cvApp = {
 				<ul>
 					<li>Français (Maternelle)</li>
 					<li>Anglais (B1)</li>
-					<li>Allemand (A2)</li>
 				</ul>
 			</div>
 			
@@ -244,7 +243,7 @@ export const cvApp = {
 			<div class="cv-section">
 				<ul>
 					<li>Programmation web (NodeJs, Jquery, HTML, JavaScript, CSS)</li>
-					<li>Programmation de jeux vidéo (C/C++, GL, glm, SDL3)</li>
+					<li>Programmation de jeux vidéo (C/C++, Opengl, glm, SDL3)</li>
 					<li>Jeux vidéo (Minetest, OpenArena, etc.)</li>
 					<li>Musique (LMMS, Fasttracker 2)</li>
 					<li>Dessin, Piano</li>

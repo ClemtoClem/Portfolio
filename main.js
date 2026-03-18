@@ -1,38 +1,9 @@
-import { System } from './system/system.js';
+import { System  } from './system/system.js';
+import { ALL_APPS } from './applications/index.js';
 
-// Importer toutes les applications
-import { cvApp 				} from './applications/app-cv.js';
-import { projectsApp 		} from './applications/app-projects.js';
-import { contactApp 		} from './applications/app-contact.js';
-import { weatherApp 		} from './applications/app-weather.js';
-import { calculatriceApp    } from './applications/app-calculatrice.js';
-import { musicReaderApp     } from './applications/app-music-reader.js';
-import { parametersApp 		} from './applications/app-parameters.js';
-import { game2048App 		} from './applications/game-2048.js';
-import { gameChargebotApp   } from './applications/game-chargebot.js';
-import { gameFlappyBirdApp 	} from './applications/game-flappy-bird.js';
-import { gameSnakeApp		} from './applications/game-snake.js';
-import { gameTownFPSApp     } from './applications/game-town-fps.js';
-
-// Initialisation du Système
+// Initialisation du Système et enregistrement de toutes les applications
 const system = new System();
-
-// --- Enregistrer les applications ---
-// Main applictions
-system.registerApp(cvApp);
-system.registerApp(projectsApp);
-system.registerApp(contactApp);
-// Applications
-system.registerApp(weatherApp);
-system.registerApp(calculatriceApp);
-system.registerApp(musicReaderApp);
-system.registerApp(parametersApp);
-// Games
-system.registerApp(game2048App);
-system.registerApp(gameSnakeApp);
-system.registerApp(gameChargebotApp);
-system.registerApp(gameFlappyBirdApp);
-system.registerApp(gameTownFPSApp);
+ALL_APPS.forEach(app => system.registerApp(app));
 
 $(document).ready(function () {
 	/** @type {JQuery<HTMLElement>} */
@@ -144,7 +115,7 @@ $(document).ready(function () {
 		$desktopWrapper.css('transform', `translateX(${currentTranslate}px)`);
 	}
 
-	function endDrag(e) {
+	function endDrag(_e) {
 		if (!isDragging) return;
 		isDragging = false;
 
@@ -238,7 +209,6 @@ $(document).ready(function () {
 	});
 
 	function updateTransform() {
-		console.log("resize androidScreen");
 		$('#desktop-wrapper').css('width', `${100 * totalPages}%`);
 		
 		const pageWidth = $androidScreen.width();
