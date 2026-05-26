@@ -9,6 +9,8 @@ import { weatherApp }         from './app-weather.js';
 import { calculatriceApp }    from './app-calculatrice.js';
 import { musicReaderApp }     from './app-music-reader.js';
 import { parametersApp }      from './app-parameters.js';
+import { cameraApp }          from './app-camera.js';
+import { paintApp }           from './app-paint.js';
 import { game2048App }        from './game-2048.js';
 import { gameSnakeApp }       from './game-snake.js';
 import { gameChargebotApp }   from './game-chargebot.js';
@@ -22,6 +24,8 @@ export const ALL_APPS = [
 	weatherApp,
 	calculatriceApp,
 	musicReaderApp,
+	cameraApp,
+	paintApp,
 	parametersApp,
 	game2048App,
 	gameSnakeApp,
