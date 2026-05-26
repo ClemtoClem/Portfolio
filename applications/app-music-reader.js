@@ -1,8 +1,8 @@
 const DEFAULT_MUSICS = [
-	'./assets/musics/faceraiders.mp3',
-	'./assets/musics/menumusic.mp3',
-	'./assets/musics/The Complex.mp3',
-	'https://files.freemusicarchive.org/storage-freemusicarchive-org/music/WFMU/Broke_For_Free/Directionless_EP/Broke_For_Free_-_01_-_Night_Owl.mp3',
+	//'./assets/musics/faceraiders.mp3',
+	//'./assets/musics/menumusic.mp3',
+	//'./assets/musics/The Complex.mp3',
+	//'https://files.freemusicarchive.org/storage-freemusicarchive-org/music/WFMU/Broke_For_Free/Directionless_EP/Broke_For_Free_-_01_-_Night_Owl.mp3',
 	'./assets/musics/SoundHelix-Song-1.mp3',
 	'./assets/musics/SoundHelix-Song-2.mp3',
 	'./assets/musics/SoundHelix-Song-3.mp3',

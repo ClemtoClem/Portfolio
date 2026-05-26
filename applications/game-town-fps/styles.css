@@ -3,60 +3,46 @@
     --primary-dark-color: #31697c;
     --primary-background-color: #c8f1ff;
 }
-.app-content {
-    padding: 0px;
+.app-content { padding: 0; }
+
+/* The game stage anchors the absolutely-positioned HUD elements
+   (joysticks, crosshair) so they stay inside the app window instead
+   of jumping to the viewport. */
+.fps-stage {
+    position: relative;
+    overflow: hidden;
 }
 
-/* --- Menu Liste des sauvegardes --- */
-#saves-list {
-    margin-top: 20px;
-    max-height: 200px;
-    overflow-y: auto;
-    display: none;
-    /* Caché par défaut */
-    border-top: 1px solid #444;
-    padding-top: 15px;
-}
-
-.save-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    background: #222;
-    margin-bottom: 5px;
-    border-radius: 4px;
-}
-
-.save-item button {
-    padding: 5px 10px;
-    background: #00d2ff;
-    border: none;
-    cursor: pointer;
-}
-
-/* --- GAME UI --- */
-
-#gl-canvas {
+#fps-canvas {
     display: block;
     width: 100%;
     height: 100%;
 }
 
-#joystick-container {
-    position: fixed;
-    left: 16px;
-    bottom: 16px;
-    width: 120px;
-    height: 120px;
-    z-index: 10;
-    touch-action: none;
-    pointer-events: none;
+/* Pause overlay shown when the game is paused. */
+.fps-pause-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    color: #fff;
+    z-index: 20;
 }
+.fps-pause-overlay h2 {
+    font-family: 'Undertale', 'Roboto', sans-serif;
+    margin: 0;
+    font-size: 1.6em;
+}
+.fps-pause-overlay .game-btn { min-width: 180px; }
 
+/* HUD elements anchored to the stage. */
+#joystick-container,
 #look-joystick-container {
-    position: fixed;
-    right: 16px;
+    position: absolute;
     bottom: 16px;
     width: 120px;
     height: 120px;
@@ -64,10 +50,11 @@
     touch-action: none;
     pointer-events: none;
 }
+#joystick-container       { left: 16px; }
+#look-joystick-container  { right: 16px; }
 
-/* Crosshair */
 #crosshair {
-    position: fixed;
+    position: absolute;
     left: 50%;
     top: 50%;
     width: 16px;
@@ -77,26 +64,43 @@
     pointer-events: none;
     z-index: 5;
 }
-
 #crosshair::before,
 #crosshair::after {
     content: "";
     position: absolute;
     background: rgba(255, 255, 255, 0.95);
 }
-
 #crosshair::before {
-    left: 50%;
-    top: 0;
-    width: 2px;
-    height: 100%;
+    left: 50%; top: 0;
+    width: 2px; height: 100%;
     transform: translateX(-50%);
 }
-
 #crosshair::after {
-    top: 50%;
-    left: 0;
-    width: 100%;
-    height: 2px;
+    top: 50%; left: 0;
+    width: 100%; height: 2px;
     transform: translateY(-50%);
+}
+
+/* Saved-game list (used by the LOAD PART screen). */
+.save-list {
+    margin-top: 20px;
+    max-height: 200px;
+    overflow-y: auto;
+    border-top: 1px solid #444;
+    padding-top: 15px;
+}
+.save-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background: #222;
+    margin-bottom: 5px;
+    border-radius: 4px;
+}
+.save-item button {
+    padding: 5px 10px;
+    background: #00d2ff;
+    border: none;
+    cursor: pointer;
 }

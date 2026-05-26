@@ -17,6 +17,7 @@ import { AudioManager } from './audio.js';
 import { Storage } from './storage.js';
 import { pick } from './i18n.js';
 import { createAppContext } from './app.js';
+import { Navigator } from './navigator.js';
 
 const EXIT_BUTTON_SVG = `<svg viewBox="0 0 24 24"><path d="M12.1,11.9c-0.4-0.4-1-0.4-1.4,0L10,12.6l-0.7-0.7c-0.4-0.4-1-0.4-1.4,0s-0.4,1,0,1.4L8.6,14l-0.7,0.7 c-0.4,0.4-0.4,1,0,1.4c0.2,0.2,0.5,0.3,0.7,0.3s0.5-0.1,0.7-0.3l0.7-0.7l0.7,0.7c0.2,0.2,0.5,0.3,0.7,0.3s0.5-0.1,0.7-0.3 c0.4-0.4,0.4-1,0-1.4L11.4,14l0.7-0.7C12.5,12.9,12.5,12.3,12.1,11.9z"></path><path d="M17,3h-6C8.8,3,7,4.8,7,7c-2.2,0-4,1.8-4,4v6c0,2.2,1.8,4,4,4h6c2.2,0,4-1.8,4-4c2.2,0,4-1.8,4-4V7C21,4.8,19.2,3,17,3z M15,16v1c0,1.1-0.9,2-2,2H7c-1.1,0-2-0.9-2-2v-6c0-1.1,0.9-2,2-2h1h5c1.1,0,2,0.9,2,2V16z M19,13c0,1.1-0.9,2-2,2v-4 c0-2.2-1.8-4-4-4H9c0-1.1,0.9-2,2-2h6c1.1,0,2,0.9,2,2V13z" /></svg>`;
 
@@ -101,12 +102,21 @@ export class System extends EventTarget {
 		// Trigger the open animation
 		requestAnimationFrame(() => root.classList.add('open'));
 
-		// Wire back/exit button
-		root.querySelector('.back-btn')
-			.addEventListener('click', () => this.closeApp(windowId));
+		// Navigator: scoped per-window, owns header visibility/title and
+		// drives the back-button behaviour (pop top route, or close app).
+		const headerEl = root.querySelector('.app-header');
+		const titleEl  = headerEl.querySelector('h2');
+		const navigator = new Navigator({
+			header: headerEl,
+			titleEl,
+			defaultTitle: title,
+			closeApp: () => this.closeApp(windowId),
+		});
+		headerEl.querySelector('.back-btn')
+			.addEventListener('click', () => navigator.back());
 
 		// Build context and call lifecycle
-		const ctx = createAppContext({ system: this, app, windowId, root });
+		const ctx = createAppContext({ system: this, app, windowId, root, navigator });
 		let handle = {};
 		try {
 			handle = app.onMount ? (app.onMount(ctx) || {}) : {};

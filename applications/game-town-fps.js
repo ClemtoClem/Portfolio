@@ -5,8 +5,8 @@ import { FirstPersonController } from './game-town-fps/controls.js';
 const VERSION = '1.0.0';
 
 const STRINGS = {
-	'en-US': { new: 'NEW PART', load: 'LOAD PART', settings: 'SETTINGS', partName: 'Part name', placeholder: 'My town', start: 'Start', back: 'Return', savedTitle: 'Saved parts', config: 'Configurations', nickname: 'Nickname', color: 'Character color' },
-	'fr-FR': { new: 'NOUVELLE PARTIE', load: 'CHARGER UNE PARTIE', settings: 'CONFIGURATIONS', partName: 'Nom de la partie', placeholder: 'Ma Super Ville…', start: 'Commencer', back: 'Retour', savedTitle: 'Parties sauvegardées', config: 'Configurations', nickname: 'Pseudonyme', color: 'Couleur du personnage' },
+	'en-US': { new: 'NEW PART', load: 'LOAD PART', settings: 'SETTINGS', partName: 'Part name', placeholder: 'My town', start: 'Start', back: 'Return', savedTitle: 'Saved parts', config: 'Configurations', nickname: 'Nickname', color: 'Character color', paused: 'Paused', resume: 'Resume', mainMenu: 'Main menu', pauseHint: 'Press Esc to pause' },
+	'fr-FR': { new: 'NOUVELLE PARTIE', load: 'CHARGER UNE PARTIE', settings: 'CONFIGURATIONS', partName: 'Nom de la partie', placeholder: 'Ma Super Ville…', start: 'Commencer', back: 'Retour', savedTitle: 'Parties sauvegardées', config: 'Configurations', nickname: 'Pseudonyme', color: 'Couleur du personnage', paused: 'Pause', resume: 'Reprendre', mainMenu: 'Menu principal', pauseHint: 'Échap pour mettre en pause' },
 };
 
 function html(s) {
@@ -50,6 +50,11 @@ function html(s) {
 				<div id="joystick-container"></div>
 				<div id="look-joystick-container"></div>
 				<div id="crosshair"></div>
+				<div class="fps-pause-overlay" id="fps-pause-overlay" style="display:none;">
+					<h2>${s.paused}</h2>
+					<button class="game-btn" id="fps-btn-resume">${s.resume}</button>
+					<button class="game-btn" id="fps-btn-quit">${s.mainMenu}</button>
+				</div>
 			</div>
 		</div>
 	`;
@@ -67,8 +72,10 @@ export const gameTownFPSApp = {
 	content: { 'en-US': html(STRINGS['en-US']), 'fr-FR': html(STRINGS['fr-FR']) },
 
 	onMount(ctx) {
-		const canvas = ctx.$('#fps-canvas');
-		const stage  = ctx.$('.fps-stage');
+		const strings = STRINGS[ctx.lang] || STRINGS['fr-FR'];
+		const canvas      = ctx.$('#fps-canvas');
+		const stage       = ctx.$('.fps-stage');
+		const pauseOverlay= ctx.$('#fps-pause-overlay');
 		const menus = {
 			main:     ctx.$('#fps-main-menu'),
 			newPart:  ctx.$('#fps-new-menu'),
@@ -87,6 +94,8 @@ export const gameTownFPSApp = {
 		ctx.scope.on(ctx.$('#fps-btn-load'),     'click', () => showMenu('load'));
 		ctx.scope.on(ctx.$('#fps-btn-settings'), 'click', () => showMenu('settings'));
 		ctx.scope.on(ctx.$('#fps-btn-start'),    'click', () => launchGame());
+		ctx.scope.on(ctx.$('#fps-btn-resume'),   'click', () => resumeGame());
+		ctx.scope.on(ctx.$('#fps-btn-quit'),     'click', () => returnToMenu());
 
 		showMenu('main');
 
@@ -94,15 +103,54 @@ export const gameTownFPSApp = {
 		let renderer, scene, camera, controller;
 		let raf = null;
 		let resizeObs;
+		let paused = false;
 		const clock = new THREE.Clock();
 
 		function launchGame() {
 			Object.values(menus).forEach(m => m.style.display = 'none');
 			stage.style.display = '';
+			pauseOverlay.style.display = 'none';
+			paused = false;
+
+			// In-game route: header hidden, header-back returns to main menu.
+			ctx.navigator.push({
+				name: 'fps-game',
+				showHeader: false,
+				onBack: () => { returnToMenu(); return false; }, // we handle nav ourselves
+			});
 
 			if (!renderer) buildScene();
 			fitToCanvas();
 			animate();
+		}
+
+		function pauseGame() {
+			if (!raf || paused) return;
+			paused = true;
+			cancelAnimationFrame(raf);
+			raf = null;
+			pauseOverlay.style.display = '';
+			// Reveal the header so the user can use the back button.
+			ctx.navigator.configure({ showHeader: true, title: strings.paused });
+		}
+
+		function resumeGame() {
+			if (!paused) return;
+			paused = false;
+			pauseOverlay.style.display = 'none';
+			ctx.navigator.configure({ showHeader: false });
+			// Reset the delta clock to avoid a giant step on the next frame.
+			clock.getDelta();
+			animate();
+		}
+
+		function returnToMenu() {
+			if (raf) { cancelAnimationFrame(raf); raf = null; }
+			paused = false;
+			pauseOverlay.style.display = 'none';
+			// Drop the in-game route; the navigator restores header/title.
+			ctx.navigator.reset();
+			showMenu('main');
 		}
 
 		function buildScene() {
@@ -161,10 +209,22 @@ export const gameTownFPSApp = {
 			if (renderer && scene && camera) renderer.render(scene, camera);
 		}
 
+		// Escape toggles pause when the game is running.
+		ctx.scope.on(document, 'keydown', (e) => {
+			if (!ctx.root.isConnected) return;
+			if (e.key !== 'Escape') return;
+			if (stage.style.display === 'none') return; // not in-game
+			e.preventDefault();
+			paused ? resumeGame() : pauseGame();
+		});
+
+		// Resize when window-level layout shifts (header toggle dispatches it).
+		ctx.scope.on(window, 'resize', () => fitToCanvas());
+
 		return {
-			pause:   () => { if (raf) { cancelAnimationFrame(raf); raf = null; } },
-			resume:  () => { if (renderer && !raf) animate(); },
-			restart: () => { showMenu('main'); if (raf) { cancelAnimationFrame(raf); raf = null; } },
+			pause:   () => pauseGame(),
+			resume:  () => resumeGame(),
+			restart: () => returnToMenu(),
 			quit:    () => {
 				if (raf) cancelAnimationFrame(raf);
 				if (renderer) renderer.dispose();

@@ -40,7 +40,7 @@ import { EventScope } from './events.js';
 import { Storage } from './storage.js';
 import { pick } from './i18n.js';
 
-export function createAppContext({ system, app, windowId, root }) {
+export function createAppContext({ system, app, windowId, root, navigator }) {
 	const content = root.querySelector('.app-content');
 	const scope   = new EventScope();
 	const storage = new Storage(app.id);
@@ -53,6 +53,7 @@ export function createAppContext({ system, app, windowId, root }) {
 		content,
 		scope,
 		storage,
+		navigator,
 		get lang() { return system.settings.language; },
 		t: (value) => pick(value, system.settings.language),
 		$:  (sel) => qOne(sel, root),

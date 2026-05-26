@@ -1146,6 +1146,12 @@ input[type="range"]::-ms-tooltip {
 	z-index: 10;
 }
 
+/* Toggled by Navigator.setHeaderVisible(false) — apps can hide the
+   header to give the canvas the full window (e.g. immersive games). */
+.app-header.hidden {
+	display: none;
+}
+
 .app-header .back-btn {
 	background: none;
 	border: none;

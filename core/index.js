@@ -10,4 +10,5 @@ export * from './gestures.js';
 export { AudioManager } from './audio.js';
 export { System } from './system.js';
 export { Desktop } from './desktop.js';
+export { Navigator } from './navigator.js';
 export { startStatusBarClock, applyGithubPagesFix } from './shell.js';
