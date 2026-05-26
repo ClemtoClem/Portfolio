@@ -1,101 +1,83 @@
-class Bot {
-	constructor(x, y, charge) {
-		this.x = x;
-		this.y = y;
-		this.charge = charge;
-	}
-}
+import { shadeColor } from '../core/canvas.js';
+
+const VERSION = '1.0.0';
+
+const STRINGS = {
+	'en-US': {
+		play: 'PLAY', return: 'Return', menu: 'Menu', levelTitle: 'CHOICE OF LEVEL',
+		tryAgain: 'Restart ↺', next: 'Next ➜', mainMenu: 'Main Menu',
+		levelComplete: 'Level Complete!', fall: 'Fall!', emptyBattery: 'Battery empty',
+		fallMsg: 'The robot fell into the void.',
+		batteryMsg: 'Out of energy.',
+		batteryLeft: 'Battery remaining: ',
+		congrats: 'Congratulations!',
+		congratsMsg: 'You completed every level and saved the little robot!',
+	},
+	'fr-FR': {
+		play: 'JOUER', return: 'Retour', menu: 'Menu', levelTitle: 'CHOIX DU NIVEAU',
+		tryAgain: 'Réessayer ↺', next: 'Suivant ➜', mainMenu: 'Menu Principal',
+		levelComplete: 'Niveau Terminé !', fall: 'Chute !', emptyBattery: 'Batterie Vide',
+		fallMsg: "Le robot est tombé dans le vide.",
+		batteryMsg: "Plus d'énergie pour avancer.",
+		batteryLeft: 'Batterie restante : ',
+		congrats: 'Félicitations !',
+		congratsMsg: 'Vous avez terminé tous les niveaux et sauvé le petit robot !',
+	},
+};
+
+// ── Levels ──────────────────────────────────────────────────────────
+// Tile types: 0 void · 1 ground · 2 cracked · 3 finish · 4 charging · 5 conveyor · 6 button · 7 door
+class Bot { constructor(x, y, charge) { this.x = x; this.y = y; this.charge = charge; } }
 
 class Level {
-	constructor(map, botX, botY, botCharge, helpMessage = "") {
+	constructor(map, botX, botY, botCharge, help = '') {
 		this.initMap = map;
 		this.initBot = new Bot(botX, botY, botCharge);
-		this.helpMessage = helpMessage;
-		this.isFinished = false;
-		this.finishedTime = 0;
+		this.helpMessage = help;
 	}
-
 	start() {
-		// Deep copy the map and normalize tiles (ensure default properties exist)
-		this.map = this.initMap.map(row => row.map(tile => ({ ...tile }))).map(row => row.map(tile => {
-			// Ensure type exists
-			tile.type = tile.type || 0;
-
-
-			// Defaults for specific tile types
-			if (tile.type === 4) { // charging plate
-				if (typeof tile.charge !== 'number') tile.charge = 0;
-			}
-			if (tile.type === 5) { // conveyor
-				// direction must be 1..4
-				if (![1, 2, 3, 4].includes(tile.direction)) tile.direction = 1;
-			}
-			if (tile.type === 6) { // button
-				// buttons have an id which matches doors' id
-				if (typeof tile.id === 'undefined') tile.id = null;
-				tile._pressed = false; // runtime state: pressed while bot stands on it
-			}
-			if (tile.type === 7) { // door
-				if (typeof tile.id === 'undefined') tile.id = null;
-				if (typeof tile.state === 'undefined') tile.state = 'closed';
-				// closed doors are impassable, open ones behave like ground (type 1)
-			}
-			return tile;
-		}));
-
-
-		// Create a fresh bot instance
+		this.map = this.initMap.map(row => row.map(t => ({ ...t })));
+		for (const row of this.map) for (const t of row) {
+			t.type = t.type || 0;
+			if (t.type === 4 && typeof t.charge !== 'number') t.charge = 0;
+			if (t.type === 5 && ![1, 2, 3, 4].includes(t.direction)) t.direction = 1;
+			if (t.type === 6) { t._pressed = false; if (typeof t.id === 'undefined') t.id = null; }
+			if (t.type === 7) { if (typeof t.state === 'undefined') t.state = 'closed'; if (typeof t.id === 'undefined') t.id = null; }
+		}
 		this.bot = new Bot(this.initBot.x, this.initBot.y, this.initBot.charge);
 	}
 }
 
 const ALL_LEVELS = [
-	// Niveau 1: Mouvement de base
 	new Level([
 		[{ type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }],
 		[{ type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }],
 		[{ type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }],
 		[{ type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 3 }, { type: 1 }],
-		[{ type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }]
-	], 2, 2, 6, "Get to the finish without running out of power."),
-	// Niveau 2: Chargement
+		[{ type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }],
+	], 2, 2, 6, 'Get to the finish without running out of power.'),
 	new Level([
 		[{ type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }],
 		[{ type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 3 }, { type: 1 }, { type: 1 }, { type: 1 }],
 		[{ type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }],
 		[{ type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }],
 		[{ type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 4, charge: 5 }, { type: 1 }],
-		[{ type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }]
-	], 2, 5, 6, "Charging plates will help you go farther."),
-	// Niveau 3: Plaque Craquelée
+		[{ type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }],
+	], 2, 5, 6, 'Charging plates will help you go farther.'),
 	new Level([
 		[{ type: 1 }, { type: 1 }, { type: 2 }, { type: 2 }, { type: 2 }, { type: 1 }, { type: 1 }],
-		[{ type: 1 }, { type: 4, charge: 4 }, { type: 2 }, { type: 2, charge: 4 }, { type: 2 }, { type: 3 }, { type: 1 }], // Recharge +3 et Fin
+		[{ type: 1 }, { type: 4, charge: 4 }, { type: 2 }, { type: 2, charge: 4 }, { type: 2 }, { type: 3 }, { type: 1 }],
 		[{ type: 1 }, { type: 1 }, { type: 2 }, { type: 2 }, { type: 2 }, { type: 1 }, { type: 1 }],
-		[{ type: 1 }, { type: 0 }, { type: 0 }, { type: 0 }, { type: 0 }, { type: 0 }, { type: 0 }]
-	], 0, 3, 3, "Cracked plates can only be used once before they break."),
-	// Niveau 4
+		[{ type: 1 }, { type: 0 }, { type: 0 }, { type: 0 }, { type: 0 }, { type: 0 }, { type: 0 }],
+	], 0, 3, 3, 'Cracked plates can only be used once.'),
 	new Level([
 		[{ type: 1 }, { type: 1 }, { type: 0 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }],
 		[{ type: 3 }, { type: 1 }, { type: 0 }, { type: 1 }, { type: 1 }, { type: 3 }, { type: 1 }, { type: 1 }, { type: 1 }],
 		[{ type: 1 }, { type: 1 }, { type: 0 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 4, charge: 5 }],
 		[{ type: 1 }, { type: 1 }, { type: 0 }, { type: 0 }, { type: 1 }, { type: 0 }, { type: 0 }, { type: 1 }, { type: 1 }],
 		[{ type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }],
-		[{ type: 1 }, { type: 1 }, { type: 4, charge: 6 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }]
-	], 2, 2, 5, "Plan your route carefully."),
-	// Niveau 5
-	new Level([
-		[{ type: 0 }, { type: 0 }, { type: 0 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 0 }, { type: 0 }, { type: 0 }],
-		[{ type: 0 }, { type: 0 }, { type: 0 }, { type: 1 }, { type: 2, charge: 3 }, { type: 1 }, { type: 0 }, { type: 0 }, { type: 0 }],
-		[{ type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }],
-		[{ type: 1 }, { type: 4, charge: 4 }, { type: 1 }, { type: 0 }, { type: 0 }, { type: 0 }, { type: 1 }, { type: 3 }, { type: 1 }],
-		[{ type: 3 }, { type: 1 }, { type: 0 }, { type: 1 }, { type: 1 }, { type: 0 }, { type: 1 }, { type: 1 }, { type: 1 }],
-		[{ type: 1 }, { type: 0 }, { type: 0 }, { type: 0 }, { type: 1 }, { type: 0 }, { type: 0 }, { type: 0 }, { type: 1 }],
-		[{ type: 1 }, { type: 0 }, { type: 0 }, { type: 1 }, { type: 1 }, { type: 0 }, { type: 0 }, { type: 0 }, { type: 1 }],
-		[{ type: 1 }, { type: 4, charge: 7 }, { type: 0 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }],
-		[{ type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 0 }, { type: 0 }, { type: 0 }]
-	], 5, 9, 7),
-	// Niveau 6: Tapis Roulant
+		[{ type: 1 }, { type: 1 }, { type: 4, charge: 6 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }],
+	], 2, 2, 5, 'Plan your route carefully.'),
 	new Level([
 		[{ type: 1 }, { type: 1 }, { type: 1 }, { type: 0 }, { type: 0 }, { type: 0 }, { type: 1 }, { type: 1 }, { type: 1 }],
 		[{ type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 3 }, { type: 1 }],
@@ -103,21 +85,8 @@ const ALL_LEVELS = [
 		[{ type: 1 }, { type: 1 }, { type: 1 }, { type: 0 }, { type: 0 }, { type: 0 }, { type: 0 }, { type: 0 }, { type: 0 }],
 		[{ type: 1 }, { type: 1 }, { type: 1 }, { type: 5, direction: 1 }, { type: 5, direction: 1 }, { type: 5, direction: 1 }, { type: 1 }, { type: 1 }, { type: 1 }],
 		[{ type: 1 }, { type: 4, charge: 6 }, { type: 1 }, { type: 5, direction: 2 }, { type: 5, direction: 2 }, { type: 5, direction: 2 }, { type: 1 }, { type: 1 }, { type: 1 }],
-		[{ type: 1 }, { type: 1 }, { type: 1 }, { type: 0 }, { type: 0 }, { type: 0 }, { type: 1 }, { type: 1 }, { type: 1 }]
-	], 2, 2, 5, "Conveyor belts let you direction without using power."),
-	// Niveau 7
-	new Level([
-		[{ type: 1 }, { type: 1 }, { type: 1 }, { type: 0 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 0 }, { type: 0 }],
-		[{ type: 1 }, { type: 3 }, { type: 1 }, { type: 0 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 5, direction: 2 }, { type: 1 }],
-		[{ type: 1 }, { type: 1 }, { type: 1 }, { type: 0 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 0 }, { type: 5, direction: 4 }],
-		[{ type: 0 }, { type: 5, direction: 3 }, { type: 0 }, { type: 0 }, { type: 5, direction: 4 }, { type: 0 }, { type: 1 }, { type: 0 }, { type: 5, direction: 4 }],
-		[{ type: 0 }, { type: 5, direction: 3 }, { type: 0 }, { type: 0 }, { type: 5, direction: 4 }, { type: 0 }, { type: 0 }, { type: 0 }, { type: 5, direction: 4 }],
-		[{ type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 0 }, { type: 1 }, { type: 1 }, { type: 0 }],
-		[{ type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 5, direction: 1 }, { type: 1 }, { type: 1 }, { type: 1 }],
-		[{ type: 1 }, { type: 4, charge: 2 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 5, direction: 1 }, { type: 1 }, { type: 4, charge: 7 }, { type: 1 }],
-		[{ type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 0 }, { type: 1 }, { type: 1 }, { type: 1 }]
-	], 2, 6, 6),
-	// Niveau 8: Boutons et Portes
+		[{ type: 1 }, { type: 1 }, { type: 1 }, { type: 0 }, { type: 0 }, { type: 0 }, { type: 1 }, { type: 1 }, { type: 1 }],
+	], 2, 2, 5, 'Conveyor belts move you without using power.'),
 	new Level([
 		[{ type: 1 }, { type: 1 }, { type: 1 }, { type: 5, direction: 1 }, { type: 4, charge: 9 }, { type: 5, direction: 2 }, { type: 1 }, { type: 1 }, { type: 1 }],
 		[{ type: 1 }, { type: 1 }, { type: 1 }, { type: 0 }, { type: 0 }, { type: 0 }, { type: 1 }, { type: 6, id: 1 }, { type: 1 }],
@@ -126,16 +95,81 @@ const ALL_LEVELS = [
 		[{ type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 5, direction: 4 }, { type: 0 }, { type: 0 }, { type: 0 }, { type: 5, direction: 4 }],
 		[{ type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 7, id: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 0 }],
 		[{ type: 1 }, { type: 4, charge: 9 }, { type: 1 }, { type: 1 }, { type: 7, id: 1 }, { type: 1 }, { type: 1 }, { type: 3 }, { type: 1 }],
-		[{ type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 7, id: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }]
-	], 2, 6, 7, "Press the buttons to open the doors corresponding to the same key number."),
+		[{ type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 7, id: 1 }, { type: 1 }, { type: 1 }, { type: 1 }, { type: 1 }],
+	], 2, 6, 7, 'Press buttons to open doors with the same ID.'),
 ];
 
-const VERSION = 'beta';
+const TILE_WIDTH = 64, TILE_HEIGHT = 32, TILE_DEPTH = 20;
+const HALF_W = TILE_WIDTH / 2, HALF_H = TILE_HEIGHT / 2;
+const DIRECTION = {
+	1: { dx: -1, dy: 0 }, 2: { dx: 1, dy: 0 },
+	3: { dx: 0, dy: -1 }, 4: { dx: 0, dy: 1 },
+};
+
+const MENU_SVG = `<svg viewBox="0 0 24 24"><path d="M4 5C3.45 5 3 5.45 3 6s.45 1 1 1h16c.55 0 1-.45 1-1s-.45-1-1-1H4zm0 6c-.55 0-1 .45-1 1s.45 1 1 1h16c.55 0 1-.45 1-1s-.45-1-1-1H4zm0 6c-.55 0-1 .45-1 1s.45 1 1 1h16c.55 0 1-.45 1-1s-.45-1-1-1H4z"/></svg>`;
+const REFRESH_SVG = `<svg viewBox="0 0 100 100"><path d="M76.5,58.3c-2.8,7.8-10.2,13.3-18.9,13.3-11.1,0-20.1-9-20.1-20.1s9-20.1,20.1-20.1c6.6,0,12.6,3.3,16.2,8.3-.3.5-.9.7-1.7.7H53.6c-1.1,0-2,.9-2,2v4.2c0,1.1.8,1.9,1.9,1.9h17.9c1,0,1.8-.9,1.8-1.8V22c0-1.1-1.1-2-2.2-2h-4c-1.1,0-2,.9-2,2v3c0,1.2-.7,1.7-1.6.9-.4-.5-.7-.8-1.2-1.2-1.6-1.7-3.5-3.2-5.6-4.4-4.3-2.5-9.3-4-14.6-4C32.8,16.3,20,29,20,44.9c0,15.8,12.8,28.5,28.6,28.5,2.6,0,5.2-.4,7.7-1.1,2.5-.7,4.8-1.7,7-3,2.2-1.3,4.2-2.9,5.9-4.7,1.8-1.8,3.3-3.8,4.5-6,.6-1.1,1.1-2.2,1.6-3.4z"/></svg>`;
+
+function html(s) {
+	return `
+		<div class="game-container">
+			<div id="cb-menu" class="game-menu-screen">
+				<h1 class="game-title">⚡ Chargebot</h1>
+				<div class="game-version">Version ${VERSION}</div>
+				<button id="cb-play" class="game-btn">${s.play}</button>
+			</div>
+			<div id="cb-levels" class="game-menu-screen" style="display:none;">
+				<h1 class="game-title">⚡ Chargebot</h1>
+				<h2 style="color:white;margin-bottom:20px;">${s.levelTitle}</h2>
+				<div id="cb-level-grid" class="game-level-grid"></div>
+				<button id="cb-back" class="game-btn" style="min-width:150px;font-size:1rem;">${s.return}</button>
+			</div>
+			<div id="cb-game" class="game-content" style="display:none;">
+				<div class="game-header">
+					<div class="game-top-row">
+						<button class="game-action-btn" id="cb-exit">${MENU_SVG} ${s.menu}</button>
+						<div class="game-score-board">
+							<div class="game-score">⚡ <span id="cb-charge">0</span></div>
+							<div class="game-score">⛳ <span id="cb-level">1</span></div>
+						</div>
+						<button class="game-action-btn" id="cb-restart">${REFRESH_SVG}</button>
+					</div>
+					<div class="game-message" id="cb-help"></div>
+				</div>
+				<div class="game-main">
+					<div class="game-canvas-wrapper">
+						<canvas id="cb-canvas"></canvas>
+					</div>
+					<div id="cb-controls" class="game-controls">
+						<button class="up" data-dir="3">▲</button>
+						<button class="left" data-dir="1">◀</button>
+						<button class="center" data-dir="4">▼</button>
+						<button class="right" data-dir="2">▶</button>
+					</div>
+					<div class="game-message-overlay" id="cb-overlay" style="display:none;">
+						<h2 id="cb-overlay-title"></h2>
+						<p id="cb-overlay-msg"></p>
+						<div class="overlay-buttons">
+							<button id="cb-ov-menu" class="btn-secondary">${s.menu}</button>
+							<button id="cb-ov-retry">${s.tryAgain}</button>
+							<button id="cb-ov-next">${s.next}</button>
+						</div>
+					</div>
+					<div class="game-message-overlay" id="cb-congrats" style="display:none;">
+						<h2>${s.congrats}</h2>
+						<p>${s.congratsMsg}</p>
+						<button id="cb-reset-all">${s.mainMenu}</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	`;
+}
+
 export const gameChargebotApp = {
 	id: 'game-chargebot',
 	title: 'Chargebot',
 	version: VERSION,
-	icon: `<svg fill="#000000" viewBox="0 0 24 24"><path d="M21.928 11.607c-.202-.488-.635-.605-.928-.633V8c0-1.103-.897-2-2-2h-6V4.61c.305-.274.5-.668.5-1.11a1.5 1.5 0 0 0-3 0c0 .442.195.836.5 1.11V6H5c-1.103 0-2 .897-2 2v2.997l-.082.006A1 1 0 0 0 1.99 12v2a1 1 0 0 0 1 1H3v5c0 1.103.897 2 2 2h14c1.103 0 2-.897 2-2v-5a1 1 0 0 0 1-1v-1.938a1.006 1.006 0 0 0-.072-.455zM5 20V8h14l.001 3.996L19 12v2l.001.005.001 5.995H5z"></path><ellipse cx="8.5" cy="12" rx="1.5" ry="2"></ellipse><ellipse cx="15.5" cy="12" rx="1.5" ry="2"></ellipse><path d="M8 16h8v2H8z"></path></svg>`,
+	icon: `<svg viewBox="0 0 24 24" fill="#000"><path d="M21 11h-1V8a2 2 0 0 0-2-2h-5V4.6c.3-.3.5-.7.5-1.1a1.5 1.5 0 1 0-3 0c0 .4.2.8.5 1.1V6H6a2 2 0 0 0-2 2v3H3a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1v5a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1zM5 20V8h14v12H5z"/><ellipse cx="9" cy="12" rx="1.5" ry="2"/><ellipse cx="15" cy="12" rx="1.5" ry="2"/><path d="M8 16h8v2H8z"/></svg>`,
 	iconColor: '#8BC34A',
 	headerColor: '#8BC34A',
 	type: 'game',
@@ -145,548 +179,320 @@ export const gameChargebotApp = {
 			--primary-dark-color: #487217;
 			--primary-background-color: #555;
 		}
-		.app-content { padding: 0px; }
+		.app-content { padding: 0; }
 	`,
-	content: {
-		'en-US':`
-			<div class="game-container">
-				
-				<div id="game-main-menu" class="game-menu-screen">
-					<h1 class="game-title">⚡ Chargebot</h1>
-					<div class="game-version">Version ${VERSION}</div>
-					<button id="game-play-btn" class="game-btn">PLAY</button>
-				</div>
+	content: { 'en-US': html(STRINGS['en-US']), 'fr-FR': html(STRINGS['fr-FR']) },
 
-				<div id="game-level-select" class="game-menu-screen" style="display:none;">
-					<h1 class="game-title">⚡ Chargebot</h1>
-					<h2 style="color:white; margin-bottom:20px;">CHOICE OF LEVEL</h2>
-					<div id="game-level-grid" class="game-level-grid"></div>
-					<button id="game-back-menu-btn" class="game-btn" style="min-width:150px; font-size:1rem;">Return</button>
-				</div>
+	onMount(ctx) {
+		const strings = STRINGS[ctx.lang] || STRINGS['fr-FR'];
+		const canvas = ctx.$('#cb-canvas');
+		const cctx = canvas.getContext('2d');
 
-				<div id="chargebot-game-content" class="game-content" style="display:none;">
-					<div class="game-header">
-						<div class="game-top-row">
-							<button class="game-action-btn" id="game-exit-btn">
-								<svg viewBox="0 0 24 24"><path d="M4 5C3.44772 5 3 5.44772 3 6C3 6.55228 3.44772 7 4 7H20C20.5523 7 21 6.55228 21 6C21 5.44772 20.5523 5 20 5H4ZM3 12C3 11.4477 3.44772 11 4 11H20C20.5523 11 21 11.4477 21 12C21 12.5523 20.5523 13 20 13H4C3.44772 13 3 12.5523 3 12ZM3 18C3 17.4477 3.44772 17 4 17H20C20.5523 17 21 17.4477 21 18C21 18.5523 20.5523 19 20 19H4C3.44772 19 3 18.5523 3 18Z"></path></svg>
-								Menu
-							</button>
-							<div class="game-score-board">
-								<div class="game-score">⚡ <span id="chargebot-charge">0</span></div>
-								<div class="game-score">⛳ <span id="chargebot-level">1</span></div>
-							</div>
-							<button class="game-action-btn" id="chargebot-restart-btn" title="Restart (R)">
-								<svg viewBox="0 0 100 100"><path d="M76.5,58.3c0,0.1,0,0.2-0.1,0.2c-0.3,1.1-0.7,2.2-1.1,3.3c-0.5,1.2-1,2.3-1.6,3.4c-1.2,2.2-2.7,4.2-4.5,6 c-1.7,1.8-3.7,3.4-5.9,4.7c-2.2,1.3-4.5,2.3-7,3c-2.5,0.7-5.1,1.1-7.7,1.1C32.8,80,20,67.2,20,51.3s12.8-28.6,28.6-28.6 c5.3,0,10.3,1.5,14.6,4c0,0,0,0,0.1,0c2.1,1.2,4,2.7,5.6,4.4c0.5,0.4,0.8,0.7,1.2,1.2c0.9,0.8,1.6,0.3,1.6-0.9V22c0-1.1,0.9-2,2-2h4 c1.1,0,2,0.9,2.2,2v24.5c0,0.9-0.8,1.8-1.8,1.8H53.6c-1.1,0-1.9-0.8-1.9-1.9v-4.2c0-1.1,0.9-2,2-2h9.4c0.8,0,1.4-0.2,1.7-0.7 c-3.6-5-9.6-8.3-16.2-8.3c-11.1,0-20.1,9-20.1,20.1s9,20.1,20.1,20.1c8.7,0,16.1-5.5,18.9-13.3c0,0,0.3-1.8,1.7-1.8 c1.4,0,4.8,0,5.7,0c0.8,0,1.6,0.6,1.6,1.5C76.5,58,76.5,58.1,76.5,58.3z"></path></svg>
-							</button>
-						</div>
-						<div class="game-message" id="chargebot-help-message"></div>
-					</div>
-
-					<div class="game-main">
-						<div class="game-canvas-wrapper">
-							<canvas id="chargebot-canvas"></canvas>
-						</div>
-
-						<div id="chargebot-controls" class="game-controls">
-							<button class="up" data-dir="3">▲</button>
-							<button class="left" data-dir="1">◀</button>
-							<button class="center" data-dir="4">▼</button>
-							<button class="right" data-dir="2">▶</button>
-						</div>
-
-						<div class="game-message-overlay" id="chargebot-overlay" style="display: none;">
-							<h2 id="chargebot-overlay-title"></h2>
-							<p id="chargebot-overlay-message"></p>
-							<div class="overlay-buttons">
-								<button id="chargebot-menu-btn" class="btn-secondary">Menu</button>
-								<button id="chargebot-try-again-btn">Restart ↺</button>
-								<button id="chargebot-next-level-btn">Next ➜</button>
-							</div>
-						</div>
-
-						<div class="game-message-overlay" id="chargebot-congratulation" style="display: none;">
-							<h2>Congratulations !</h2>
-							<p>You have completed all levels and saved the little robot !</p>
-							<button id="chargebot-reset-all-btn">Main Menu</button>
-						</div>
-					</div>
-				</div>
-			</div>
-		`,
-		'fr-FR':`
-			<div class="game-container">
-				
-				<div id="game-main-menu" class="game-menu-screen">
-					<h1 class="game-title">⚡ Chargebot</h1>
-					<div class="game-version">Version ${VERSION}</div>
-					<button id="game-play-btn" class="game-btn">Jouer</button>
-				</div>
-
-				<div id="game-level-select" class="game-menu-screen" style="display:none;">
-					<h1 class="game-title">⚡ Chargebot</h1>
-					<h2 style="color:white; margin-bottom:20px;">CHOIX DU NIVEAU</h2>
-					<div id="game-level-grid" class="game-level-grid"></div>
-					<button id="game-back-menu-btn" class="game-btn" style="min-width:150px; font-size:1rem;">Retour</button>
-				</div>
-
-				<div id="chargebot-game-content" class="game-content" style="display:none;">
-					<div class="game-header">
-						<div class="game-top-row">
-							<button class="game-action-btn" id="game-exit-btn">
-								<svg viewBox="0 0 24 24"><path d="M4 5C3.44772 5 3 5.44772 3 6C3 6.55228 3.44772 7 4 7H20C20.5523 7 21 6.55228 21 6C21 5.44772 20.5523 5 20 5H4ZM3 12C3 11.4477 3.44772 11 4 11H20C20.5523 11 21 11.4477 21 12C21 12.5523 20.5523 13 20 13H4C3.44772 13 3 12.5523 3 12ZM3 18C3 17.4477 3.44772 17 4 17H20C20.5523 17 21 17.4477 21 18C21 18.5523 20.5523 19 20 19H4C3.44772 19 3 18.5523 3 18Z"></path></svg>
-								Menu
-							</button>
-							<div class="game-score-board">
-								<div class="game-score">⚡ <span id="chargebot-charge">0</span></div>
-								<div class="game-score">⛳ <span id="chargebot-level">1</span></div>
-							</div>
-							<button class="game-action-btn" id="chargebot-restart-btn" title="Redémarrer (R)">
-								<svg viewBox="0 0 100 100"><path d="M76.5,58.3c0,0.1,0,0.2-0.1,0.2c-0.3,1.1-0.7,2.2-1.1,3.3c-0.5,1.2-1,2.3-1.6,3.4c-1.2,2.2-2.7,4.2-4.5,6 c-1.7,1.8-3.7,3.4-5.9,4.7c-2.2,1.3-4.5,2.3-7,3c-2.5,0.7-5.1,1.1-7.7,1.1C32.8,80,20,67.2,20,51.3s12.8-28.6,28.6-28.6 c5.3,0,10.3,1.5,14.6,4c0,0,0,0,0.1,0c2.1,1.2,4,2.7,5.6,4.4c0.5,0.4,0.8,0.7,1.2,1.2c0.9,0.8,1.6,0.3,1.6-0.9V22c0-1.1,0.9-2,2-2h4 c1.1,0,2,0.9,2.2,2v24.5c0,0.9-0.8,1.8-1.8,1.8H53.6c-1.1,0-1.9-0.8-1.9-1.9v-4.2c0-1.1,0.9-2,2-2h9.4c0.8,0,1.4-0.2,1.7-0.7 c-3.6-5-9.6-8.3-16.2-8.3c-11.1,0-20.1,9-20.1,20.1s9,20.1,20.1,20.1c8.7,0,16.1-5.5,18.9-13.3c0,0,0.3-1.8,1.7-1.8 c1.4,0,4.8,0,5.7,0c0.8,0,1.6,0.6,1.6,1.5C76.5,58,76.5,58.1,76.5,58.3z"></path></svg>
-							</button>
-						</div>
-						<div class="game-message" id="chargebot-help-message"></div>
-					</div>
-
-					<div class="game-canvas-wrapper">
-						<canvas id="chargebot-canvas"></canvas>
-					</div>
-
-					<div id="chargebot-controls" class="game-controls">
-						<button class="up" data-dir="3">▲</button>
-						<button class="left" data-dir="1">◀</button>
-						<button class="center" data-dir="4">▼</button>
-						<button class="right" data-dir="2">▶</button>
-					</div>
-					
-					<div class="game-message-overlay" id="chargebot-overlay" style="display: none;">
-						<h2 id="chargebot-overlay-title"></h2>
-						<p id="chargebot-overlay-message"></p>
-						<div class="overlay-buttons">
-							<button id="chargebot-menu-btn" class="btn-secondary">Menu</button>
-							<button id="chargebot-try-again-btn">Réessayer ↺</button>
-							<button id="chargebot-next-level-btn">Suivant ➜</button>
-						</div>
-					</div>
-					
-					<div class="game-message-overlay" id="chargebot-congratulation" style="display: none;">
-						<h2>Félicitations !</h2> 
-						<p>Vous avez terminé tous les niveaux et sauvé le petit robot !</p>
-						<button id="chargebot-reset-all-btn">Menu Principal</button>
-					</div>
-				</div>
-			</div>
-		`,
-	},
-	init: function (_sys, windowId) {
-        /** @type {JQuery<HTMLElement>} */
-		const $window = $(`#${windowId}`);
-
-		const canvas = $window.find('#chargebot-canvas')[0];
-		const ctx = canvas.getContext('2d');
-
-		// UI Elements Dictionary
 		const ui = {
-			screens: {
-        		/** @type {JQuery<HTMLElement>} */
-				menu: $window.find('#game-main-menu'),
-        		/** @type {JQuery<HTMLElement>} */
-				levels: $window.find('#game-level-select'),
-        		/** @type {JQuery<HTMLElement>} */
-				game: $window.find('#chargebot-game-content')
-			},
-			game: {
-        		/** @type {JQuery<HTMLElement>} */
-				charge: $window.find('#chargebot-charge'),
-        		/** @type {JQuery<HTMLElement>} */
-				level: $window.find('#chargebot-level'),
-        		/** @type {JQuery<HTMLElement>} */
-				help: $window.find('#chargebot-help-message'),
-        		/** @type {JQuery<HTMLElement>} */
-				overlay: $window.find('#chargebot-overlay'),
-        		/** @type {JQuery<HTMLElement>} */
-				congrats: $window.find('#chargebot-congratulation'),
-        		/** @type {JQuery<HTMLElement>} */
-				overlayTitle: $window.find('#chargebot-overlay-title'),
-        		/** @type {JQuery<HTMLElement>} */
-				overlayMsg: $window.find('#chargebot-overlay-message'),
-        		/** @type {JQuery<HTMLElement>} */
-				controls: $window.find('#chargebot-controls button')
-			},
-			buttons: {
-        		/** @type {JQuery<HTMLElement>} */
-				play: $window.find('#game-play-btn'),
-        		/** @type {JQuery<HTMLElement>} */
-				backToMenu: $window.find('#game-back-menu-btn'),
-        		/** @type {JQuery<HTMLElement>} */
-				levelGrid: $window.find('#game-level-grid'),
-        		/** @type {JQuery<HTMLElement>} */
-				exitGame: $window.find('#game-exit-btn'),
-        		/** @type {JQuery<HTMLElement>} */
-				restart: $window.find('#chargebot-restart-btn'),
-        		/** @type {JQuery<HTMLElement>} */
-				ovMenu: $window.find('#chargebot-menu-btn'),
-        		/** @type {JQuery<HTMLElement>} */
-				ovRetry: $window.find('#chargebot-try-again-btn'),
-        		/** @type {JQuery<HTMLElement>} */
-				ovNext: $window.find('#chargebot-next-level-btn'),
-        		/** @type {JQuery<HTMLElement>} */
-				ovReset: $window.find('#chargebot-reset-all-btn')
-			}
+			menu:    ctx.$('#cb-menu'),
+			levels:  ctx.$('#cb-levels'),
+			game:    ctx.$('#cb-game'),
+			charge:  ctx.$('#cb-charge'),
+			level:   ctx.$('#cb-level'),
+			help:    ctx.$('#cb-help'),
+			overlay: ctx.$('#cb-overlay'),
+			overlayTitle: ctx.$('#cb-overlay-title'),
+			overlayMsg:   ctx.$('#cb-overlay-msg'),
+			ovMenu:  ctx.$('#cb-ov-menu'),
+			ovRetry: ctx.$('#cb-ov-retry'),
+			ovNext:  ctx.$('#cb-ov-next'),
+			congrats: ctx.$('#cb-congrats'),
+			levelGrid: ctx.$('#cb-level-grid'),
 		};
 
-		// --- STATE MANAGEMENT ---
-		let appState = "menu"; // 'menu', 'levels', 'game'
-		let gameState = "running"; // 'running', 'gameover', 'finished'
+		let appState = 'menu';     // 'menu' | 'levels' | 'game'
+		let gameState = 'running'; // 'running' | 'gameover' | 'finished'
 		let currentLevelIndex = 0;
-		let maxUnlockedLevel = 0; // Saved Progress
-		let currentLevel, bot, map, gameLoopId, isMoving = false;
-		let viewOffsetX = 0, viewOffsetY = 0;
-
-		// --- SAVE SYSTEM ---
-		const STORAGE_KEY = this.id;
-		
-		function loadProgress() {
-			try {
-				const data = localStorage.getItem(STORAGE_KEY);
-				if(data) {
-					const parsed = JSON.parse(data);
-					maxUnlockedLevel = parsed.unlocked || 0;
-				}
-			} catch(e) { console.error("Save load error", e); }
-		}
+		let maxUnlockedLevel = ctx.storage.get('progress', { unlocked: 0 }).unlocked || 0;
+		let currentLevel, bot, map, gameLoopId;
+		let viewOffsetX = 0, viewOffsetY = 0, isMoving = false;
 
 		function saveProgress() {
-			// On débloque le niveau suivant si on vient de finir le dernier débloqué
 			if (currentLevelIndex >= maxUnlockedLevel) {
-				maxUnlockedLevel = currentLevelIndex + 1;
-				// Cap max
-				if(maxUnlockedLevel >= ALL_LEVELS.length) maxUnlockedLevel = ALL_LEVELS.length; // Permet de rejouer tout mais indique tout fini
-				
-				localStorage.setItem(STORAGE_KEY, JSON.stringify({ unlocked: maxUnlockedLevel }));
+				maxUnlockedLevel = Math.min(ALL_LEVELS.length, currentLevelIndex + 1);
+				ctx.storage.set('progress', { unlocked: maxUnlockedLevel });
 			}
 		}
 
-		// --- NAVIGATION ---
-		
-		function showScreen(screenName) {
-			appState = screenName;
-			Object.values(ui.screens).forEach(s => s.hide());
-			
-			if (screenName === 'menu') {
-				ui.screens.menu.fadeIn(200);
-				cancelAnimationFrame(gameLoopId);
-			} else if (screenName === 'levels') {
-				renderLevelGrid();
-				ui.screens.levels.fadeIn(200);
-				cancelAnimationFrame(gameLoopId);
-			} else if (screenName === 'game') {
-				ui.screens.game.show();
-				resizeCanvas(); // Ensure size is correct
-			}
+		function showScreen(name) {
+			appState = name;
+			[ui.menu, ui.levels, ui.game].forEach(s => s.style.display = 'none');
+			if (name === 'menu')   { ui.menu.style.display = ''; cancelAnimationFrame(gameLoopId); }
+			if (name === 'levels') { renderLevelGrid(); ui.levels.style.display = ''; cancelAnimationFrame(gameLoopId); }
+			if (name === 'game')   { ui.game.style.display = ''; resize(); }
 		}
 
 		function renderLevelGrid() {
-			ui.buttons.levelGrid.empty();
-			ALL_LEVELS.forEach((_lvl, idx) => {
-				const isLocked = idx > maxUnlockedLevel;
-				const btn = $(`<div class="game-level-btn ${isLocked ? 'locked' : 'unlocked'}">${isLocked ? '🔒' : (idx + 1)}</div>`);
-				
-				if (!isLocked) {
-					btn.on('click', () => {
-						startLevel(idx);
-					});
-				}
-				ui.buttons.levelGrid.append(btn);
+			ui.levelGrid.innerHTML = '';
+			ALL_LEVELS.forEach((_l, idx) => {
+				const locked = idx > maxUnlockedLevel;
+				const btn = document.createElement('div');
+				btn.className = `game-level-btn ${locked ? 'locked' : 'unlocked'}`;
+				btn.textContent = locked ? '🔒' : (idx + 1);
+				if (!locked) ctx.scope.on(btn, 'click', () => startLevel(idx));
+				ui.levelGrid.appendChild(btn);
 			});
 		}
 
-		// --- GAME LOGIC ---
-
-		// --- Paramètres Isométriques ---
-		const TILE_WIDTH = 64; 
-		const TILE_HEIGHT = 32;
-		const TILE_DEPTH = 20;
-		const HALF_W = TILE_WIDTH / 2;
-		const HALF_H = TILE_HEIGHT / 2;
-
-		const DIRECTION = {
-			1: { dx: -1, dy: 0 }, // Ouest
-			2: { dx: 1, dy: 0 },  // Est
-			3: { dx: 0, dy: -1 }, // Nord
-			4: { dx: 0, dy: 1 },  // Sud
-		};
-
 		function gridToScreen(x, y) {
-			const isoX = (x - y) * HALF_W;
-			const isoY = (x + y) * HALF_H;
-			return { x: isoX + viewOffsetX, y: isoY + viewOffsetY };
+			return { x: (x - y) * HALF_W + viewOffsetX, y: (x + y) * HALF_H + viewOffsetY };
 		}
 
-		function shadeColor(color, percent) {
-			const num = parseInt(color.replace("#",""),16),
-				amt = Math.round(2.55 * percent),
-				R = (num >> 16) + amt,
-				G = (num >> 8 & 0x00FF) + amt,
-				B = (num & 0x0000FF) + amt;
-			return "#" + (0x1000000 + (R<255?R<1?0:R:255)*0x10000 + (G<255?G<1?0:G:255)*0x100 + (B<255?B<1?0:B:255)).toString(16).slice(1);
-		}
-
-		function drawTileBase(x, y, topColor, sideColor = null) {
+		function drawTileBase(x, y, top, side) {
 			const { x: sx, y: sy } = gridToScreen(x, y);
-			if (!sideColor) sideColor = shadeColor(topColor, -30);
-			ctx.save(); ctx.translate(sx, sy);
-			ctx.fillStyle = sideColor; 
-			ctx.beginPath(); ctx.moveTo(0, HALF_H); ctx.lineTo(-HALF_W, 0); ctx.lineTo(-HALF_W, TILE_DEPTH); ctx.lineTo(0, HALF_H + TILE_DEPTH); ctx.closePath(); ctx.fill();
-			ctx.fillStyle = shadeColor(sideColor, -20);
-			ctx.beginPath(); ctx.moveTo(0, HALF_H); ctx.lineTo(HALF_W, 0); ctx.lineTo(HALF_W, TILE_DEPTH); ctx.lineTo(0, HALF_H + TILE_DEPTH); ctx.closePath(); ctx.fill();
-			ctx.fillStyle = topColor;
-			ctx.beginPath(); ctx.moveTo(0, -HALF_H); ctx.lineTo(HALF_W, 0); ctx.lineTo(0, HALF_H); ctx.lineTo(-HALF_W, 0); ctx.closePath(); ctx.fill();
-			ctx.strokeStyle = "rgba(255,255,255,0.1)"; ctx.lineWidth = 1; ctx.stroke();
-			ctx.restore();
+			if (!side) side = shadeColor(top, -30);
+			cctx.save(); cctx.translate(sx, sy);
+			cctx.fillStyle = side;
+			cctx.beginPath(); cctx.moveTo(0, HALF_H); cctx.lineTo(-HALF_W, 0); cctx.lineTo(-HALF_W, TILE_DEPTH); cctx.lineTo(0, HALF_H + TILE_DEPTH); cctx.closePath(); cctx.fill();
+			cctx.fillStyle = shadeColor(side, -20);
+			cctx.beginPath(); cctx.moveTo(0, HALF_H); cctx.lineTo(HALF_W, 0); cctx.lineTo(HALF_W, TILE_DEPTH); cctx.lineTo(0, HALF_H + TILE_DEPTH); cctx.closePath(); cctx.fill();
+			cctx.fillStyle = top;
+			cctx.beginPath(); cctx.moveTo(0, -HALF_H); cctx.lineTo(HALF_W, 0); cctx.lineTo(0, HALF_H); cctx.lineTo(-HALF_W, 0); cctx.closePath(); cctx.fill();
+			cctx.strokeStyle = 'rgba(255,255,255,0.1)'; cctx.lineWidth = 1; cctx.stroke();
+			cctx.restore();
 		}
 
-		const TILES_DRAW_FUNCTION = {
-			0: (_x, _y) => { },
+		const TILE_DRAWERS = {
+			0: () => {},
 			1: (x, y) => drawTileBase(x, y, '#bdc3c7'),
-			2: (x, y) => { drawTileBase(x, y, '#95a5a6'); const { x: sx, y: sy } = gridToScreen(x, y); ctx.save(); ctx.translate(sx, sy); ctx.strokeStyle = '#2c3e50'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(-10, -5); ctx.lineTo(5, 5); ctx.moveTo(5, -5); ctx.lineTo(-5, 8); ctx.stroke(); ctx.restore(); },
-			3: (x, y) => { drawTileBase(x, y, '#ecf0f1'); const { x: sx, y: sy } = gridToScreen(x, y); ctx.save(); ctx.translate(sx, sy); ctx.fillStyle = 'rgba(0,0,0,0.1)'; ctx.beginPath(); ctx.moveTo(0, -HALF_H); ctx.lineTo(0, HALF_H); ctx.lineTo(-HALF_W, 0); ctx.fill(); ctx.fillStyle = '#27ae60'; ctx.font = 'bold 14px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('FIN', 0, 5); ctx.restore(); },
-			4: (x, y, charge) => { const isActive = charge > 0; drawTileBase(x, y, isActive ? '#f1c40f' : '#7f8c8d'); if(isActive) { const { x: sx, y: sy } = gridToScreen(x, y); ctx.fillStyle = '#d35400'; ctx.font = 'bold 16px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('+' + charge, sx, sy + 5); } },
-			5: (x, y, direction) => { drawTileBase(x, y, '#3498db'); const { x: sx, y: sy } = gridToScreen(x, y); ctx.save(); ctx.translate(sx, sy); ctx.fillStyle = 'rgba(255,255,255,0.6)'; ctx.font = '20px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; let char = ''; switch(direction) { case 1: char = '↙'; break; case 2: char = '↗'; break; case 3: char = '↖'; break; case 4: char = '↘'; break; } ctx.fillText(char, 0, 0); ctx.restore(); },
-			6: (x, y, _id, isBotOn) => { drawTileBase(x, y, isBotOn ? '#d35400' : '#e67e22'); const { x: sx, y: sy } = gridToScreen(x, y); ctx.fillStyle = isBotOn ? '#a04000' : '#c0392b'; ctx.beginPath(); ctx.ellipse(sx, sy, 8, 4, 0, 0, Math.PI*2); ctx.fill(); },
-			7: (x, y, _id, state) => { const isClosed = state === 'closed'; if(isClosed) { drawTileBase(x, y, '#c0392b'); const { x: sx, y: sy } = gridToScreen(x, y); ctx.fillStyle = '#922b21'; ctx.fillRect(sx - 10, sy - 20, 20, 20); ctx.strokeStyle = 'white'; ctx.strokeRect(sx - 10, sy - 20, 20, 20); ctx.beginPath(); ctx.moveTo(sx-10, sy-20); ctx.lineTo(sx+10, sy); ctx.stroke(); } else { drawTileBase(x, y, '#95a5a6'); const { x: sx, y: sy } = gridToScreen(x, y); ctx.strokeStyle = '#27ae60'; ctx.lineWidth = 2; ctx.strokeRect(sx - 12, sy - 12, 24, 24); } },
+			2: (x, y) => {
+				drawTileBase(x, y, '#95a5a6');
+				const { x: sx, y: sy } = gridToScreen(x, y);
+				cctx.save(); cctx.translate(sx, sy);
+				cctx.strokeStyle = '#2c3e50'; cctx.lineWidth = 1.5;
+				cctx.beginPath(); cctx.moveTo(-10, -5); cctx.lineTo(5, 5);
+				cctx.moveTo(5, -5); cctx.lineTo(-5, 8); cctx.stroke();
+				cctx.restore();
+			},
+			3: (x, y) => {
+				drawTileBase(x, y, '#ecf0f1');
+				const { x: sx, y: sy } = gridToScreen(x, y);
+				cctx.fillStyle = '#27ae60';
+				cctx.font = 'bold 14px sans-serif'; cctx.textAlign = 'center';
+				cctx.fillText('FIN', sx, sy + 5);
+			},
+			4: (x, y, charge) => {
+				const active = charge > 0;
+				drawTileBase(x, y, active ? '#f1c40f' : '#7f8c8d');
+				if (active) {
+					const { x: sx, y: sy } = gridToScreen(x, y);
+					cctx.fillStyle = '#d35400'; cctx.font = 'bold 16px sans-serif'; cctx.textAlign = 'center';
+					cctx.fillText('+' + charge, sx, sy + 5);
+				}
+			},
+			5: (x, y, direction) => {
+				drawTileBase(x, y, '#3498db');
+				const { x: sx, y: sy } = gridToScreen(x, y);
+				const chars = { 1: '↙', 2: '↗', 3: '↖', 4: '↘' };
+				cctx.fillStyle = 'rgba(255,255,255,0.6)'; cctx.font = '20px sans-serif';
+				cctx.textAlign = 'center'; cctx.textBaseline = 'middle';
+				cctx.fillText(chars[direction] || '?', sx, sy);
+			},
+			6: (x, y, _id, pressed) => {
+				drawTileBase(x, y, pressed ? '#d35400' : '#e67e22');
+				const { x: sx, y: sy } = gridToScreen(x, y);
+				cctx.fillStyle = pressed ? '#a04000' : '#c0392b';
+				cctx.beginPath(); cctx.ellipse(sx, sy, 8, 4, 0, 0, Math.PI * 2); cctx.fill();
+			},
+			7: (x, y, _id, state) => {
+				const closed = state === 'closed';
+				if (closed) {
+					drawTileBase(x, y, '#c0392b');
+					const { x: sx, y: sy } = gridToScreen(x, y);
+					cctx.fillStyle = '#922b21';
+					cctx.fillRect(sx - 10, sy - 20, 20, 20);
+					cctx.strokeStyle = 'white'; cctx.strokeRect(sx - 10, sy - 20, 20, 20);
+					cctx.beginPath(); cctx.moveTo(sx - 10, sy - 20); cctx.lineTo(sx + 10, sy); cctx.stroke();
+				} else {
+					drawTileBase(x, y, '#95a5a6');
+					const { x: sx, y: sy } = gridToScreen(x, y);
+					cctx.strokeStyle = '#27ae60'; cctx.lineWidth = 2;
+					cctx.strokeRect(sx - 12, sy - 12, 24, 24);
+				}
+			},
 		};
 
 		function drawBot(x, y, charge) {
 			const { x: sx, y: sy } = gridToScreen(x, y);
-			const botY = sy - 5; 
-			ctx.save(); ctx.translate(sx, botY);
-			ctx.fillStyle = 'rgba(0,0,0,0.3)'; ctx.beginPath(); ctx.ellipse(0, 5, 12, 6, 0, 0, Math.PI * 2); ctx.fill();
-			ctx.fillStyle = (charge > 3) ? '#2ecc71' : (charge > 1 ? '#f1c40f' : '#e74c3c');
-			const w = 24; const h = 28;
-			ctx.fillRect(-w/2, -h, w, h); ctx.beginPath(); ctx.arc(0, -h, w/2, Math.PI, 0); ctx.fill();
-			ctx.fillStyle = 'white'; ctx.fillRect(-6, -h - 5, 4, 4); ctx.fillRect(2, -h - 5, 4, 4);
-			ctx.fillStyle = 'rgba(255,255,255,0.8)'; ctx.beginPath(); ctx.moveTo(0, -h + 8); ctx.lineTo(4, -h + 14); ctx.lineTo(-1, -h + 14); ctx.lineTo(2, -h + 20); ctx.lineTo(-4, -h + 12); ctx.lineTo(0, -h + 12); ctx.fill();
-			ctx.restore();
+			cctx.save(); cctx.translate(sx, sy - 5);
+			cctx.fillStyle = 'rgba(0,0,0,0.3)';
+			cctx.beginPath(); cctx.ellipse(0, 5, 12, 6, 0, 0, Math.PI * 2); cctx.fill();
+			cctx.fillStyle = charge > 3 ? '#2ecc71' : charge > 1 ? '#f1c40f' : '#e74c3c';
+			const w = 24, h = 28;
+			cctx.fillRect(-w / 2, -h, w, h);
+			cctx.beginPath(); cctx.arc(0, -h, w / 2, Math.PI, 0); cctx.fill();
+			cctx.fillStyle = 'white';
+			cctx.fillRect(-6, -h - 5, 4, 4); cctx.fillRect(2, -h - 5, 4, 4);
+			cctx.restore();
 		}
 
-		function resizeCanvas() {
-			const container = $window.find('.game-canvas-wrapper');
-			if(container.width() > 0) {
-				canvas.width = container.width();
-				canvas.height = container.height();
+		function resize() {
+			const wrap = ctx.$('.game-canvas-wrapper');
+			if (wrap && wrap.clientWidth > 0) {
+				canvas.width = wrap.clientWidth;
+				canvas.height = wrap.clientHeight;
 			}
-			if(!map) return;
-			const mapRows = map.length;
-			const mapCols = map[0].length;
+			if (!map) return;
 			viewOffsetX = canvas.width / 2;
-			viewOffsetY = (canvas.height / 2) - ((mapRows + mapCols) * TILE_HEIGHT / 4);
+			viewOffsetY = canvas.height / 2 - ((map.length + map[0].length) * TILE_HEIGHT / 4);
 		}
 
-		function startLevel(index) {
-			if (index >= ALL_LEVELS.length) {
-				// Fin du jeu complet
-				ui.game.overlay.hide();
-				ui.game.congrats.show();
+		function startLevel(idx) {
+			if (idx >= ALL_LEVELS.length) {
+				ui.overlay.style.display = 'none';
+				ui.congrats.style.display = 'flex';
 				return;
 			}
-			
-			currentLevelIndex = index;
+			currentLevelIndex = idx;
 			showScreen('game');
-			
-			ALL_LEVELS[index].start();
-			currentLevel = ALL_LEVELS[index];
+			ALL_LEVELS[idx].start();
+			currentLevel = ALL_LEVELS[idx];
 			bot = currentLevel.bot;
 			map = currentLevel.map;
-			
-			gameState = "running";
+			gameState = 'running';
 			isMoving = false;
-			
-			ui.game.overlay.hide();
-			ui.game.congrats.hide();
-			
-			resizeCanvas();
-			updateGameUI();
-			
-			// Start loop
-			if(gameLoopId) cancelAnimationFrame(gameLoopId);
+			ui.overlay.style.display = 'none';
+			ui.congrats.style.display = 'none';
+			resize();
+			updateUI();
+			if (gameLoopId) cancelAnimationFrame(gameLoopId);
 			draw();
 		}
 
-		function updateGameUI() {
+		function updateUI() {
 			if (!bot) return;
-			ui.game.charge.text(bot.charge);
-			ui.game.level.text(currentLevelIndex + 1);
-			ui.game.help.html(currentLevel.helpMessage || "&nbsp;");
-			if(bot.charge <= 1) ui.game.charge.css('color', '#e74c3c');
-			else ui.game.charge.css('color', '#8BC34A');
-		}
-
-		function moveBot(dx, dy, isConveyorMove = false) {
-			if (isMoving || gameState !== "running") return;
-
-			const newX = bot.x + dx;
-			const newY = bot.y + dy;
-			const oldTile = map[bot.y][bot.x];
-
-			if (newY < 0 || newY >= map.length || newX < 0 || newX >= map[0].length) return;
-
-			const targetTile = map[newY][newX];
-			if (targetTile.type === 7 && targetTile.state === 'closed') return;
-
-			if (!isConveyorMove) {
-				if (bot.charge <= 0) return;
-				bot.charge--;
-			}
-
-			isMoving = true;
-			if (oldTile.type === 6) { oldTile._pressed = false; toggleDoors(oldTile.id, 'closed'); }
-
-			bot.x = newX; bot.y = newY;
-			updateGameUI();
-
-			setTimeout(() => { checkTileEffect(targetTile); }, 150);
+			ui.charge.textContent = String(bot.charge);
+			ui.level.textContent = String(currentLevelIndex + 1);
+			ui.help.innerHTML = currentLevel.helpMessage || '&nbsp;';
+			ui.charge.style.color = bot.charge <= 1 ? '#e74c3c' : '#8BC34A';
 		}
 
 		function toggleDoors(id, state) {
-			if(id === null) return;
-			map.forEach(row => row.forEach(t => { if (t.type === 7 && t.id === id) t.state = state; }));
+			if (id === null) return;
+			for (const row of map) for (const t of row) if (t.type === 7 && t.id === id) t.state = state;
 		}
 
-		function checkTileEffect(tile) {
-			if (tile.type === 3) { gameOver("win"); return; }
-			if (tile.type === 0) { gameOver("fall"); return; }
-			if (tile.type === 2) { tile.type = 0; }
-			if (tile.type === 4 && tile.charge > 0) { bot.charge += tile.charge; tile.charge = 0; updateGameUI(); }
-			if (tile.type === 6) { tile._pressed = true; toggleDoors(tile.id, 'open'); }
-			if (tile.type === 5) { 
-				isMoving = false; 
-				const d = DIRECTION[tile.direction]; 
-				setTimeout(() => moveBot(d.dx, d.dy, true), 50); 
-				return; 
+		function moveBot(dx, dy, viaConveyor = false) {
+			if (isMoving || gameState !== 'running') return;
+			const nx = bot.x + dx, ny = bot.y + dy;
+			if (ny < 0 || ny >= map.length || nx < 0 || nx >= map[0].length) return;
+			const target = map[ny][nx];
+			if (target.type === 7 && target.state === 'closed') return;
+
+			const oldTile = map[bot.y][bot.x];
+			if (!viaConveyor) {
+				if (bot.charge <= 0) return;
+				bot.charge--;
 			}
-			if (bot.charge <= 0) { gameOver("battery"); return; }
+			isMoving = true;
+			if (oldTile.type === 6) { oldTile._pressed = false; toggleDoors(oldTile.id, 'closed'); }
+			bot.x = nx; bot.y = ny;
+			updateUI();
+			ctx.scope.setTimeout(() => checkTileEffect(target), 150);
+		}
+
+		function checkTileEffect(t) {
+			if (t.type === 3) { gameOver('win'); return; }
+			if (t.type === 0) { gameOver('fall'); return; }
+			if (t.type === 2) t.type = 0;
+			if (t.type === 4 && t.charge > 0) { bot.charge += t.charge; t.charge = 0; updateUI(); }
+			if (t.type === 6) { t._pressed = true; toggleDoors(t.id, 'open'); }
+			if (t.type === 5) {
+				isMoving = false;
+				const d = DIRECTION[t.direction];
+				ctx.scope.setTimeout(() => moveBot(d.dx, d.dy, true), 50);
+				return;
+			}
+			if (bot.charge <= 0) { gameOver('battery'); return; }
 			isMoving = false;
 		}
 
 		function gameOver(reason) {
-			gameState = "gameover";
-			ui.buttons.ovNext.hide();
-			ui.buttons.ovRetry.show();
-			
-			if (reason === "win") {
-				gameState = "finished";
-				saveProgress(); // Sauvegarde ici
-				ui.game.overlayTitle.text("Niveau Terminé !").css("color", "#8BC34A");
-				ui.game.overlayMsg.text("Batterie restante : " + bot.charge);
-				ui.buttons.ovNext.show();
-				ui.buttons.ovRetry.hide();
-			} else if (reason === "fall") {
-				ui.game.overlayTitle.text("Chute !").css("color", "#e74c3c");
-				ui.game.overlayMsg.text("Le robot est tombé dans le vide.");
-			} else if (reason === "battery") {
-				ui.game.overlayTitle.text("Batterie Vide").css("color", "#f39c12");
-				ui.game.overlayMsg.text("Plus d'énergie pour avancer.");
+			gameState = 'gameover';
+			ui.ovNext.style.display = 'none';
+			ui.ovRetry.style.display = '';
+			if (reason === 'win') {
+				gameState = 'finished';
+				saveProgress();
+				ui.overlayTitle.textContent = strings.levelComplete;
+				ui.overlayTitle.style.color = '#8BC34A';
+				ui.overlayMsg.textContent = strings.batteryLeft + bot.charge;
+				ui.ovNext.style.display = '';
+				ui.ovRetry.style.display = 'none';
+			} else if (reason === 'fall') {
+				ui.overlayTitle.textContent = strings.fall;
+				ui.overlayTitle.style.color = '#e74c3c';
+				ui.overlayMsg.textContent = strings.fallMsg;
+			} else if (reason === 'battery') {
+				ui.overlayTitle.textContent = strings.emptyBattery;
+				ui.overlayTitle.style.color = '#f39c12';
+				ui.overlayMsg.textContent = strings.batteryMsg;
 			}
-			ui.game.overlay.fadeIn(200);
+			ui.overlay.style.display = 'flex';
 		}
 
 		function draw() {
-			if (appState !== 'game') return; // Stop drawing if not in game
-
-			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			if (appState !== 'game') return;
+			cctx.clearRect(0, 0, canvas.width, canvas.height);
 			if (!map) return;
-
 			for (let y = 0; y < map.length; y++) {
 				for (let x = 0; x < map[y].length; x++) {
-					const tile = map[y][x];
-					const drawFn = TILES_DRAW_FUNCTION[tile.type];
-					if (drawFn) {
-						if (tile.type === 6) drawFn(x, y, tile.id, tile._pressed);
-						else if (tile.type === 7) drawFn(x, y, tile.id, tile.state);
-						else if (tile.type === 4) drawFn(x, y, tile.charge);
-						else if (tile.type === 5) drawFn(x, y, tile.direction);
-						else drawFn(x, y);
+					const t = map[y][x];
+					const drawer = TILE_DRAWERS[t.type];
+					if (drawer) {
+						if (t.type === 4) drawer(x, y, t.charge);
+						else if (t.type === 5) drawer(x, y, t.direction);
+						else if (t.type === 6) drawer(x, y, t.id, t._pressed);
+						else if (t.type === 7) drawer(x, y, t.id, t.state);
+						else drawer(x, y);
 					}
-					if (bot.x === x && bot.y === y && gameState !== "gameover_fall") {
-						drawBot(x, y, bot.charge);
-					}
+					if (bot.x === x && bot.y === y) drawBot(x, y, bot.charge);
 				}
 			}
 			gameLoopId = requestAnimationFrame(draw);
 		}
 
-		// --- INPUTS ---
-		const handleInput = (key) => {
-			if (['ArrowUp', 'z', 'Z'].includes(key)) moveBot(0, -1);
-			if (['ArrowDown', 's', 'S'].includes(key)) moveBot(0, 1);
-			if (['ArrowLeft', 'q', 'Q'].includes(key)) moveBot(-1, 0);
-			if (['ArrowRight', 'd', 'D'].includes(key)) moveBot(1, 0);
-			if (['r', 'R'].includes(key)) startLevel(currentLevelIndex);
-		};
+		// Events
+		ctx.scope.delegate(ctx.root, 'click', '#cb-controls button', (_e, btn) => {
+			const d = DIRECTION[parseInt(btn.dataset.dir, 10)];
+			if (d) moveBot(d.dx, d.dy);
+		});
+		ctx.scope.on(ctx.$('#cb-play'),    'click', () => showScreen('levels'));
+		ctx.scope.on(ctx.$('#cb-back'),    'click', () => showScreen('menu'));
+		ctx.scope.on(ctx.$('#cb-exit'),    'click', () => showScreen('levels'));
+		ctx.scope.on(ctx.$('#cb-restart'), 'click', () => startLevel(currentLevelIndex));
+		ctx.scope.on(ui.ovMenu,  'click', () => showScreen('levels'));
+		ctx.scope.on(ui.ovRetry, 'click', () => startLevel(currentLevelIndex));
+		ctx.scope.on(ui.ovNext,  'click', () => startLevel(currentLevelIndex + 1));
+		ctx.scope.on(ctx.$('#cb-reset-all'), 'click', () => showScreen('menu'));
 
-		const keyHandler = (e) => {
-			if (appState !== 'game') return;
-			
-			// Shortcut Enter pour recommencer ou passer au niveau suivant
-			if (ui.game.overlay.is(':visible')) {
-				if(e.key === "Enter") {
-					if(gameState === "finished") startLevel(currentLevelIndex + 1);
-					else startLevel(currentLevelIndex);
-					return;
-				}
+		ctx.scope.on(document, 'keydown', (e) => {
+			if (!ctx.root.isConnected || appState !== 'game') return;
+			if (ui.overlay.style.display !== 'none' && e.key === 'Enter') {
+				if (gameState === 'finished') startLevel(currentLevelIndex + 1);
+				else startLevel(currentLevelIndex);
+				return;
 			}
-
-			if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)) e.preventDefault();
-			handleInput(e.key);
-		};
-
-		// --- EVENTS BINDING ---
-		$(document).on('keydown', keyHandler);
-		
-		ui.game.controls.on('click', function(e) {
-			e.preventDefault();
-			const dir = DIRECTION[$(this).data('dir')];
-			if (dir) moveBot(dir.dx, dir.dy);
+			const map = {
+				ArrowUp: [0, -1], z: [0, -1], Z: [0, -1],
+				ArrowDown: [0, 1], s: [0, 1], S: [0, 1],
+				ArrowLeft: [-1, 0], q: [-1, 0], Q: [-1, 0],
+				ArrowRight: [1, 0], d: [1, 0], D: [1, 0],
+			};
+			if (map[e.key]) { e.preventDefault(); moveBot(map[e.key][0], map[e.key][1]); }
+			if (e.key === 'r' || e.key === 'R') startLevel(currentLevelIndex);
 		});
 
-		// Menu Buttons
-		ui.buttons.play.on('click', () => showScreen('levels'));
-		ui.buttons.backToMenu.on('click', () => showScreen('menu'));
-		
-		// Game Buttons
-		ui.buttons.exitGame.on('click', () => showScreen('levels'));
-		ui.buttons.restart.on('click', () => startLevel(currentLevelIndex));
-		
-		// Overlay Buttons
-		ui.buttons.ovMenu.on('click', () => showScreen('levels'));
-		ui.buttons.ovRetry.on('click', () => startLevel(currentLevelIndex));
-		ui.buttons.ovNext.on('click', () => startLevel(currentLevelIndex + 1));
-		ui.buttons.ovReset.on('click', () => showScreen('menu'));
+		const obs = new ResizeObserver(() => { resize(); if (appState === 'game' && gameState !== 'running') draw(); });
+		obs.observe(canvas);
+		ctx.scope.observe(obs);
 
-		// Resize
-		const resizeObserver = new ResizeObserver(() => {
-			resizeCanvas();
-			if(appState === 'game' && gameState !== 'running') draw(); 
-		});
-		resizeObserver.observe(canvas);
-
-		// INIT SEQUENCE
-		loadProgress();
 		showScreen('menu');
-
-		// CLEANUP
-		const observer = new MutationObserver(() => {
-			if (!document.body.contains(canvas)) {
-				cancelAnimationFrame(gameLoopId);
-				$(document).off('keydown', keyHandler);
-				resizeObserver.disconnect();
-				observer.disconnect();
-			}
-		});
-		observer.observe(document.body, { childList: true, subtree: true });
-
-		return {
-			restart: () => showScreen('menu')
-		};
+		return { restart: () => showScreen('menu'), quit: () => cancelAnimationFrame(gameLoopId) };
 	}
 };

@@ -1,9 +1,70 @@
-const VERSION = '1.0.0';
+const VERSION = '1.1.0';
+
+const STRINGS = {
+	'en-US': {
+		play: 'PLAY', menu: 'Menu', score: 'Score', size: 'Grid size :',
+		gameOver: 'Game Over', restart: 'Restart ↺',
+	},
+	'fr-FR': {
+		play: 'JOUER', menu: 'Menu', score: 'Score', size: 'Taille :',
+		gameOver: 'Game Over', restart: 'Recommencer ↺',
+	},
+};
+
+const MENU_SVG = `<svg viewBox="0 0 24 24"><path d="M4 5C3.45 5 3 5.45 3 6s.45 1 1 1h16c.55 0 1-.45 1-1s-.45-1-1-1H4zm0 6c-.55 0-1 .45-1 1s.45 1 1 1h16c.55 0 1-.45 1-1s-.45-1-1-1H4zm0 6c-.55 0-1 .45-1 1s.45 1 1 1h16c.55 0 1-.45 1-1s-.45-1-1-1H4z"/></svg>`;
+const REFRESH_SVG = `<svg viewBox="0 0 100 100"><path d="M76.5,58.3c-2.8,7.8-10.2,13.3-18.9,13.3-11.1,0-20.1-9-20.1-20.1s9-20.1,20.1-20.1c6.6,0,12.6,3.3,16.2,8.3-.3.5-.9.7-1.7.7H53.6c-1.1,0-2,.9-2,2v4.2c0,1.1.8,1.9,1.9,1.9h17.9c1,0,1.8-.9,1.8-1.8V22c0-1.1-1.1-2-2.2-2h-4c-1.1,0-2,.9-2,2v3c0,1.2-.7,1.7-1.6.9-.4-.5-.7-.8-1.2-1.2-1.6-1.7-3.5-3.2-5.6-4.4-4.3-2.5-9.3-4-14.6-4C32.8,16.3,20,29,20,44.9c0,15.8,12.8,28.5,28.6,28.5,2.6,0,5.2-.4,7.7-1.1,2.5-.7,4.8-1.7,7-3,2.2-1.3,4.2-2.9,5.9-4.7,1.8-1.8,3.3-3.8,4.5-6,.6-1.1,1.1-2.2,1.6-3.4z"/></svg>`;
+
+function html(s) {
+	return `
+		<div class="game-container">
+			<div id="g2048-menu" class="game-menu-screen">
+				<h1 class="game-title">2048</h1>
+				<div class="game-version">Version ${VERSION}</div>
+				<button id="g2048-play" class="game-btn">${s.play}</button>
+			</div>
+			<div id="g2048-game" class="game-content" style="display:none;">
+				<div class="game-header">
+					<div class="game-top-row">
+						<button class="game-action-btn" id="g2048-exit">${MENU_SVG} ${s.menu}</button>
+						<div class="game-score-board">
+							<div class="game-score">${s.score}: <span id="g2048-score">0</span></div>
+						</div>
+						<button class="game-action-btn" id="g2048-restart" title="${s.restart}">${REFRESH_SVG}</button>
+					</div>
+					<div class="game-top-row">
+						<label for="g2048-grid-size">${s.size}</label>
+						<input type="range" id="g2048-grid-size" min="3" max="8" value="4" step="1">
+						<span id="g2048-grid-label">4×4</span>
+					</div>
+				</div>
+				<div class="game-canvas-wrapper">
+					<div id="g2048-board"></div>
+				</div>
+				<div id="g2048-controls" class="game-controls">
+					<button class="up-left"  data-dir="counterclockwise">↺</button>
+					<button class="up"       data-dir="up">▲</button>
+					<button class="up-right" data-dir="clockwise">↻</button>
+					<button class="left"   data-dir="left">◄</button>
+					<button class="center" data-dir="down">▼</button>
+					<button class="right"  data-dir="right">►</button>
+				</div>
+				<div class="game-message-overlay" id="g2048-overlay" style="display:none;">
+					<h2 id="g2048-overlay-title">${s.gameOver}</h2>
+					<p id="g2048-overlay-msg"></p>
+					<div class="overlay-buttons">
+						<button id="g2048-overlay-restart">${s.restart}</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	`;
+}
+
 export const game2048App = {
 	id: 'game-2048',
 	title: '2048',
 	version: VERSION,
-	icon: `<svg width="64px" height="64px" viewBox="0 0 48.00 48.00" xmlns="http://www.w3.org/2000/svg" fill="#c64600" stroke="#c64600" stroke-width="1.44"><g id="SVGRepo_bgCarrier" stroke-width="0" transform="translate(0,0), scale(1)"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.288"></g><g id="SVGRepo_iconCarrier"><defs><style>.a,.b{fill:none;stroke:#c64600;stroke-linejoin:round;}.b{stroke-linecap:round;}</style></defs><rect class="a" x="24" y="5.5" width="18.5" height="18.5" rx="4"></rect><rect class="a" x="5.5" y="24" width="18.5" height="18.5" rx="4"></rect><rect class="a" x="24" y="24" width="18.5" height="18.5" rx="4"></rect><rect class="a" x="5.5" y="5.5" width="18.5" height="18.5" rx="4"></rect><polyline class="b" points="16.805 38.25 16.804 28.25 11.438 34.967 18.063 34.967"></polyline><path class="b" d="M29.9375,16.4375a3.3125,3.3125,0,0,0,6.625,0v-3.375a3.3125,3.3125,0,0,0-6.625,0Z"></path><path class="b" d="M11.4375,13.0625a3.3125,3.3125,0,0,1,6.625,0,3.0905,3.0905,0,0,1-.97,2.3423c-1.34,1.176-5.6548,4.3452-5.6548,4.3452h6.625"></path><path class="b" d="M32.4375,33.25a2.5,2.5,0,0,0-2.5,2.5h0a2.5,2.5,0,0,0,2.5,2.5h1.625a2.5,2.5,0,0,0,2.5-2.5h0a2.5,2.5,0,0,0-2.5-2.5"></path><path class="b" d="M34.0625,33.25a2.5,2.5,0,0,0,2.5-2.5h0a2.5,2.5,0,0,0-2.5-2.5h-1.625a2.5,2.5,0,0,0-2.5,2.5h0a2.5,2.5,0,0,0,2.5,2.5"></path><line class="b" x1="32.4375" y1="33.25" x2="34.0625" y2="33.25"></line></g></svg>`,
+	icon: `<svg viewBox="0 0 48 48" fill="none" stroke="#c64600" stroke-width="1.5"><rect x="24" y="5.5" width="18.5" height="18.5" rx="4"/><rect x="5.5" y="24" width="18.5" height="18.5" rx="4"/><rect x="24" y="24" width="18.5" height="18.5" rx="4"/><rect x="5.5" y="5.5" width="18.5" height="18.5" rx="4"/><text x="14.75" y="20" text-anchor="middle" font-size="11" fill="#c64600" stroke="none">2</text><text x="33.25" y="20" text-anchor="middle" font-size="11" fill="#c64600" stroke="none">0</text><text x="14.75" y="38" text-anchor="middle" font-size="11" fill="#c64600" stroke="none">4</text><text x="33.25" y="38" text-anchor="middle" font-size="11" fill="#c64600" stroke="none">8</text></svg>`,
 	iconColor: '#ffc107',
 	headerColor: '#ffc107',
 	type: 'game',
@@ -13,241 +74,106 @@ export const game2048App = {
 			--primary-dark-color: #866503;
 			--primary-background-color: #fdeaaf;
 		}
-		.app-content { padding: 0px; }
-		
-		#board-2048 {
-			display: grid;
-			grid-template-columns: repeat(4, 1fr);
-			grid-template-rows: repeat(4, 1fr);
-			gap: 10px;
-			background: #bbada0;
-			padding: 10px;
-			border-radius: 8px;
-			width: 100%;
-			max-width: 400px;
-			aspect-ratio: 1 / 1;
-			box-sizing: border-box;
-			position: relative;
-			
-			font-size: 2em;
-			font-weight: bold;
+		.app-content { padding: 0; }
+		#g2048-board {
+			display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(4, 1fr);
+			gap: 10px; background: #bbada0; padding: 10px; border-radius: 8px;
+			width: 100%; max-width: 400px; aspect-ratio: 1 / 1; box-sizing: border-box;
+			position: relative; font-size: 2em; font-weight: bold; margin: 0 auto;
 		}
-
 		.tile {
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			border-radius: 4px;
-			color: #776e65;
-			background: #cdc1b4;
+			display: flex; justify-content: center; align-items: center;
+			border-radius: 4px; color: #776e65; background: #cdc1b4;
+			transition: background 0.15s, transform 0.1s;
 		}
-
-		/* Tuiles 2048 avec couleurs */
-		.tile[data-value="2"] { background: #eee4da; }
-		.tile[data-value="4"] { background: #ede0c8; }
-		.tile[data-value="8"] { background: #f2b179; color: #f9f6f2; }
-		.tile[data-value="16"] { background: #f59563; color: #f9f6f2; }
-		.tile[data-value="32"] { background: #f67c5f; color: #f9f6f2; }
-		.tile[data-value="64"] { background: #f65e3b; color: #f9f6f2; }
-		.tile[data-value="128"] { background: #edcf72; color: #f9f6f2; }
-		.tile[data-value="256"] { background: #edcc61; color: #f9f6f2; }
-		.tile[data-value="512"] { background: #edc850; color: #f9f6f2; }
+		.tile[data-value="2"]    { background: #eee4da; }
+		.tile[data-value="4"]    { background: #ede0c8; }
+		.tile[data-value="8"]    { background: #f2b179; color: #f9f6f2; }
+		.tile[data-value="16"]   { background: #f59563; color: #f9f6f2; }
+		.tile[data-value="32"]   { background: #f67c5f; color: #f9f6f2; }
+		.tile[data-value="64"]   { background: #f65e3b; color: #f9f6f2; }
+		.tile[data-value="128"]  { background: #edcf72; color: #f9f6f2; }
+		.tile[data-value="256"]  { background: #edcc61; color: #f9f6f2; }
+		.tile[data-value="512"]  { background: #edc850; color: #f9f6f2; }
 		.tile[data-value="1024"] { background: #edc53f; color: #f9f6f2; }
 		.tile[data-value="2048"] { background: #edc22e; color: #f9f6f2; }
-		.tile[data-value="4096"], .tile[data-value="8192"], .tile[data-value="16384"] { background: #9e70c9ff; color: #f9f6f2; }
-		.tile[data-value="32768"], .tile[data-value="65536"] { background: #781fcaff; color: #f9f6f2; }
-		`,
-	content: {
-		'en-US': `
-			<div class="game-container">
-				<div id="game-main-menu" class="game-menu-screen">
-					<h1 class="game-title">2048</h1>
-					<div class="game-version">Version ${VERSION}</div>
-					<button id="game-play-btn" class="game-btn">PLAY</button>
-				</div>
-				<div id="game-content-2048" class="game-content" style="display:none;">
-					<div class="game-header">
-						<div class="game-top-row">
-							<button class="game-action-btn" id="game-exit-btn">
-								<svg viewBox="0 0 24 24"><path d="M4 5C3.44772 5 3 5.44772 3 6C3 6.55228 3.44772 7 4 7H20C20.5523 7 21 6.55228 21 6C21 5.44772 20.5523 5 20 5H4ZM3 12C3 11.4477 3.44772 11 4 11H20C20.5523 11 21 11.4477 21 12C21 12.5523 20.5523 13 20 13H4C3.44772 13 3 12.5523 3 12ZM3 18C3 17.4477 3.44772 17 4 17H20C20.5523 17 21 17.4477 21 18C21 18.5523 20.5523 19 20 19H4C3.44772 19 3 18.5523 3 18Z"></path></svg>
-								Menu
-							</button>
-							<div class="game-score-board">
-								<div class="game-score">Score: <span id="score-2048">0</span></div>
-							</div>
-							<button class="game-action-btn" id="restart-btn-2048" title="Restart (R)">
-								<svg viewBox="0 0 100 100"><path d="M76.5,58.3c0,0.1,0,0.2-0.1,0.2c-0.3,1.1-0.7,2.2-1.1,3.3c-0.5,1.2-1,2.3-1.6,3.4c-1.2,2.2-2.7,4.2-4.5,6 c-1.7,1.8-3.7,3.4-5.9,4.7c-2.2,1.3-4.5,2.3-7,3c-2.5,0.7-5.1,1.1-7.7,1.1C32.8,80,20,67.2,20,51.3s12.8-28.6,28.6-28.6 c5.3,0,10.3,1.5,14.6,4c0,0,0,0,0.1,0c2.1,1.2,4,2.7,5.6,4.4c0.5,0.4,0.8,0.7,1.2,1.2c0.9,0.8,1.6,0.3,1.6-0.9V22c0-1.1,0.9-2,2-2h4 c1.1,0,2,0.9,2.2,2v24.5c0,0.9-0.8,1.8-1.8,1.8H53.6c-1.1,0-1.9-0.8-1.9-1.9v-4.2c0-1.1,0.9-2,2-2h9.4c0.8,0,1.4-0.2,1.7-0.7 c-3.6-5-9.6-8.3-16.2-8.3c-11.1,0-20.1,9-20.1,20.1s9,20.1,20.1,20.1c8.7,0,16.1-5.5,18.9-13.3c0,0,0.3-1.8,1.7-1.8 c1.4,0,4.8,0,5.7,0c0.8,0,1.6,0.6,1.6,1.5C76.5,58,76.5,58.1,76.5,58.3z"></path></svg>
-							</button>
-						</div>
-						<div class="game-top-row">
-							<label for="grid-size-slider">Grid size :</label>
-							<input type="range" id="grid-size-slider" min="3" max="8" value="4" step="1">
-							<span id="grid-size-value">4×4</span>
-						</div>
-					</div>
+		.tile[data-value="4096"], .tile[data-value="8192"], .tile[data-value="16384"] { background: #9e70c9; color: #f9f6f2; }
+		.tile[data-value="32768"], .tile[data-value="65536"] { background: #781fca; color: #f9f6f2; }
+	`,
+	content: { 'en-US': html(STRINGS['en-US']), 'fr-FR': html(STRINGS['fr-FR']) },
 
-					<div class="game-canvas-wrapper">
-						<div id="board-2048"></div>
-					</div>
-					<div id="controls-2048" class="game-controls">
-						<button class="up-left" data-dir="counterclockwise">↺</button>
-						<button class="up" data-dir="up">▲</button>
-						<button class="up-right" data-dir="clockwise">↻</button>
+	onMount(ctx) {
+		const strings = STRINGS[ctx.lang] || STRINGS['fr-FR'];
 
-						<button class="left" data-dir="left">◄</button>
-						<button class="center" data-dir="down">▼</button>
-						<button class="right" data-dir="right">►</button>
-					<div class="game-message-overlay" id="gameover-2048" style="display:none;">
-						<h2 id="gameover-2048-title"></h2>
-						<p id="gameover-2048-msg"></p>
-						<div class="overlay-buttons">
-							<button id="gameover-2048-restart">Restart ↺</button>
-						</div>
-					<div class="game-message-overlay" id="gameover-2048" style="display:none;">
-						<h2 id="gameover-2048-title"></h2>
-						<p id="gameover-2048-msg"></p>
-						<div class="overlay-buttons">
-							<button id="gameover-2048-restart">Recommencer ↺</button>
-						</div>
-					</div>
-				</div>
-			</div>
-		`,
-		'fr-FR': `
-			<div class="game-container">
-				<div id="game-main-menu" class="game-menu-screen">
-					<h1 class="game-title">2048</h1>
-					<div class="game-version">Version ${VERSION}</div>
-					<button id="game-play-btn" class="game-btn">JOUER</button>
-				</div>
-				<div id="game-content-2048" class="game-content" style="display:none;">
-					<div class="game-header">
-						<div class="game-top-row">
-							<button class="game-action-btn" id="game-exit-btn">
-								<svg viewBox="0 0 24 24"><path d="M4 5C3.44772 5 3 5.44772 3 6C3 6.55228 3.44772 7 4 7H20C20.5523 7 21 6.55228 21 6C21 5.44772 20.5523 5 20 5H4ZM3 12C3 11.4477 3.44772 11 4 11H20C20.5523 11 21 11.4477 21 12C21 12.5523 20.5523 13 20 13H4C3.44772 13 3 12.5523 3 12ZM3 18C3 17.4477 3.44772 17 4 17H20C20.5523 17 21 17.4477 21 18C21 18.5523 20.5523 19 20 19H4C3.44772 19 3 18.5523 3 18Z"></path></svg>
-								Menu
-							</button>
-							<div class="game-score-board">
-								<div class="game-score">Score: <span id="score-2048">0</span></div>
-							</div>
-							<button class="game-action-btn" id="restart-btn-2048" title="Redémarrer (R)">
-								<svg viewBox="0 0 100 100"><path d="M76.5,58.3c0,0.1,0,0.2-0.1,0.2c-0.3,1.1-0.7,2.2-1.1,3.3c-0.5,1.2-1,2.3-1.6,3.4c-1.2,2.2-2.7,4.2-4.5,6 c-1.7,1.8-3.7,3.4-5.9,4.7c-2.2,1.3-4.5,2.3-7,3c-2.5,0.7-5.1,1.1-7.7,1.1C32.8,80,20,67.2,20,51.3s12.8-28.6,28.6-28.6 c5.3,0,10.3,1.5,14.6,4c0,0,0,0,0.1,0c2.1,1.2,4,2.7,5.6,4.4c0.5,0.4,0.8,0.7,1.2,1.2c0.9,0.8,1.6,0.3,1.6-0.9V22c0-1.1,0.9-2,2-2h4 c1.1,0,2,0.9,2.2,2v24.5c0,0.9-0.8,1.8-1.8,1.8H53.6c-1.1,0-1.9-0.8-1.9-1.9v-4.2c0-1.1,0.9-2,2-2h9.4c0.8,0,1.4-0.2,1.7-0.7 c-3.6-5-9.6-8.3-16.2-8.3c-11.1,0-20.1,9-20.1,20.1s9,20.1,20.1,20.1c8.7,0,16.1-5.5,18.9-13.3c0,0,0.3-1.8,1.7-1.8 c1.4,0,4.8,0,5.7,0c0.8,0,1.6,0.6,1.6,1.5C76.5,58,76.5,58.1,76.5,58.3z"></path></svg>
-							</button>
-						</div>
-						<div class="game-top-row">
-							<label for="grid-size-slider">Taille :</label>
-							<input type="range" id="grid-size-slider" min="3" max="8" value="4" step="1">
-							<span id="grid-size-value">4×4</span>
-						</div>
-					</div>
-
-					<div class="game-canvas-wrapper">
-						<div id="board-2048"></div>
-					</div>
-					<div id="controls-2048" class="game-controls">
-						<button class="up-left" data-dir="counterclockwise">↺</button>
-						<button class="up" data-dir="up">▲</button>
-						<button class="up-right" data-dir="clockwise">↻</button>
-
-						<button class="left" data-dir="left">◄</button>
-						<button class="center" data-dir="down">▼</button>
-						<button class="right" data-dir="right">►</button>
-					</div>
-				</div>
-			</div>
-		`
-	},
-	init: function (sys, windowId) {
-		const $window = $(`#${windowId}`);
-		
 		const ui = {
-			screens: {
-				menu: $window.find('#game-main-menu'),
-				game: $window.find('#game-content-2048')
-			},
-			game: {
-				board: $window.find('#board-2048'),
-				score: $window.find('#score-2048'),
-				gridSlider: $window.find('#grid-size-slider'),
-				gridLabel: $window.find('#grid-size-value'),
-				controls: $window.find('#controls-2048 button'),
-				overlay: $window.find('#gameover-2048'),
-				overlayTitle: $window.find('#gameover-2048-title'),
-				overlayMsg: $window.find('#gameover-2048-msg'),
-				overlayRestart: $window.find('#gameover-2048-restart')
-			},
-			buttons: {
-				play: $window.find('#game-play-btn'),
-				exit: $window.find('#game-exit-btn'),
-				restart: $window.find('#restart-btn-2048')
-			}
+			menu:    ctx.$('#g2048-menu'),
+			game:    ctx.$('#g2048-game'),
+			board:   ctx.$('#g2048-board'),
+			score:   ctx.$('#g2048-score'),
+			slider:  ctx.$('#g2048-grid-size'),
+			label:   ctx.$('#g2048-grid-label'),
+			controls:ctx.$$('#g2048-controls button'),
+			overlay: ctx.$('#g2048-overlay'),
+			overlayMsg: ctx.$('#g2048-overlay-msg'),
+			overlayTitle: ctx.$('#g2048-overlay-title'),
+			overlayRestart: ctx.$('#g2048-overlay-restart'),
+			btnPlay: ctx.$('#g2048-play'),
+			btnExit: ctx.$('#g2048-exit'),
+			btnRestart: ctx.$('#g2048-restart'),
 		};
-		
+
 		let gridSize = 4;
 		let board = [];
 		let score = 0;
 		let isGameOver = false;
 
-		function createEmptyBoard() {
-			return Array.from({ length: gridSize }, () => Array(gridSize).fill(0));
-		}
-
-		function restartGame() {
-			updateGridCSS();
-			board = createEmptyBoard();
-			score = 0;
-			isGameOver = false;
-			addRandomTile();
-			addRandomTile();
-			drawBoard();
-		}
+		const empty = () => Array.from({ length: gridSize }, () => Array(gridSize).fill(0));
 
 		function updateGridCSS() {
-			ui.game.board.css({
-				'display': 'grid', // S'assure que le mode grid est actif
-				'grid-template-columns': `repeat(${gridSize}, 1fr)`,
-				'grid-template-rows': `repeat(${gridSize}, 1fr)`
-			});
-			ui.game.gridLabel.text(`${gridSize}×${gridSize}`);
-			const fontSize = `${Math.max(0.5, Math.max(2.5 - gridSize * 0.2, 0.5))}em`;
-			ui.game.board.css('font-size', fontSize);
+			ui.board.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
+			ui.board.style.gridTemplateRows    = `repeat(${gridSize}, 1fr)`;
+			ui.board.style.fontSize = `${Math.max(0.5, 2.5 - gridSize * 0.2)}em`;
+			ui.label.textContent = `${gridSize}×${gridSize}`;
 		}
 
-		function drawBoard() {
-			ui.game.board.empty();
-			ui.game.score.text(score);
+		function restart() {
+			updateGridCSS();
+			board = empty();
+			score = 0;
+			isGameOver = false;
+			addRandomTile(); addRandomTile();
+			draw();
+			ui.overlay.style.display = 'none';
+		}
+
+		function draw() {
+			ui.board.innerHTML = '';
+			ui.score.textContent = String(score);
 			for (let r = 0; r < gridSize; r++) {
 				for (let c = 0; c < gridSize; c++) {
-					const value = board[r][c];
-					const $tile = $('<div>').addClass('tile');
-					if (value > 0) {
-						$tile.text(value).attr('data-value', value);
+					const tile = document.createElement('div');
+					tile.className = 'tile';
+					if (board[r][c] > 0) {
+						tile.textContent = String(board[r][c]);
+						tile.setAttribute('data-value', String(board[r][c]));
 					}
-					ui.game.board.append($tile);
+					ui.board.appendChild(tile);
 				}
 			}
 		}
 
 		function addRandomTile() {
-			let emptyTiles = [];
-			for (let r = 0; r < gridSize; r++) {
-				for (let c = 0; c < gridSize; c++) {
-					if (board[r][c] === 0) emptyTiles.push({ r, c });
-				}
-			}
-			if (emptyTiles.length > 0) {
-				const { r, c } = emptyTiles[Math.floor(Math.random() * emptyTiles.length)];
-				board[r][c] = Math.random() < 0.9 ? 2 : 4;
-			}
+			const empties = [];
+			for (let r = 0; r < gridSize; r++)
+				for (let c = 0; c < gridSize; c++)
+					if (board[r][c] === 0) empties.push({ r, c });
+			if (!empties.length) return;
+			const { r, c } = empties[Math.floor(Math.random() * empties.length)];
+			board[r][c] = Math.random() < 0.9 ? 2 : 4;
 		}
 
-		function slide(row) {
-			let arr = row.filter(v => v);
-			let zeros = Array(gridSize - arr.length).fill(0);
-			return arr.concat(zeros);
-		}
-
-		function combine(row) {
+		const slide   = (row) => { const arr = row.filter(Boolean); return arr.concat(Array(gridSize - arr.length).fill(0)); };
+		const combine = (row) => {
 			for (let i = 0; i < gridSize - 1; i++) {
 				if (row[i] !== 0 && row[i] === row[i + 1]) {
 					row[i] *= 2;
@@ -256,19 +182,12 @@ export const game2048App = {
 				}
 			}
 			return row;
-		}
-
-		function operate(row) {
-			row = slide(row);
-			row = combine(row);
-			row = slide(row);
-			return row;
-		}
+		};
+		const operate = (row) => slide(combine(slide(row)));
 
 		function move(dir) {
 			if (isGameOver) return;
-			const oldBoard = JSON.stringify(board);
-
+			const before = JSON.stringify(board);
 			if (dir === 'left' || dir === 'right') {
 				for (let r = 0; r < gridSize; r++) {
 					let row = board[r].slice();
@@ -277,30 +196,23 @@ export const game2048App = {
 					if (dir === 'right') row.reverse();
 					board[r] = row;
 				}
-			} else if (dir === 'down' || dir === 'up') {
+			} else if (dir === 'up' || dir === 'down') {
 				for (let c = 0; c < gridSize; c++) {
-					let col = board.map(row => row[c]);
+					let col = board.map(r => r[c]);
 					if (dir === 'down') col.reverse();
 					col = operate(col);
 					if (dir === 'down') col.reverse();
 					for (let r = 0; r < gridSize; r++) board[r][c] = col[r];
 				}
 			} else if (dir === 'counterclockwise') {
-				move('left');
-				move('down');
-				move('right');
-				move('up');
+				['left', 'down', 'right', 'up'].forEach(d => move(d));
+				return;
 			} else if (dir === 'clockwise') {
-				move('right');
-				move('down');
-				move('left');
-				move('up');
+				['right', 'down', 'left', 'up'].forEach(d => move(d));
+				return;
 			}
-
-			if (JSON.stringify(board) !== oldBoard) {
-				addRandomTile();
-			}
-			drawBoard();
+			if (JSON.stringify(board) !== before) addRandomTile();
+			draw();
 			checkGameOver();
 		}
 
@@ -313,37 +225,29 @@ export const game2048App = {
 				}
 			}
 			isGameOver = true;
-			ui.game.overlayTitle.text('Game Over');
-			ui.game.overlayMsg.text('Score: ' + score);
-			ui.game.overlay.fadeIn(200);
+			ui.overlayTitle.textContent = strings.gameOver;
+			ui.overlayMsg.textContent = `${strings.score}: ${score}`;
+			ui.overlay.style.display = 'flex';
 		}
 
-		ui.buttons.play.on('click', () => { ui.screens.menu.hide(); ui.screens.game.show(); });
-		ui.buttons.exit.on('click', () => { ui.screens.menu.show(); ui.screens.game.hide(); });
-		ui.buttons.restart.on('click', () => restartGame());
-		ui.game.overlayRestart.on('click', () => { ui.game.overlay.hide(); restartGame(); });
-		ui.game.controls.on('click', function () { move($(this).data('dir')); });
-		ui.game.gridSlider.on('input', function () { gridSize = parseInt(this.value); restartGame(); });
-
-		const keyHandler = (e) => {
-			if (!document.body.contains(ui.game.board[0])) return;
-			if (e.key === 'ArrowUp')    { e.preventDefault(); move('up'); }
-			if (e.key === 'ArrowDown')  { e.preventDefault(); move('down'); }
-			if (e.key === 'ArrowLeft')  { e.preventDefault(); move('left'); }
-			if (e.key === 'ArrowRight') { e.preventDefault(); move('right'); }
-			if (e.key === 'r' || e.key === 'R') restartGame();
-		};
-		$(document).on('keydown.game2048', keyHandler);
-
-		const observer = new MutationObserver(() => {
-			if (!document.body.contains(ui.game.board[0])) {
-				$(document).off('keydown.game2048', keyHandler);
-				observer.disconnect();
-			}
+		// Events
+		ctx.scope.on(ui.btnPlay,    'click', () => { ui.menu.style.display = 'none'; ui.game.style.display = ''; });
+		ctx.scope.on(ui.btnExit,    'click', () => { ui.menu.style.display = ''; ui.game.style.display = 'none'; });
+		ctx.scope.on(ui.btnRestart, 'click', restart);
+		ctx.scope.on(ui.overlayRestart, 'click', restart);
+		ctx.scope.on(ui.slider,     'input', () => { gridSize = parseInt(ui.slider.value, 10); restart(); });
+		ui.controls.forEach(btn => {
+			ctx.scope.on(btn, 'click', () => move(btn.dataset.dir));
 		});
-		observer.observe(document.body, { childList: true, subtree: true });
 
-		restartGame();
-		return { restart: () => restartGame() };
+		ctx.scope.on(document, 'keydown', (e) => {
+			if (!ctx.root.isConnected) return;
+			const map = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right' };
+			if (map[e.key]) { e.preventDefault(); move(map[e.key]); }
+			if (e.key === 'r' || e.key === 'R') restart();
+		});
+
+		restart();
+		return { restart };
 	}
 };
