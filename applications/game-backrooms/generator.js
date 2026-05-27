@@ -297,9 +297,13 @@ export class BackroomsGenerator {
 	}
 }
 
-/** Spawn near the middle of the bottom (House) biome. */
+/** Spawn near the middle of the bottom (House) biome.
+ * `y` is the **feet** level: floor block is at y=-150, top of floor is -149,
+ * so feet must be at -149 to stand exactly on the carpet. The controller's
+ * `ensureNotStuck()` will lift the player out of any wall/elevator the
+ * spawn point happens to overlap. */
 export function defaultSpawn() {
-	return { x: 5.5, y: -149 + 1.7, z: 5.5 };
+	return { x: 5.5, y: -149, z: 5.5 };
 }
 
 /** Find every elevator centre near a (cx,cz) chunk pos, for a given biome. */

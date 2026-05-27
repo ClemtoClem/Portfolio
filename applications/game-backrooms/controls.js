@@ -68,6 +68,19 @@ export class FirstPersonController {
 		this.velocity.set(0, 0, 0);
 	}
 
+	/**
+	 * If the player is overlapping any solid block (because chunk generation
+	 * placed a wall, ceiling or elevator at the spawn point), bump them up
+	 * one block at a time until they're in clear air. Caller should make
+	 * sure the chunks around the spawn have already been generated.
+	 */
+	ensureNotStuck(maxLift = 30) {
+		for (let i = 0; i < maxLift; i++) {
+			if (!this._collides(this.position)) return;
+			this.position.y += 1;
+		}
+	}
+
 	pause()  { this._paused = true; }
 	resume() { this._paused = false; }
 
