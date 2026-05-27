@@ -16,6 +16,7 @@ import { gameSnakeApp }       from './game-snake.js';
 import { gameChargebotApp }   from './game-chargebot.js';
 import { gameFlappyBirdApp }  from './game-flappy-bird.js';
 import { gameTownFPSApp }     from './game-town-fps.js';
+import { gameBackroomsApp }   from './game-backrooms.js';
 
 export const ALL_APPS = [
 	cvApp,
@@ -32,4 +33,5 @@ export const ALL_APPS = [
 	gameChargebotApp,
 	gameFlappyBirdApp,
 	gameTownFPSApp,
+	gameBackroomsApp,
 ];
