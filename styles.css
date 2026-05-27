@@ -681,6 +681,21 @@ input[type="range"]::-ms-tooltip {
 	max-height: none;
 }
 
+/* Native fullscreen frame — applied automatically on Android.
+   Uses dynamic viewport units (`dvh`/`dvw`) so the screen still fills
+   the visible area when the mobile browser's URL bar shows/hides. */
+#android-screen.native-mode {
+	width: 100vw;
+	height: 100vh;
+	width: 100dvw;
+	height: 100dvh;
+	max-width: none;
+	max-height: none;
+	border-radius: 0;
+	border: 0;
+	box-shadow: none;
+}
+
 @media (min-width: 500px) {
 	#android-screen {
 		height: 95vh;

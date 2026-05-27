@@ -12,4 +12,4 @@ export { System } from './system.js';
 export { Desktop } from './desktop.js';
 export { Navigator } from './navigator.js';
 export { Panel } from './panel.js';
-export { startStatusBarClock, applyGithubPagesFix } from './shell.js';
+export { startStatusBarClock, applyGithubPagesFix, isAndroid, setupAndroidFullscreen } from './shell.js';

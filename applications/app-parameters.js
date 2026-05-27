@@ -1,3 +1,5 @@
+import { isAndroid } from '../core/shell.js';
+
 const STRINGS = {
 	'en-US': {
 		display:     'Display Mode',
@@ -33,8 +35,8 @@ const LANGUAGE_OPTIONS = `
 
 function html(s) {
 	return `
-		<button class="collapsible">${s.display}</button>
-		<div class="content">
+		<button class="collapsible" data-section="display">${s.display}</button>
+		<div class="content" data-section="display">
 			<label><input type="radio" name="screen-mode" value="phone"> ${s.phone}</label><br>
 			<label><input type="radio" name="screen-mode" value="tablet"> ${s.tablet}</label>
 			<p>${s.actualSize}</p>
@@ -91,9 +93,17 @@ export const parametersApp = {
 		const storageList  = ctx.$('#storage-list');
 		const clearBtn     = ctx.$('#btn-clear-storage');
 
+		// On Android, the OS frame is in `native-mode` (fullscreen viewport)
+		// and the phone/tablet toggle is meaningless — hide the section so
+		// users don't expect it to do anything.
+		if (isAndroid()) {
+			ctx.$$('[data-section="display"]').forEach(el => el.style.display = 'none');
+		}
+
 		// Initial state for radios + language
 		const currentMode = screen.classList.contains('tablet-mode') ? 'tablet' : 'phone';
-		ctx.$(`input[name='screen-mode'][value='${currentMode}']`).checked = true;
+		const radio = ctx.$(`input[name='screen-mode'][value='${currentMode}']`);
+		if (radio) radio.checked = true;
 		languageSel.value = ctx.system.settings.language;
 
 		function updateScreenSize() {

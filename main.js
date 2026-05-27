@@ -12,6 +12,7 @@ import {
 	EventScope,
 	startStatusBarClock,
 	applyGithubPagesFix,
+	setupAndroidFullscreen,
 } from './core/index.js';
 import { ALL_APPS } from './applications/index.js';
 
@@ -19,6 +20,9 @@ const shellScope = new EventScope();
 
 function boot() {
 	applyGithubPagesFix();
+	// On Android: switch the OS frame to native (full viewport) mode and
+	// arm a one-shot fullscreen request on the first user gesture.
+	setupAndroidFullscreen(shellScope);
 
 	const system = new System();
 	ALL_APPS.forEach(app => system.registerApp(app));
