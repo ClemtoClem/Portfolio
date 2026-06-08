@@ -89,6 +89,73 @@ const PROJECTS = [
 				<p>University project: an instrumented bat roost. The system counts entries/exits and measures temperature, humidity and light to study behaviour.</p>`
 		},
 	},
+	{
+		id: 5,
+		title: 'D-RI5CY — DIFT sur RISC-V',
+		image: './assets/img/polytech-grenoble.jpg',
+		tags: ['Verilog', 'RISC-V', 'DIFT', 'Sécurité matérielle', 'FPGA', 'PULPino'],
+		content: {
+			'fr-FR': `
+				<h4>Contexte</h4>
+				<p>État de l'art collaboratif réalisé en 2025 en cinquième année à Polytech Grenoble (IESE5), avec Jonathan Dumaz et Julien Pierson. L'objectif : étudier en profondeur le <strong>D-RI5CY</strong> — un processeur RISC-V 32 bits durci pour la cybersécurité par l'ajout d'un module DIFT — puis proposer des pistes d'extension de son architecture.</p>
+
+				<h4>Le DIFT, brièvement</h4>
+				<p>Le <em>Dynamic Information Flow Tracking</em> associe à chaque donnée manipulée par le processeur une métadonnée appelée <strong>tag</strong>. Ces tags sont <em>propagés</em> dynamiquement par les instructions et <em>vérifiés</em> à des points clés (lecture/écriture mémoire, saut, retour de fonction). Une violation de politique déclenche une exception : la fuite ou la corruption d'une donnée critique est ainsi détectée en temps réel — sans intervention du système d'exploitation.</p>
+
+				<h4>Architecture du D-RI5CY</h4>
+				<p>Le D-RI5CY étend le cœur open-source <strong>RI5CY</strong> (issu du SoC PULPino, jeux RV32I + RV32C + RV32M, pipeline 4 étages). Le DIFT est intégré <em>in-core</em> en Verilog : registres étendus pour porter un tag de 4 bits par octet, logique de propagation câblée sur le chemin de données, et <strong>registres de configuration</strong> CSR (TPR pour les règles de propagation, TCR pour les règles de vérification) qui rendent la politique de sécurité programmable côté logiciel.</p>
+
+				<h4>Résistance aux attaques logicielles</h4>
+				<p>Le D-RI5CY neutralise les classes d'attaques les plus courantes en exploitant la propagation de tags :</p>
+				<ul>
+					<li><strong>Buffer overflow</strong> — l'écrasement d'une adresse de retour est détecté car le tag de la donnée injectée ne correspond pas au tag attendu d'un pointeur de code.</li>
+					<li><strong>Format string</strong> — l'utilisation d'une chaîne contrôlée par l'attaquant comme format de <code>printf</code> est interceptée par règle TCR.</li>
+					<li><strong>ROP / JOP</strong> — les sauts vers une adresse dont le tag n'autorise pas l'exécution sont arrêtés au niveau du <em>fetch</em>.</li>
+				</ul>
+
+				<h4>Résistance aux attaques matérielles (FIA)</h4>
+				<p>Pour pallier les <em>Fault Injection Attacks</em> (injection laser, glitchs d'horloge), un système <strong>SECDED</strong> (Single Error Correction, Double Error Detection) — basé sur un bit de parité et un code de Hamming — est ajouté autour des registres critiques. Le coût FPGA reste modeste (quelques pourcents de LUTs supplémentaires) pour une couverture quasi-totale des fautes 1-bit et la détection fiable des fautes 2-bits.</p>
+
+				<h4>Extensions proposées</h4>
+				<ul>
+					<li><strong>Mémoire externe et cache</strong> — schéma de stockage compact des tags en RAM avec cache L1 dédié, et <em>Tag Management Unit</em> (TMU) chargée du transfert des tags lors d'un cache miss.</li>
+					<li><strong>Control Flow Checking</strong> — vérification dynamique du graphe de flot de contrôle via des <em>waypoints</em> insérés à la compilation.</li>
+					<li><strong>Hiérarchie d'accès mémoire</strong> — modèle Bell-LaPadula généralisé : un <em>Tag Hierarchy Register</em> (THR) comparé au tag mémoire lors d'un load/store, plus de nouvelles instructions assembleur dédiées à la gestion fine des niveaux d'autorisation.</li>
+				</ul>
+
+				<h4>Apports personnels</h4>
+				<p>Conception et rédaction de l'analyse de l'architecture DIFT in-core, étude comparative avec les approches off-core (HardBlare) et offloading, dimensionnement du coût FPGA du système SECDED, et proposition de la hiérarchie d'accès mémoire (THR + ISA dédié). Le rapport d'état de l'art a servi de base au projet de stage de fin d'études encadré par le laboratoire TIMA.</p>`,
+			'en-US': `
+				<h4>Context</h4>
+				<p>Collaborative state-of-the-art study (2025, MEng final year at Polytech Grenoble — IESE5) with Jonathan Dumaz and Julien Pierson. The goal: investigate the <strong>D-RI5CY</strong> — a 32-bit RISC-V processor hardened against cyberattacks with a DIFT module — and propose extensions to its architecture.</p>
+
+				<h4>DIFT in a nutshell</h4>
+				<p><em>Dynamic Information Flow Tracking</em> attaches a metadata <strong>tag</strong> to every value the processor handles. Tags are <em>propagated</em> dynamically by instructions and <em>checked</em> at critical points (memory load/store, jumps, returns). A policy violation raises an exception, so data leaks and pointer corruption are caught in real time without OS support.</p>
+
+				<h4>D-RI5CY architecture</h4>
+				<p>D-RI5CY extends the open-source <strong>RI5CY</strong> core (PULPino SoC, RV32I + RV32C + RV32M, 4-stage pipeline) with an in-core Verilog DIFT: 4-bit-per-byte tags on every register, a propagation network on the data path, and configurable <strong>CSRs</strong> (TPR for propagation rules, TCR for check rules) so the security policy is software-programmable.</p>
+
+				<h4>Defense against software attacks</h4>
+				<ul>
+					<li><strong>Buffer overflow</strong> — overwriting a return address is caught because the injected data carries a wrong tag for a code pointer.</li>
+					<li><strong>Format string</strong> — an attacker-controlled <code>printf</code> format string is intercepted by a TCR rule.</li>
+					<li><strong>ROP / JOP</strong> — jumps to addresses whose tag forbids execution are blocked at fetch time.</li>
+				</ul>
+
+				<h4>Defense against hardware attacks (FIA)</h4>
+				<p>To mitigate <em>Fault Injection Attacks</em> (laser injection, clock glitches), a <strong>SECDED</strong> scheme (Single Error Correction, Double Error Detection) — parity bit + Hamming code — is added around critical registers. FPGA cost is modest (a few percent extra LUTs) for near-total 1-bit fault coverage and reliable 2-bit detection.</p>
+
+				<h4>Proposed extensions</h4>
+				<ul>
+					<li><strong>External memory & cache</strong> — compact tag storage in RAM with a dedicated L1 tag cache, plus a <em>Tag Management Unit</em> (TMU) handling tag transfers on cache misses.</li>
+					<li><strong>Control Flow Checking</strong> — dynamic verification of the control-flow graph via compiler-inserted <em>waypoints</em>.</li>
+					<li><strong>Memory access hierarchy</strong> — generalised Bell-LaPadula model: a <em>Tag Hierarchy Register</em> (THR) compared to the memory tag on every load/store, and new assembly instructions for fine-grained authorisation management.</li>
+				</ul>
+
+				<h4>Personal contributions</h4>
+				<p>Designed and wrote the in-core DIFT architecture analysis, performed comparative study against off-core (HardBlare) and offloading approaches, sized the FPGA cost of the SECDED system, and proposed the memory access hierarchy (THR + dedicated ISA). The report fed into my final-year internship at the TIMA laboratory.</p>`
+		},
+	},
 ];
 
 function renderGrid(lang, title) {
